@@ -1,3 +1,13 @@
 features/current_difficulties.json
 features/all-CIPI.json
 *.db
+gaps_v1/
+gaps_v1.zip
+rename_gaps.py
+extract_guitarburst.py
+match_gaps.py
+**/__pycache__/
+.venv/
+*.ckpt
+lightning_logs/
+wandb/
