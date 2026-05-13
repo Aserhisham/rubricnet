@@ -249,7 +249,10 @@
         "Reading": 6,
         "Max Position": "XII",
         "Era": "Modern",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "Nf1wc",
+        "xml_path": "gaps_v1/musicxml/Nf1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Antonio Lauro - Cueca Chilena.xml"
     },
     {
         "Title": "24 Piezas Sudamericanas: 10. Aguinaldo",
@@ -582,7 +585,10 @@
         "Reading": 7,
         "Max Position": "VII",
         "Era": "Renaissance",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "zD1wc",
+        "xml_path": "gaps_v1/musicxml/zD1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/John Dowland - A Fancy (Fantasy).xml"
     },
     {
         "Title": "A Galliard",
@@ -825,8 +831,10 @@
         "Reading": 7,
         "Max Position": "IX",
         "Era": "Romantic",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/Adelita (Mazurka) by Francisco Tarrega.xml"
+        "status": "found",
+        "scorehash": "6Sswc",
+        "xml_path": "gaps_v1/musicxml/6Sswc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Francisco Tarrega - Adelita (Mazurka).xml"
     },
     {
         "Title": "Adelita (Mazurka)",
@@ -1008,7 +1016,10 @@
         "Reading": 6,
         "Max Position": "X",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "8M1wc",
+        "xml_path": "gaps_v1/musicxml/8M1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Johann Kaspar Mertz - Capriccio.xml"
     },
     {
         "Title": "Alemanda la preciosa",
@@ -1447,7 +1458,10 @@
         "Reading": 5,
         "Max Position": "X",
         "Era": "Baroque",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "jw1wc",
+        "xml_path": "gaps_v1/musicxml/jw1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Robert de Visee - Allemande from Lute suite in D minor.xml"
     },
     {
         "Title": "Allemande",
@@ -1645,8 +1659,10 @@
         "Reading": 4,
         "Max Position": "X",
         "Era": "Romantic",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/mertz-anmalvina.xml"
+        "status": "found",
+        "scorehash": "NY1wc",
+        "xml_path": "gaps_v1/musicxml/NY1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Johann Kaspar Mertz - An Malvina.xml"
     },
     {
         "Title": "Ancient Drums",
@@ -1664,7 +1680,10 @@
         "Reading": 2,
         "Max Position": "III",
         "Era": "Classical",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "P41wc",
+        "xml_path": "gaps_v1/musicxml/P41wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Johann Sebastian Bach - BWV 1003 Andante.xml"
     },
     {
         "Title": "Andante",
@@ -2154,7 +2173,10 @@
         "Reading": 6,
         "Max Position": "X",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "ff1wc",
+        "xml_path": "gaps_v1/musicxml/ff1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Francisco Tarrega - Estudio No 4.xml"
     },
     {
         "Title": "Arada from Suite Castellana",
@@ -2190,7 +2212,10 @@
         "Reading": 2,
         "Max Position": "V",
         "Era": "Baroque",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "Ck1wc",
+        "xml_path": "gaps_v1/musicxml/Ck1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Regino Sainz de la Maza - Romancillo de Maria Belen.xml"
     },
     {
         "Title": "Aria variata: Tu vedrai la sventurata",
@@ -2262,7 +2287,10 @@
         "Reading": 4,
         "Max Position": "VII",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "qV1wc",
+        "xml_path": "gaps_v1/musicxml/qV1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Isaac Albeniz - Asturias-Leyenda.xml"
     },
     {
         "Title": "Au clair de la lune variations",
@@ -2370,7 +2398,10 @@
         "Reading": 3,
         "Max Position": "V",
         "Era": "Baroque",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "Hk1wc",
+        "xml_path": "gaps_v1/musicxml/Hk1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Manuel Ponce - Ballet.xml"
     },
     {
         "Title": "Balleto",
@@ -2505,7 +2536,10 @@
         "Reading": 3,
         "Max Position": "VII",
         "Era": "Modern",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "-k1wc",
+        "xml_path": "gaps_v1/musicxml/-k1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Jorge Morel - Bossa in Re.xml"
     },
     {
         "Title": "Bossa Nova Etude",
@@ -2550,7 +2584,10 @@
         "Reading": 2,
         "Max Position": "V",
         "Era": "Baroque",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "2D1wc",
+        "xml_path": "gaps_v1/musicxml/2D1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Johann Sebastian Bach - BWV996 Bourree in E Minor.xml"
     },
     {
         "Title": "Bourree (from Lute Suite No. 1); BWV 996",
@@ -3097,7 +3134,10 @@
         "Reading": 7,
         "Max Position": "XII",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "wpswc",
+        "xml_path": "gaps_v1/musicxml/wpswc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Sergio Assad - Cradle song.xml"
     },
     {
         "Title": "Cancion de la Hilandera",
@@ -3234,7 +3274,10 @@
         "Reading": 2,
         "Max Position": "VIII",
         "Era": "Classical",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "9D1wc",
+        "xml_path": "gaps_v1/musicxml/9D1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Luigi Legnani - Caprice No 29.xml"
     },
     {
         "Title": "Caprice, Op. 100 no. 13",
@@ -3381,8 +3424,10 @@
         "Reading": 7,
         "Max Position": "XII",
         "Era": "Romantic",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/Capricho Arabe-Senata by Francisco Tarrega.xml"
+        "status": "found",
+        "scorehash": "241wc",
+        "xml_path": "gaps_v1/musicxml/241wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Francisco Tarrega - Capricho Arabe-Senata.xml"
     },
     {
         "Title": "Capricho Espanol",
@@ -3940,7 +3985,10 @@
         "Reading": 7,
         "Max Position": "All",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "lw1wc",
+        "xml_path": "gaps_v1/musicxml/lw1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Agustin Barrios Mangore - Contemplacion (Vals et Tremelo).xml"
     },
     {
         "Title": "Contentment",
@@ -4021,7 +4069,10 @@
         "Reading": 3,
         "Max Position": "III",
         "Era": "Baroque",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "ny1wc",
+        "xml_path": "gaps_v1/musicxml/ny1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Johann Sebastian Bach - BWV 995 Courante.xml"
     },
     {
         "Title": "Courante",
@@ -4111,7 +4162,10 @@
         "Reading": 1,
         "Max Position": "I",
         "Era": "Renaissance",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "QM1wc",
+        "xml_path": "gaps_v1/musicxml/QM1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Jorge Morel - Staccato Dance.xml"
     },
     {
         "Title": "Dance",
@@ -4246,7 +4300,10 @@
         "Reading": 5,
         "Max Position": "X",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "-f1wc",
+        "xml_path": "gaps_v1/musicxml/-f1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Agustin Barrios - Danza Guarani.xml"
     },
     {
         "Title": "Danza Caracteristica (para el quitate de la acera)",
@@ -4264,8 +4321,10 @@
         "Reading": 5,
         "Max Position": "XII",
         "Era": "Modern",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/Danza del Altiplano by Leo Brouwer.xml"
+        "status": "found",
+        "scorehash": "ty1wc",
+        "xml_path": "gaps_v1/musicxml/ty1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Leo Brouwer - Danza del Altiplano.xml"
     },
     {
         "Title": "Danza del gatto (Dance of the Cat)",
@@ -4590,7 +4649,10 @@
         "Reading": 6,
         "Max Position": "IX",
         "Era": "Modern",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "VM1wc",
+        "xml_path": "gaps_v1/musicxml/VM1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Regino De La Maza - Zapateado.xml"
     },
     {
         "Title": "Dos Pequenas fantasias - Ecos de Sefarad",
@@ -5149,7 +5211,10 @@
         "Reading": 2,
         "Max Position": "II",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "BV1wc",
+        "xml_path": "gaps_v1/musicxml/BV1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Jose Ferrer y Esteve - El Amable.xml"
     },
     {
         "Title": "El Decameron Negro: I. La Arpa Del Guerrero",
@@ -5707,7 +5772,10 @@
         "Reading": 2,
         "Max Position": "V",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "Dw1wc",
+        "xml_path": "gaps_v1/musicxml/Dw1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Antonio Lauro - Estudio en Imitaciones No 2.xml"
     },
     {
         "Title": "Estudio",
@@ -6024,7 +6092,10 @@
         "Reading": 5,
         "Max Position": "XII",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "7N1wc",
+        "xml_path": "gaps_v1/musicxml/7N1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Efran Silva - Estudio No. 3.xml"
     },
     {
         "Title": "Estudio No. 6",
@@ -6087,8 +6158,10 @@
         "Reading": 2,
         "Max Position": "III",
         "Era": "Modern",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/brouwer-etude6.xml"
+        "status": "found",
+        "scorehash": "Ly1wc",
+        "xml_path": "gaps_v1/musicxml/Ly1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Leo Brouwer - Estudios Sencillos.xml"
     },
     {
         "Title": "Estudios Sencillos: II",
@@ -6287,7 +6360,10 @@
         "Reading": 4,
         "Max Position": "IV",
         "Era": "Classical",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "7f1wc",
+        "xml_path": "gaps_v1/musicxml/7f1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Heitor Villa-Lobos - Etude No 3 In D.xml"
     },
     {
         "Title": "Etude",
@@ -6695,7 +6771,10 @@
         "Reading": 8,
         "Max Position": "V",
         "Era": "Renaissance",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "pf1wc",
+        "xml_path": "gaps_v1/musicxml/pf1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Alonoso de Mudarra - Fantasia No 10.xml"
     },
     {
         "Title": "Fantasia",
@@ -6893,7 +6972,10 @@
         "Reading": 9,
         "Max Position": "V",
         "Era": "Renaissance",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "Nw1wc",
+        "xml_path": "gaps_v1/musicxml/Nw1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Sergio Assad - Farewell.xml"
     },
     {
         "Title": "Farewell to Nova Scoatia",
@@ -7065,7 +7147,10 @@
         "Reading": 8,
         "Max Position": "All",
         "Era": "Modern",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "QN1wc",
+        "xml_path": "gaps_v1/musicxml/QN1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Leo Brouwer - Fuga No 1.xml"
     },
     {
         "Title": "Fuga No. 1",
@@ -9019,8 +9104,10 @@
         "Reading": 5,
         "Max Position": "XI",
         "Era": "Romantic",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/Prelude 20 Lagrima by Francisco Tarrega.xml"
+        "status": "found",
+        "scorehash": "KM1wc",
+        "xml_path": "gaps_v1/musicxml/KM1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Joao Pernambuco - Lagrima.xml"
     },
     {
         "Title": "Lagrima",
@@ -9139,7 +9226,10 @@
         "Reading": 5,
         "Max Position": "X",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "Gw1wc",
+        "xml_path": "gaps_v1/musicxml/Gw1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Augustin Barrios Mangore - Las Abejas (The Bees).xml"
     },
     {
         "Title": "Las Dos Hermanitas",
@@ -9790,7 +9880,10 @@
         "Reading": 6,
         "Max Position": "XII",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "w41wc",
+        "xml_path": "gaps_v1/musicxml/w41wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Agustin Barrios Mangore - Luz Mala (Bad Light).xml"
     },
     {
         "Title": "Mabelita",
@@ -9799,8 +9892,10 @@
         "Reading": 6,
         "Max Position": "XII",
         "Era": "Romantic",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/Mabelita by Augustin Barrios Mangore.xml"
+        "status": "found",
+        "scorehash": "YD1wc",
+        "xml_path": "gaps_v1/musicxml/YD1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Agustin Barrios - Mabelita (Little Mabel).xml"
     },
     {
         "Title": "Madame Fugger's Dance",
@@ -10038,7 +10133,10 @@
         "Reading": 5,
         "Max Position": "IX",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "8D1wc",
+        "xml_path": "gaps_v1/musicxml/8D1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Agustin Barrios - Maxixe.xml"
     },
     {
         "Title": "Mazurca en sol",
@@ -10056,8 +10154,10 @@
         "Reading": 6,
         "Max Position": "X",
         "Era": "Romantic",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/Adelita (Mazurka) by Francisco Tarrega.xml"
+        "status": "found",
+        "scorehash": "vk1wc",
+        "xml_path": "gaps_v1/musicxml/vk1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Heitor Villa Lobos - Mazurka Choros.xml"
     },
     {
         "Title": "Mazurka Apassionata",
@@ -10512,7 +10612,10 @@
         "Reading": 4,
         "Max Position": "XIV",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "xk1wc",
+        "xml_path": "gaps_v1/musicxml/xk1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Jorge Cardoso - Milonga (Uruguay)-24 Piezas Sudamericana.xml"
     },
     {
         "Title": "Milonga del Angel (Milonga)",
@@ -10566,7 +10669,10 @@
         "Reading": 2,
         "Max Position": "III",
         "Era": "Baroque",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "TV1wc",
+        "xml_path": "gaps_v1/musicxml/TV1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Agustin Barrios Mangore - Minuet in C.xml"
     },
     {
         "Title": "Minuet",
@@ -11029,7 +11135,10 @@
         "Reading": 7,
         "Max Position": "X",
         "Era": "Classical",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "y41wc",
+        "xml_path": "gaps_v1/musicxml/y41wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Ludwig Van Beethoven - Moonlight Sonata.xml"
     },
     {
         "Title": "Moontan",
@@ -11386,7 +11495,10 @@
         "Reading": 2,
         "Max Position": "III",
         "Era": "Modern",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "T41wc",
+        "xml_path": "gaps_v1/musicxml/T41wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Federico Moreno Torroba - Nostalgia.xml"
     },
     {
         "Title": "Novitango",
@@ -11756,8 +11868,10 @@
         "Reading": 6,
         "Max Position": "VII",
         "Era": "Baroque",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/BWV997 Sarabande by Johann Sebastian Bach.xml"
+        "status": "found",
+        "scorehash": "cw1wc",
+        "xml_path": "gaps_v1/musicxml/cw1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Johann Sebastian Bach - BWV997 Sarabande.xml"
     },
     {
         "Title": "Partita I for Guitar: Adagio",
@@ -12073,7 +12187,10 @@
         "Reading": 3,
         "Max Position": "VIII",
         "Era": "Baroque",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "nD1wc",
+        "xml_path": "gaps_v1/musicxml/nD1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Lodovico Roncalli - Passacaglia.xml"
     },
     {
         "Title": "Passacaille",
@@ -12091,7 +12208,10 @@
         "Reading": 5,
         "Max Position": "IX",
         "Era": "Baroque",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "BM1wc",
+        "xml_path": "gaps_v1/musicxml/BM1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/G. F. Handel - Suite N VII - Passacaille.xml"
     },
     {
         "Title": "Passacaille",
@@ -12956,8 +13076,10 @@
         "Reading": 5,
         "Max Position": "VII",
         "Era": "Baroque",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/Prelude in C Minor by Augustin Barrios.xml"
+        "status": "found",
+        "scorehash": "141wc",
+        "xml_path": "gaps_v1/musicxml/141wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Johann Sebastian Bach - BWV846 Prelude in C.xml"
     },
     {
         "Title": "Prelude - Una Vision en la Torre de Diablo (A Vision in the Devil's Tower)",
@@ -13318,7 +13440,10 @@
         "Reading": 7,
         "Max Position": "VII",
         "Era": "Modern",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "by1wc",
+        "xml_path": "gaps_v1/musicxml/by1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Augustn Barrios Mangore - La Catedral (preludio saudade).xml"
     },
     {
         "Title": "Preludio",
@@ -13679,7 +13804,9 @@
         "Max Position": "All",
         "Era": "Modern",
         "status": "found",
-        "file_path": "gaps_v1/musicxml/Lw1wc.xml"
+        "scorehash": "Lw1wc",
+        "xml_path": "gaps_v1/musicxml/Lw1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Joaqun Turina - Rafaga.xml"
     },
     {
         "Title": "Rambling",
@@ -13697,7 +13824,10 @@
         "Reading": 7,
         "Max Position": "X",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "Sy1wc",
+        "xml_path": "gaps_v1/musicxml/Sy1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Francisco Tarrega - Recuerdos de la Alhambra.xml"
     },
     {
         "Title": "Recuerdos de la Alhambra",
@@ -13760,7 +13890,10 @@
         "Reading": 2,
         "Max Position": "II",
         "Era": "Modern",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "Rk1wc",
+        "xml_path": "gaps_v1/musicxml/Rk1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Rene Bartoli - Reverie.xml"
     },
     {
         "Title": "Ricercar No. 11",
@@ -13814,7 +13947,10 @@
         "Reading": 5,
         "Max Position": "IX",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "SD1wc",
+        "xml_path": "gaps_v1/musicxml/SD1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Jorge Morel - Romance.xml"
     },
     {
         "Title": "Romance",
@@ -13877,7 +14013,10 @@
         "Reading": 4,
         "Max Position": "VII",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "2pswc",
+        "xml_path": "gaps_v1/musicxml/2pswc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Francesco Molino - Rondo.xml"
     },
     {
         "Title": "Rondo",
@@ -13970,7 +14109,10 @@
         "Reading": 7,
         "Max Position": "X",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "vV1wc",
+        "xml_path": "gaps_v1/musicxml/vV1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Francisco Tarrega - Rosita.xml"
     },
     {
         "Title": "Rosita (Polka)",
@@ -14105,7 +14247,10 @@
         "Reading": 3,
         "Max Position": "III",
         "Era": "Baroque",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "g41wc",
+        "xml_path": "gaps_v1/musicxml/g41wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Johann Sebastian Bach - BWV 1004 Sarabande.xml"
     },
     {
         "Title": "Sarabande",
@@ -14331,7 +14476,10 @@
         "Reading": 2,
         "Max Position": "VIII",
         "Era": "Modern",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "9k1wc",
+        "xml_path": "gaps_v1/musicxml/9k1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Johann Kaspar Mertz - Scherzo.xml"
     },
     {
         "Title": "School Blues",
@@ -14385,7 +14533,10 @@
         "Reading": 3,
         "Max Position": "IV",
         "Era": "Modern",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "dk1wc",
+        "xml_path": "gaps_v1/musicxml/dk1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Franz Schubert - Serenade.xml"
     },
     {
         "Title": "Serenade",
@@ -14502,7 +14653,10 @@
         "Reading": 9,
         "Max Position": "All",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "j41wc",
+        "xml_path": "gaps_v1/musicxml/j41wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Joaquin Turina - Sevillana.xml"
     },
     {
         "Title": "Sevilla",
@@ -14772,7 +14926,10 @@
         "Reading": 3,
         "Max Position": "V",
         "Era": "Baroque",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "741wc",
+        "xml_path": "gaps_v1/musicxml/741wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Niccol Paganini - Sonata No. 37 in A.xml"
     },
     {
         "Title": "Sonata a la Espanola - I",
@@ -15123,8 +15280,10 @@
         "Reading": 5,
         "Max Position": "X",
         "Era": "Baroque",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/Sonata in D K53 L261 by Domenico Scarlatti.xml"
+        "status": "found",
+        "scorehash": "ZSswc",
+        "xml_path": "gaps_v1/musicxml/ZSswc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Domenico Scarlatti - Sonata in D.xml"
     },
     {
         "Title": "Sonata in D major",
@@ -15972,7 +16131,10 @@
         "Reading": 6,
         "Max Position": "X",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "6f1wc",
+        "xml_path": "gaps_v1/musicxml/6f1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Matteo Carcassi - Study in A.xml"
     },
     {
         "Title": "Study in A Minor",
@@ -18446,8 +18608,10 @@
         "Reading": 7,
         "Max Position": "IX",
         "Era": "Modern",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/Scotish Choro by Heitor Villa Lobos.xml"
+        "status": "found",
+        "scorehash": "hM1wc",
+        "xml_path": "gaps_v1/musicxml/hM1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Heitor Villa-Lobos - Schottish Choro.xml"
     },
     {
         "Title": "Suite Populaire Bresilienne: 3.  Valsa-Choro",
@@ -18817,7 +18981,10 @@
         "Reading": 5,
         "Max Position": "X",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "6D1wc",
+        "xml_path": "gaps_v1/musicxml/6D1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Astor Piazzolla - Tango final.xml"
     },
     {
         "Title": "Tango",
@@ -19877,8 +20044,10 @@
         "Reading": 7,
         "Max Position": "X",
         "Era": "Romantic",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/Tua Imagem Vals by Agustin Barrios Mangore.xml"
+        "status": "found",
+        "scorehash": "s41wc",
+        "xml_path": "gaps_v1/musicxml/s41wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Agustin Barrios - Tua Imagem.xml"
     },
     {
         "Title": "Twenty-one Lessons: 1",
@@ -20121,7 +20290,10 @@
         "Reading": 9,
         "Max Position": "All",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "fy1wc",
+        "xml_path": "gaps_v1/musicxml/fy1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Agustin Barrios Mangore - Sueno en la Floresta.xml"
     },
     {
         "Title": "Un tiempo fue Italica famosa",
@@ -20148,8 +20320,10 @@
         "Reading": 6,
         "Max Position": "IX",
         "Era": "Romantic",
-        "status": "not_found",
-        "file_path": "gaps_v1/musicxml/Gran vals by Francisco Tarrega.xml"
+        "status": "found",
+        "scorehash": "fw1wc",
+        "xml_path": "gaps_v1/musicxml/fw1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Bartolome Calatuyud - Vals.xml"
     },
     {
         "Title": "Vals de Primavera",
@@ -20158,7 +20332,10 @@
         "Reading": 4,
         "Max Position": "XII",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "6k1wc",
+        "xml_path": "gaps_v1/musicxml/6k1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Agustin Barrios - Vals de Primavera.xml"
     },
     {
         "Title": "Vals En Mi",
@@ -20221,7 +20398,10 @@
         "Reading": 4,
         "Max Position": "VII",
         "Era": "Romantic",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "sV1wc",
+        "xml_path": "gaps_v1/musicxml/sV1wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Manuel Maria Ponce - Valse.xml"
     },
     {
         "Title": "Valse",
@@ -20926,7 +21106,10 @@
         "Reading": 2,
         "Max Position": "X",
         "Era": "Classical",
-        "status": "not_found"
+        "status": "found",
+        "scorehash": "F41wc",
+        "xml_path": "gaps_v1/musicxml/F41wc.xml",
+        "readable_path": "gaps_v1/readable_musicxml/Dilermando Reis - Eterna Saudade (Waltz).xml"
     },
     {
         "Title": "Waltz",
