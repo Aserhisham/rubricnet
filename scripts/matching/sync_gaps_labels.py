@@ -13,8 +13,8 @@ def clean_filename(name):
 
 def sync_found_pieces():
     json_path = 'features/guitarburst_full.json'
-    gaps_xml_dir = 'gaps_v1/musicxml/'
-    readable_xml_dir = 'gaps_v1/readable_musicxml/'
+    gaps_xml_dir = 'datasets/gaps_v1/musicxml/'
+    readable_xml_dir = 'datasets/gaps_v1/readable_musicxml/'
     output_csv = 'features/found_pieces.csv'
     
     with open(json_path, 'r') as f:
@@ -26,7 +26,7 @@ def sync_found_pieces():
     hash_to_readable = {}
     if os.path.exists(readable_xml_dir):
         try:
-            metadata = pd.read_csv('gaps_v1/gaps_v1_metadata.csv', encoding='latin1')
+            metadata = pd.read_csv('datasets/gaps_v1/gaps_v1_metadata.csv', encoding='latin1')
             for _, row in metadata.iterrows():
                 h = str(row['scorehash'])
                 title = clean_filename(str(row['title']))
@@ -62,18 +62,20 @@ def sync_found_pieces():
                 already_found += 1
             
             entry['scorehash'] = scorehash
-            entry['xml_path'] = os.path.join(gaps_xml_dir, scorehash + '.xml')
+            
+            # Find readable path and set xml_path
+            readable_name = hash_to_readable.get(scorehash)
+            if readable_name and os.path.exists(os.path.join(readable_xml_dir, readable_name)):
+                readable_path_val = os.path.join(readable_xml_dir, readable_name)
+                entry['xml_path'] = readable_path_val
+                entry['readable_path'] = readable_path_val
+            else:
+                entry['xml_path'] = os.path.join(gaps_xml_dir, scorehash + '.xml')
+                entry['readable_path'] = "not_available"
             
             # Remove redundant file_path if it exists
             if 'file_path' in entry:
                 del entry['file_path']
-            
-            # Find readable path
-            readable_name = hash_to_readable.get(scorehash)
-            if readable_name and os.path.exists(os.path.join(readable_xml_dir, readable_name)):
-                entry['readable_path'] = os.path.join(readable_xml_dir, readable_name)
-            else:
-                entry['readable_path'] = "not_available"
 
             found_entries.append(entry)
         else:
