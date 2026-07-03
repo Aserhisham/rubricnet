@@ -1,0 +1,11 @@
+{
+  "features": "guitar_all",
+  "params": {
+    "batch_size": 43,
+    "weight_decay": 0.0003736386941936111,
+    "dropout": 0.3701268589446578,
+    "decay_lr": 0.6013055012653732,
+    "lr": 0.036201314088777976
+  },
+  "trial_number": 17
+}

@@ -1,77 +1,87 @@
-import pandas as pd
-import numpy as np
-import torch
-from rubricnet.rubricnet import RubricnetSklearn
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+"""
+Phase 3: final Guitar RubricNet training/evaluation.
+
+Uses the corrected 13-descriptor feature list (guitar/prepare_splits.py) and
+the fixed 5-fold splits (guitar/guitar_splits.json). Loads tuned
+hyperparameters from guitar/best_hyperparams_guitar_all.json if present
+(produced by guitar/optuna_guitar_tuning.py), otherwise falls back to
+untuned defaults.
+"""
+import json
 import os
+import sys
+
+os.environ.setdefault("WANDB_MODE", "disabled")
+
+if __package__ in (None, ""):
+    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from sklearn.preprocessing import StandardScaler
+
+from guitar.baselines import Args, get_fold_xy, load_data, score, summarize
+from guitar.prepare_splits import ALL_FEATURES, NUM_CLASSES
+from rubricnet.rubricnet import RubricnetSklearn
+
+DEFAULT_HYPERPARAMS = dict(
+    lr=0.005,
+    batch_size=16,
+    hidden_size=1,
+    num_layers=1,
+    dropout=0.05,
+    decay_lr=0.5,
+    weight_decay=1e-4,
+    patience=20,
+)
+
+ALIAS_EXPERIMENT = "guitar_rubricnet_final"
+BEST_HYPERPARAMS_PATH = "guitar/best_hyperparams_guitar_all.json"
+
+
+def load_hyperparams():
+    if os.path.exists(BEST_HYPERPARAMS_PATH):
+        with open(BEST_HYPERPARAMS_PATH) as f:
+            tuned = json.load(f)["params"]
+        hyperparams = dict(DEFAULT_HYPERPARAMS)
+        hyperparams.update(tuned)
+        print(f"Loaded tuned hyperparameters from {BEST_HYPERPARAMS_PATH}: {tuned}")
+        return hyperparams
+    print(f"No tuned hyperparameters found at {BEST_HYPERPARAMS_PATH}, using defaults.")
+    return dict(DEFAULT_HYPERPARAMS)
+
 
 def main():
-    # 1. Load data
-    df = pd.read_csv('features/guitar_descriptors.csv')
-    
-    # 2. Features and Target
-    features = [
-        'barre_ratio', 'avg_chord_stretch', 'avg_position_shift', 
-        'max_position_shift', 'total_position_shift', 'avg_string_jump'
-    ]
-    
-    X = df[features].fillna(0).values
-    
-    # 3. Bin Difficulty (1-20 -> 0-8)
-    def bin_diff(d):
-        if d <= 2: return 0
-        if d <= 4: return 1
-        if d <= 6: return 2
-        if d <= 8: return 3
-        if d <= 10: return 4
-        if d <= 12: return 5
-        if d <= 14: return 6
-        if d <= 16: return 7
-        return 8
-        
-    y = df['Difficulty'].apply(bin_diff)
-    
-    # 4. Split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
-    X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1, random_state=42, stratify=y_train)
-    
-    # 5. Scale
-    scaler = StandardScaler()
-    X_train_scaled = scaler.fit_transform(X_train)
-    X_val_scaled = scaler.transform(X_val)
-    X_test_scaled = scaler.transform(X_test)
-    
-    # 6. Initialize RubricNet
-    class Args:
-        def __init__(self):
-            self.lr = 0.005
-            self.batch_size = 16
-            self.hidden_size = 32
-            self.num_layers = 1
-            self.dropout = 0.05
-            self.decay_lr = 0.5
-            self.weight_decay = 1e-4
-            self.patience = 20
-            self.alias_experiment = "guitar_rubricnet"
+    features, splits = load_data()
+    hyperparams = load_hyperparams()
 
-    args = Args()
-    
-    # We have 6 features, 9 classes
-    model = RubricnetSklearn(input_dim=len(features), num_classes=9, split=0, args=args, logging=False)
-    
-    # 7. Train
-    print("Training Guitar RubricNet...")
-    model.fit(X_train_scaled, y_train, X_val_scaled, y_val, X_test_scaled, y_test)
-    
-    # 8. Evaluate
-    y_pred = model.predict(X_test_scaled)
-    from sklearn.metrics import accuracy_score, confusion_matrix
-    acc = accuracy_score(y_test, y_pred)
-    # Convert back to tensor for evaluation helper if needed, but accuracy is fine
-    print(f"Test Accuracy: {acc:.4f}")
-    print("Confusion Matrix:")
-    print(confusion_matrix(y_test, y_pred))
+    fold_scores = []
+    for split_idx in range(5):
+        X_train, y_train = get_fold_xy(features, splits, split_idx, "train")
+        X_val, y_val = get_fold_xy(features, splits, split_idx, "val")
+        X_test, y_test = get_fold_xy(features, splits, split_idx, "test")
+
+        scaler = StandardScaler().fit(X_train)
+        args = Args(alias_experiment=ALIAS_EXPERIMENT, **hyperparams)
+        clf = RubricnetSklearn(
+            input_dim=len(ALL_FEATURES), num_classes=NUM_CLASSES, split=split_idx, args=args, logging=False
+        )
+        clf.fit(
+            scaler.transform(X_train), y_train,
+            scaler.transform(X_val), y_val,
+            scaler.transform(X_test), y_test,
+        )
+        clf.load_model(f"checkpoints/{ALIAS_EXPERIMENT}/split_{split_idx}.ckpt")
+
+        y_pred = clf.predict(scaler.transform(X_test)).cpu().numpy()
+        fold_scores.append(score(y_test, y_pred))
+        print(f"  split {split_idx}: acc={fold_scores[-1]['accuracy']:.4f} MAE={fold_scores[-1]['mae']:.4f}")
+
+    metrics = summarize("Guitar RubricNet", fold_scores)
+
+    out_path = "guitar/rubricnet_results.json"
+    with open(out_path, "w") as f:
+        json.dump({"hyperparams": hyperparams, "metrics": metrics}, f, indent=2)
+    print(f"\nWrote {out_path}")
+
 
 if __name__ == "__main__":
     main()

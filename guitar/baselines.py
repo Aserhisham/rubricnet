@@ -50,10 +50,10 @@ class Args:
         self.__dict__.update(entries)
 
 
-def load_data(csv_path="features/guitar_descriptors.csv", splits_path="guitar/guitar_splits.json"):
+def load_data(csv_path="features/guitar_descriptors.csv", splits_path="guitar/guitar_splits.json", columns=ALL_FEATURES):
     df = pd.read_csv(csv_path)
     df["piece_id"] = df.apply(make_piece_id, axis=1)
-    features = df.set_index("piece_id")[ALL_FEATURES].fillna(0)
+    features = df.set_index("piece_id")[columns].fillna(0)
     with open(splits_path) as f:
         splits = json.load(f)
     return features, splits
