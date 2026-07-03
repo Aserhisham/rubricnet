@@ -28,3 +28,20 @@ op 48 23 giuliani correct
 Level 10:
 passacaglia ludovico correct
 sonata k322 domenico correct
+Level 11:
+Arabescos (Estudio No. 4) correct
+correct but on another scale?
+Level 12:
+Moonlight Sonata correct
+Level 13:
+Le fandango correct
+Level 14:
+claire de lune incorrect
+Level 15:
+Leyenda correct
+Level 16:
+un sueno en la floresta correct
+Level 17:
+Fuge in A Minor, BWV 1000 incorrect
+Level 18:
+
