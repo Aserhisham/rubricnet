@@ -258,7 +258,7 @@ class RubricnetSklearn:
     def fit(self, X_train, y_train, X_val, y_val, X_test, y_test):
         X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
         y_train_tensor = torch.tensor(y_train.to_numpy(), dtype=torch.float32)
-        self.calculate_weights(y_train_tensor)
+        self.calculate_weights(y_train_tensor, num_classes=self.num_classes)
         X_val_tensor = torch.tensor(X_val, dtype=torch.float32)
         y_val_tensor = torch.tensor(y_val.to_numpy(), dtype=torch.float32)
         X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
