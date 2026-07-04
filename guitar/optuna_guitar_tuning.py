@@ -26,13 +26,14 @@ from sklearn.metrics import balanced_accuracy_score, mean_squared_error
 from sklearn.preprocessing import StandardScaler
 
 from guitar.baselines import get_fold_xy, load_data
-from guitar.prepare_splits import ALL_FEATURES, FEATURE_GROUPS, NUM_CLASSES
+from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, FEATURE_GROUPS, NUM_CLASSES
 from rubricnet.rubricnet import RubricnetSklearn
 
 N_SPLITS = 5
 
 FEATURE_SETS = {
     "guitar_all": ALL_FEATURES,
+    "guitar_all_v2": ALL_FEATURES_V2,
     "lh_only": FEATURE_GROUPS["lh"],
     "rh_only": FEATURE_GROUPS["rh"],
     "global_only": FEATURE_GROUPS["global"],
@@ -59,15 +60,15 @@ def get_mse_macro(y_true, y_pred):
 
 def objective(trial):
     args = Args(
-        batch_size=trial.suggest_int("batch_size", 16, 128),
+        batch_size=trial.suggest_int("batch_size", 16, 64),
         patience=20,
         alias_experiment=f"{trial.study.study_name}_{trial.number}",
-        weight_decay=trial.suggest_float("weight_decay", 1e-5, 1e-1, log=True),
+        weight_decay=trial.suggest_float("weight_decay", 1e-4, 1e-1, log=True),
         hidden_size=1,
         num_layers=1,
-        dropout=trial.suggest_float("dropout", 0.0, 0.5),
-        decay_lr=trial.suggest_float("decay_lr", 0.1, 0.9),
-        lr=trial.suggest_float("lr", 1e-4, 1e-1, log=True),
+        dropout=trial.suggest_float("dropout", 0.1, 0.5),
+        decay_lr=trial.suggest_float("decay_lr", 0.3, 0.9),
+        lr=trial.suggest_float("lr", 5e-3, 1e-1, log=True),
     )
 
     n_features = FEATURES_DATA.shape[1]
@@ -114,7 +115,10 @@ def main():
 
     FEATURES = cli_args.features
     study_name = cli_args.study_name or f"guitar_rubricnet_{FEATURES}"
-    FEATURES_DATA, SPLITS_DATA = load_data(columns=FEATURE_SETS[FEATURES])
+    
+    # Load correct CSV path dynamically
+    csv_path = "features/guitar_descriptors_v2.csv" if "_v2" in FEATURES else "features/guitar_descriptors.csv"
+    FEATURES_DATA, SPLITS_DATA = load_data(csv_path=csv_path, columns=FEATURE_SETS[FEATURES])
 
     sqlite_url = f"sqlite:///guitar/{study_name}.db"
     study = optuna.create_study(

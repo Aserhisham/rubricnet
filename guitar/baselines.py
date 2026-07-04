@@ -7,10 +7,11 @@ Two baselines evaluated across the 5 fixed folds in `guitar/guitar_splits.json`:
 - Random Forest / Decision Tree, with feature importances.
 
 Reports accuracy / balanced accuracy / MAE / MSE per fold and averaged, and
-writes the full results to `guitar/baseline_results.json`.
+writes the full results to `guitar/baseline_results.json` or `baseline_results_v2.json`.
 """
 import os
 import sys
+import argparse
 
 os.environ.setdefault("WANDB_MODE", "disabled")
 
@@ -27,7 +28,7 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, mean_absolu
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 
-from guitar.prepare_splits import ALL_FEATURES, NUM_CLASSES, make_piece_id
+from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, NUM_CLASSES, make_piece_id
 from rubricnet.rubricnet import RubricnetSklearn
 
 N_SPLITS = 5
@@ -86,7 +87,7 @@ def summarize(name, fold_scores):
     return metrics
 
 
-def run_ordinal_regression(features, splits):
+def run_ordinal_regression(features, splits, columns, alias_experiment):
     fold_scores = []
     for split_idx in range(N_SPLITS):
         X_train, y_train = get_fold_xy(features, splits, split_idx, "train")
@@ -98,9 +99,12 @@ def run_ordinal_regression(features, splits):
         X_val_s = scaler.transform(X_val)
         X_test_s = scaler.transform(X_test)
 
-        args = Args(**ORDINAL_ARGS)
+        opt_args = ORDINAL_ARGS.copy()
+        opt_args["alias_experiment"] = alias_experiment
+        args = Args(**opt_args)
+        
         clf = RubricnetSklearn(
-            input_dim=len(ALL_FEATURES), num_classes=NUM_CLASSES, split=split_idx, args=args, logging=False
+            input_dim=len(columns), num_classes=NUM_CLASSES, split=split_idx, args=args, logging=False
         )
         clf.fit(X_train_s, y_train, X_val_s, y_val, X_test_s, y_test)
         clf.load_model(f"checkpoints/{args.alias_experiment}/split_{split_idx}.ckpt")
@@ -113,7 +117,7 @@ def run_ordinal_regression(features, splits):
     return metrics
 
 
-def run_tree_baseline(features, splits, model_cls, name, **model_kwargs):
+def run_tree_baseline(features, splits, columns, model_cls, name, **model_kwargs):
     fold_scores = []
     importances = []
     for split_idx in range(N_SPLITS):
@@ -136,7 +140,7 @@ def run_tree_baseline(features, splits, model_cls, name, **model_kwargs):
     metrics = summarize(name, fold_scores)
 
     mean_importance = np.mean(importances, axis=0)
-    ranked = sorted(zip(ALL_FEATURES, mean_importance), key=lambda t: -t[1])
+    ranked = sorted(zip(columns, mean_importance), key=lambda t: -t[1])
     print("  feature importances (mean across folds):")
     for feat, imp in ranked:
         print(f"    {feat:28s} {imp:.4f}")
@@ -145,15 +149,31 @@ def run_tree_baseline(features, splits, model_cls, name, **model_kwargs):
 
 
 def main():
-    features, splits = load_data()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--v2", action="store_true", help="Use version 2 features")
+    args = parser.parse_args()
+
+    if args.v2:
+        csv_path = "features/guitar_descriptors_v2.csv"
+        columns = ALL_FEATURES_V2
+        alias = "guitar_baseline_ordinal_v2"
+        out_path = "guitar/baseline_results_v2.json"
+        print("Running baselines on V2 features...")
+    else:
+        csv_path = "features/guitar_descriptors.csv"
+        columns = ALL_FEATURES
+        alias = "guitar_baseline_ordinal"
+        out_path = "guitar/baseline_results.json"
+        print("Running baselines on V1 features...")
+
+    features, splits = load_data(csv_path=csv_path, columns=columns)
 
     results = {
-        "ordinal_regression": run_ordinal_regression(features, splits),
-        "random_forest": run_tree_baseline(features, splits, RandomForestClassifier, "Random Forest", n_estimators=200),
-        "decision_tree": run_tree_baseline(features, splits, DecisionTreeClassifier, "Decision Tree", max_depth=6),
+        "ordinal_regression": run_ordinal_regression(features, splits, columns, alias),
+        "random_forest": run_tree_baseline(features, splits, columns, RandomForestClassifier, "Random Forest", n_estimators=200),
+        "decision_tree": run_tree_baseline(features, splits, columns, DecisionTreeClassifier, "Decision Tree", max_depth=6),
     }
 
-    out_path = "guitar/baseline_results.json"
     with open(out_path, "w") as f:
         json.dump(results, f, indent=2)
     print(f"\nWrote {out_path}")

@@ -1,0 +1,12 @@
+{
+  "features": "guitar_all_v2",
+  "params": {
+    "batch_size": 19,
+    "weight_decay": 0.006561949544603335,
+    "dropout": 0.11032889984890715,
+    "decay_lr": 0.7229153146720769,
+    "lr": 0.04024595504706209
+  },
+  "trial_number": 28,
+  "seed_mean_val_bacc": 0.3765392015392015
+}

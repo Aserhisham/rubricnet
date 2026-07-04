@@ -4,15 +4,16 @@ import numpy as np
 import pandas as pd
 import re
 import xml.etree.ElementTree as ET
+from collections import Counter
 
 FRET_RE = re.compile(r'^(\d{1,2})$')
 
-def parse_guitar_xml(filepath):
+def get_chords_from_xml(filepath):
     try:
         tree = ET.parse(filepath)
     except Exception as e:
         print(f"Error parsing XML {filepath}: {e}")
-        return None
+        return None, None, None
     root = tree.getroot()
 
     # Tempo: first <sound tempo="..."> element
@@ -58,7 +59,7 @@ def parse_guitar_xml(filepath):
                         technique_count += 1
             except: pass
 
-    if not events: return None
+    if not events: return None, tempo_bpm, None
 
     chords, cur = [], []
     for e in events:
@@ -67,14 +68,21 @@ def parse_guitar_xml(filepath):
         cur.append(e)
     if cur: chords.append(cur)
 
+    technique_ratio = technique_count / total_note_count if total_note_count > 0 else 0
+    return chords, tempo_bpm, technique_ratio
+
+def parse_guitar_xml(filepath):
+    chords, tempo_bpm, technique_ratio = get_chords_from_xml(filepath)
+    if chords is None:
+        return None
     features = calculate_descriptors_from_chords(chords)
     if tempo_bpm:
         features['tempo_bpm'] = tempo_bpm
-    if total_note_count > 0:
-        features['special_technique_ratio'] = technique_count / total_note_count
+    if technique_ratio is not None:
+        features['special_technique_ratio'] = technique_ratio
     return features
 
-def extract_from_tokens(filepath):
+def get_chords_from_tokens(filepath):
     try:
         with open(filepath, 'r') as f:
             lines = f.readlines()
@@ -96,8 +104,108 @@ def extract_from_tokens(filepath):
             chords.append(cur); cur = []
     if cur: chords.append(cur)
     if not chords: return None
+    return chords
 
+def extract_from_tokens(filepath):
+    chords = get_chords_from_tokens(filepath)
+    if chords is None:
+        return None
     return calculate_descriptors_from_chords(chords)
+
+def calculate_descriptors_v2(chords):
+    features = calculate_descriptors_from_chords(chords)
+    if not chords:
+        new_feats = {
+            'log_total_notes': 0.0,
+            'avg_fret': 0.0,
+            'p90_fret': 0.0,
+            'high_position_ratio': 0.0,
+            'open_string_ratio': 0.0,
+            'p90_chord_stretch': 0.0,
+            'chord_ratio': 0.0,
+            'avg_string_span': 0.0,
+            'unique_shape_rate': 0.0,
+            'shift_rate': 0.0,
+            'max_position_shift': 0.0,
+            'std_position_shift': 0.0,
+            'fret_entropy': 0.0,
+            'string_entropy': 0.0,
+            'repetition_ratio': 0.0
+        }
+        features.update(new_feats)
+        return features
+
+    all_notes = [n for c in chords for n in c]
+    total_notes = len(all_notes)
+    all_frets = [n['fret'] for n in all_notes]
+    all_strings = [n['string'] for n in all_notes]
+
+    features['log_total_notes'] = float(np.log1p(total_notes))
+
+    if all_frets:
+        features['avg_fret'] = float(np.mean(all_frets))
+        features['p90_fret'] = float(np.percentile(all_frets, 90))
+        features['high_position_ratio'] = float(sum(1 for f in all_frets if f >= 7) / len(all_frets))
+        features['open_string_ratio'] = float(sum(1 for f in all_frets if f == 0) / len(all_frets))
+    else:
+        features['avg_fret'] = 0.0
+        features['p90_fret'] = 0.0
+        features['high_position_ratio'] = 0.0
+        features['open_string_ratio'] = 0.0
+
+    stretches = []
+    for c in chords:
+        fs = [n['fret'] for n in c]
+        fixed_frets = [f for f in fs if f > 0]
+        if len(c) > 1 and fixed_frets:
+            stretches.append(max(fixed_frets) - min(fixed_frets))
+    
+    if stretches:
+        features['p90_chord_stretch'] = float(np.percentile(stretches, 90))
+    else:
+        features['p90_chord_stretch'] = 0.0
+
+    features['chord_ratio'] = float(sum(1 for c in chords if len(c) >= 2) / len(chords))
+
+    spans = [max(n['string'] for n in c) - min(n['string'] for n in c) for c in chords if len(c) >= 2]
+    features['avg_string_span'] = float(np.mean(spans)) if spans else 0.0
+
+    shapes = [tuple(sorted((n['string'], n['fret']) for n in c)) for c in chords if len(c) >= 2]
+    features['unique_shape_rate'] = float(len(set(shapes)) / len(shapes)) if shapes else 0.0
+
+    avg_frets = [float(np.mean([n['fret'] for n in c])) for c in chords]
+    if len(chords) >= 2:
+        diffs = np.abs(np.diff(avg_frets))
+        features['shift_rate'] = float(np.mean(diffs > 2))
+        features['max_position_shift'] = float(np.max(diffs))
+        features['std_position_shift'] = float(np.std(diffs))
+    else:
+        features['shift_rate'] = 0.0
+        features['max_position_shift'] = 0.0
+        features['std_position_shift'] = 0.0
+
+    if all_frets:
+        counts = Counter(all_frets)
+        probs = [cnt / len(all_frets) for cnt in counts.values()]
+        features['fret_entropy'] = float(-sum(p * np.log2(p) for p in probs))
+    else:
+        features['fret_entropy'] = 0.0
+
+    if all_strings:
+        counts = Counter(all_strings)
+        probs = [cnt / len(all_strings) for cnt in counts.values()]
+        features['string_entropy'] = float(-sum(p * np.log2(p) for p in probs))
+    else:
+        features['string_entropy'] = 0.0
+
+    if len(chords) >= 2:
+        chord_sets = [frozenset((n['string'], n['fret']) for n in c) for c in chords]
+        repeated = sum(1 for i in range(1, len(chords)) if chord_sets[i] == chord_sets[i - 1])
+        features['repetition_ratio'] = float(repeated / (len(chords) - 1))
+    else:
+        features['repetition_ratio'] = 0.0
+
+    return features
 
 def calculate_descriptors_from_chords(chords):
     """
@@ -200,12 +308,12 @@ def _find_tab_staves(page):
     return tab_staves
 
 
-def parse_guitar_pdf(filepath):
+def get_chords_from_pdf(filepath):
     try:
         import pdfplumber
     except ImportError:
         print("pdfplumber not installed — run: pip install pdfplumber")
-        return None
+        return None, None
 
     all_chords = []
     tempo_bpm  = None
@@ -268,12 +376,19 @@ def parse_guitar_pdf(filepath):
                     all_chords.extend(chords)
     except Exception as e:
         print(f"Error parsing PDF {filepath}: {e}")
-        return None
+        return None, None
 
     if not all_chords:
-        return None
+        return None, None
 
-    features = calculate_descriptors_from_chords(all_chords)
+    return all_chords, tempo_bpm
+
+
+def parse_guitar_pdf(filepath):
+    chords, tempo_bpm = get_chords_from_pdf(filepath)
+    if chords is None:
+        return None
+    features = calculate_descriptors_from_chords(chords)
     if tempo_bpm:
         features['tempo_bpm'] = tempo_bpm
     return features

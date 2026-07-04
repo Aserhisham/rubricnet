@@ -42,6 +42,40 @@ FEATURE_GROUPS = {
 }
 ALL_FEATURES = FEATURE_GROUPS["lh"] + FEATURE_GROUPS["rh"] + FEATURE_GROUPS["global"]
 
+FEATURE_GROUPS_V2 = {
+    "lh": [
+        "barre_ratio",
+        "avg_chord_stretch",
+        "max_chord_stretch",
+        "avg_position_shift",
+        "fret_change_rate",
+        "avg_fret",
+        "p90_fret",
+        "high_position_ratio",
+        "open_string_ratio",
+        "p90_chord_stretch",
+        "shift_rate",
+        "max_position_shift",
+        "std_position_shift",
+        "fret_entropy",
+    ],
+    "rh": [
+        "arpeggio_density",
+        "avg_string_jump",
+        "max_string_jump",
+        "string_entropy",
+        "chord_ratio",
+    ],
+    "global": [
+        "avg_polyphony",
+        "total_notes",
+        "tempo_bpm",
+        "log_total_notes",
+        "repetition_ratio",
+    ],
+}
+ALL_FEATURES_V2 = FEATURE_GROUPS_V2["lh"] + FEATURE_GROUPS_V2["rh"] + FEATURE_GROUPS_V2["global"]
+
 NUM_CLASSES = 8
 
 # Bin edges from equal-frequency binning over the 724-piece dataset (inclusive level ranges).
