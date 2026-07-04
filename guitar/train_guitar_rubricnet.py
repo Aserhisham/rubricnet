@@ -24,7 +24,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from guitar.baselines import get_fold_xy, load_data
-from guitar.prepare_splits import ALL_FEATURES_V2, NUM_CLASSES
+from guitar.prepare_splits import ALL_FEATURES_V2, ALL_FEATURES_V3, NUM_CLASSES
 from rubricnet.rubricnet import RubricnetSklearn
 
 
@@ -48,16 +48,16 @@ ALIAS_EXPERIMENT_V2 = "guitar_rubricnet_final_v2"
 BEST_HYPERPARAMS_PATH_V2 = "guitar/best_hyperparams_guitar_all_v2.json"
 
 
-def load_hyperparams():
-    if os.path.exists(BEST_HYPERPARAMS_PATH_V2):
-        with open(BEST_HYPERPARAMS_PATH_V2) as f:
+def load_hyperparams(path):
+    if os.path.exists(path):
+        with open(path) as f:
             data = json.load(f)
             tuned = data["params"]
         hyperparams = dict(DEFAULT_HYPERPARAMS)
         hyperparams.update(tuned)
-        print(f"Loaded tuned hyperparameters from {BEST_HYPERPARAMS_PATH_V2}: {tuned}")
+        print(f"Loaded tuned hyperparameters from {path}: {tuned}")
         return hyperparams
-    print(f"No tuned hyperparameters found at {BEST_HYPERPARAMS_PATH_V2}, using defaults.")
+    print(f"No tuned hyperparameters found at {path}, using defaults.")
     return dict(DEFAULT_HYPERPARAMS)
 
 
@@ -95,7 +95,7 @@ def compute_metrics(y_true, y_pred):
     }
 
 
-def write_results_markdown(rubricnet_v2_metrics):
+def write_results_markdown():
     """Writes the comparative RESULTS.md table."""
     # Load V1 baseline results if available
     v1_baselines = {}
@@ -108,12 +108,30 @@ def write_results_markdown(rubricnet_v2_metrics):
     if os.path.exists("guitar/baseline_results_v2.json"):
         with open("guitar/baseline_results_v2.json") as f:
             v2_baselines = json.load(f)
+
+    # Load V3 baseline results if available
+    v3_baselines = {}
+    if os.path.exists("guitar/baseline_results_v3.json"):
+        with open("guitar/baseline_results_v3.json") as f:
+            v3_baselines = json.load(f)
             
     # Load RubricNet V1 results if available
     v1_rubricnet = {}
     if os.path.exists("guitar/rubricnet_results.json"):
         with open("guitar/rubricnet_results.json") as f:
             v1_rubricnet = json.load(f)
+
+    # Load RubricNet V2 results if available
+    v2_rubricnet = {}
+    if os.path.exists("guitar/rubricnet_results_v2.json"):
+        with open("guitar/rubricnet_results_v2.json") as f:
+            v2_rubricnet = json.load(f)
+
+    # Load RubricNet V3 results if available
+    v3_rubricnet = {}
+    if os.path.exists("guitar/rubricnet_results_v3.json"):
+        with open("guitar/rubricnet_results_v3.json") as f:
+            v3_rubricnet = json.load(f)
 
     # Compile the table rows
     # Columns: Model | Accuracy | Balanced Acc | Acc+/-1 | MAE | MSE | Kendall Tau
@@ -173,22 +191,41 @@ def write_results_markdown(rubricnet_v2_metrics):
     # 7. Random Forest V2
     if "random_forest" in v2_baselines:
         add_row("Random Forest V2", v2_baselines["random_forest"])
-        
     # 8. RubricNet V2
-    add_row("RubricNet V2 (Ours)", rubricnet_v2_metrics, is_list=True)
+    if v2_rubricnet and "metrics" in v2_rubricnet:
+        add_row("RubricNet V2 (Ours)", v2_rubricnet["metrics"], is_list=True)
+
+    # 9. Ordinal regression V3
+    if "ordinal_regression" in v3_baselines:
+        add_row("Ordinal regression V3", v3_baselines["ordinal_regression"])
+    # 10. Decision Tree V3
+    if "decision_tree" in v3_baselines:
+        add_row("Decision Tree V3", v3_baselines["decision_tree"])
+    # 11. Random Forest V3
+    if "random_forest" in v3_baselines:
+        add_row("Random Forest V3", v3_baselines["random_forest"])
+    # 12. RubricNet V3
+    if v3_rubricnet and "metrics" in v3_rubricnet:
+        add_row("RubricNet V3 (Ours)", v3_rubricnet["metrics"], is_list=True)
 
     # Coarse 3-class mapping evaluation table (Phase 7)
     coarse_rows = []
-    # If RubricNet V2 has coarse 3-class metrics, add them
-    if "coarse_3class" in rubricnet_v2_metrics:
-        c_metrics = rubricnet_v2_metrics["coarse_3class"]
+    def add_coarse_row(name, metrics_dict):
+        if not metrics_dict or "coarse_3class" not in metrics_dict:
+            return
+        c_metrics = metrics_dict["coarse_3class"]
         c_acc_flat = np.array(c_metrics["accuracy"]).flatten()
         c_bacc_flat = np.array(c_metrics["balanced_accuracy"]).flatten()
         coarse_rows.append([
-            "RubricNet V2 (Coarse 3-class)",
+            name,
             f"{mean(c_acc_flat):.4f} ± {stdev(c_acc_flat):.4f}",
             f"{mean(c_bacc_flat):.4f} ± {stdev(c_bacc_flat):.4f}"
         ])
+
+    if v2_rubricnet and "metrics" in v2_rubricnet:
+        add_coarse_row("RubricNet V2 (Coarse 3-class)", v2_rubricnet["metrics"])
+    if v3_rubricnet and "metrics" in v3_rubricnet:
+        add_coarse_row("RubricNet V3 (Coarse 3-class)", v3_rubricnet["metrics"])
 
     md_content = []
     md_content.append("# Evaluation Results\n")
@@ -214,11 +251,32 @@ def write_results_markdown(rubricnet_v2_metrics):
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--v2", action="store_true", help="Use version 2 features")
+    parser.add_argument("--v3", action="store_true", help="Use version 3 features")
+    args = parser.parse_args()
+
+    if args.v3:
+        csv_path = "features/guitar_descriptors_v3.csv"
+        columns = ALL_FEATURES_V3
+        alias_experiment = "guitar_rubricnet_final_v3"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v3.json"
+        out_path = "guitar/rubricnet_results_v3.json"
+        print("Training RubricNet on V3 features...")
+    else:
+        csv_path = "features/guitar_descriptors_v2.csv"
+        columns = ALL_FEATURES_V2
+        alias_experiment = "guitar_rubricnet_final_v2"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v2.json"
+        out_path = "guitar/rubricnet_results_v2.json"
+        print("Training RubricNet on V2 features...")
+
     features, splits = load_data(
-        csv_path="features/guitar_descriptors_v2.csv",
-        columns=ALL_FEATURES_V2
+        csv_path=csv_path,
+        columns=columns
     )
-    hyperparams = load_hyperparams()
+    hyperparams = load_hyperparams(best_hyperparams_path)
 
     seeds = [0, 1, 2]
     
@@ -258,12 +316,18 @@ def main():
             X_val, y_val = get_fold_xy(features, splits, split_idx, "val")
             X_test, y_test = get_fold_xy(features, splits, split_idx, "test")
 
+            # Train-fold median imputation
+            medians = X_train.median().fillna(0.0)
+            X_train = X_train.fillna(medians)
+            X_val = X_val.fillna(medians)
+            X_test = X_test.fillna(medians)
+
             scaler = StandardScaler().fit(X_train)
-            alias = f"{ALIAS_EXPERIMENT_V2}_seed_{seed}"
+            alias = f"{alias_experiment}_seed_{seed}"
             args = Args(alias_experiment=alias, **hyperparams)
             
             clf = RubricnetSklearn(
-                input_dim=len(ALL_FEATURES_V2),
+                input_dim=len(columns),
                 num_classes=NUM_CLASSES,
                 split=split_idx,
                 args=args,
@@ -328,7 +392,6 @@ def main():
         "balanced_accuracy": run_metrics["coarse_3class"]["balanced_accuracy"]
     }
 
-    out_path = "guitar/rubricnet_results_v2.json"
     with open(out_path, "w") as f:
         json.dump({
             "hyperparams": hyperparams,
@@ -338,7 +401,7 @@ def main():
     print(f"\nWrote final detailed results to {out_path}")
 
     # Generate results table in RESULTS.md
-    write_results_markdown(metrics_summary)
+    write_results_markdown()
 
     # Print summary output to terminal
     print("\n--- Final Results Summary (Mean +/- Std over 15 runs) ---")

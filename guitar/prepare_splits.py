@@ -76,6 +76,24 @@ FEATURE_GROUPS_V2 = {
 }
 ALL_FEATURES_V2 = FEATURE_GROUPS_V2["lh"] + FEATURE_GROUPS_V2["rh"] + FEATURE_GROUPS_V2["global"]
 
+FEATURE_GROUPS_V3 = {
+    "lh": FEATURE_GROUPS_V2["lh"] + [
+        "max_avg_chord_stretch_window",
+        "p95_position_shift_window",
+        "avg_stretch_velocity_beats",
+        "p90_stretch_velocity_beats",
+        "avg_position_shift_speed_beats",
+        "max_position_shift_speed_beats",
+    ],
+    "rh": FEATURE_GROUPS_V2["rh"] + [
+        "polyphonic_arpeggio_intensity_beats",
+    ],
+    "global": FEATURE_GROUPS_V2["global"] + [
+        "max_note_density_window",
+    ],
+}
+ALL_FEATURES_V3 = FEATURE_GROUPS_V3["lh"] + FEATURE_GROUPS_V3["rh"] + FEATURE_GROUPS_V3["global"]
+
 NUM_CLASSES = 8
 
 # Bin edges from equal-frequency binning over the 724-piece dataset (inclusive level ranges).

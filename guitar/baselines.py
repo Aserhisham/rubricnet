@@ -28,7 +28,7 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, mean_absolu
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 
-from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, NUM_CLASSES, make_piece_id
+from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, NUM_CLASSES, make_piece_id
 from rubricnet.rubricnet import RubricnetSklearn
 
 N_SPLITS = 5
@@ -54,7 +54,7 @@ class Args:
 def load_data(csv_path="features/guitar_descriptors.csv", splits_path="guitar/guitar_splits.json", columns=ALL_FEATURES):
     df = pd.read_csv(csv_path)
     df["piece_id"] = df.apply(make_piece_id, axis=1)
-    features = df.set_index("piece_id")[columns].fillna(0)
+    features = df.set_index("piece_id")[columns]
     with open(splits_path) as f:
         splits = json.load(f)
     return features, splits
@@ -94,6 +94,12 @@ def run_ordinal_regression(features, splits, columns, alias_experiment):
         X_val, y_val = get_fold_xy(features, splits, split_idx, "val")
         X_test, y_test = get_fold_xy(features, splits, split_idx, "test")
 
+        # Train-fold median imputation
+        medians = X_train.median().fillna(0.0)
+        X_train = X_train.fillna(medians)
+        X_val = X_val.fillna(medians)
+        X_test = X_test.fillna(medians)
+
         scaler = StandardScaler().fit(X_train)
         X_train_s = scaler.transform(X_train)
         X_val_s = scaler.transform(X_val)
@@ -125,6 +131,12 @@ def run_tree_baseline(features, splits, columns, model_cls, name, **model_kwargs
         X_val, y_val = get_fold_xy(features, splits, split_idx, "val")
         X_test, y_test = get_fold_xy(features, splits, split_idx, "test")
 
+        # Train-fold median imputation
+        medians = X_train.median().fillna(0.0)
+        X_train = X_train.fillna(medians)
+        X_val = X_val.fillna(medians)
+        X_test = X_test.fillna(medians)
+
         # no early stopping needed here, so fold val back into train
         X_trainval = pd.concat([X_train, X_val])
         y_trainval = pd.concat([y_train, y_val])
@@ -151,9 +163,16 @@ def run_tree_baseline(features, splits, columns, model_cls, name, **model_kwargs
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--v2", action="store_true", help="Use version 2 features")
+    parser.add_argument("--v3", action="store_true", help="Use version 3 features")
     args = parser.parse_args()
 
-    if args.v2:
+    if args.v3:
+        csv_path = "features/guitar_descriptors_v3.csv"
+        columns = ALL_FEATURES_V3
+        alias = "guitar_baseline_ordinal_v3"
+        out_path = "guitar/baseline_results_v3.json"
+        print("Running baselines on V3 features...")
+    elif args.v2:
         csv_path = "features/guitar_descriptors_v2.csv"
         columns = ALL_FEATURES_V2
         alias = "guitar_baseline_ordinal_v2"

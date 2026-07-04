@@ -26,7 +26,7 @@ from sklearn.metrics import balanced_accuracy_score, mean_squared_error
 from sklearn.preprocessing import StandardScaler
 
 from guitar.baselines import get_fold_xy, load_data
-from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, FEATURE_GROUPS, NUM_CLASSES
+from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, FEATURE_GROUPS, NUM_CLASSES
 from rubricnet.rubricnet import RubricnetSklearn
 
 N_SPLITS = 5
@@ -34,6 +34,7 @@ N_SPLITS = 5
 FEATURE_SETS = {
     "guitar_all": ALL_FEATURES,
     "guitar_all_v2": ALL_FEATURES_V2,
+    "guitar_all_v3": ALL_FEATURES_V3,
     "lh_only": FEATURE_GROUPS["lh"],
     "rh_only": FEATURE_GROUPS["rh"],
     "global_only": FEATURE_GROUPS["global"],
@@ -79,6 +80,12 @@ def objective(trial):
         X_val, y_val = get_fold_xy(FEATURES_DATA, SPLITS_DATA, split, "val")
         X_test, y_test = get_fold_xy(FEATURES_DATA, SPLITS_DATA, split, "test")
 
+        # Train-fold median imputation
+        medians = X_train.median().fillna(0.0)
+        X_train = X_train.fillna(medians)
+        X_val = X_val.fillna(medians)
+        X_test = X_test.fillna(medians)
+
         scaler = StandardScaler().fit(X_train)
 
         clf = RubricnetSklearn(input_dim=n_features, num_classes=NUM_CLASSES, split=split, args=args, logging=False)
@@ -117,7 +124,12 @@ def main():
     study_name = cli_args.study_name or f"guitar_rubricnet_{FEATURES}"
     
     # Load correct CSV path dynamically
-    csv_path = "features/guitar_descriptors_v2.csv" if "_v2" in FEATURES else "features/guitar_descriptors.csv"
+    if "_v3" in FEATURES:
+        csv_path = "features/guitar_descriptors_v3.csv"
+    elif "_v2" in FEATURES:
+        csv_path = "features/guitar_descriptors_v2.csv"
+    else:
+        csv_path = "features/guitar_descriptors.csv"
     FEATURES_DATA, SPLITS_DATA = load_data(csv_path=csv_path, columns=FEATURE_SETS[FEATURES])
 
     sqlite_url = f"sqlite:///guitar/{study_name}.db"

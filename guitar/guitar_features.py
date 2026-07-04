@@ -71,6 +71,141 @@ def get_chords_from_xml(filepath):
     technique_ratio = technique_count / total_note_count if total_note_count > 0 else 0
     return chords, tempo_bpm, technique_ratio
 
+def get_timed_chords_from_xml(filepath):
+    """
+    Rhythm-aware MusicXML parser (Phase A / v3).
+
+    Returns (chords, onsets, tempo_bpm, technique_ratio, has_rhythm) where:
+      - chords : list of chord events, each a list of {'fret', 'string'} dicts,
+                 grouped by simultaneous onset and ordered in time. Same structure
+                 the descriptor functions already consume.
+      - onsets : list of onset times (in quarter-note beats) parallel to `chords`.
+      - has_rhythm : True if the score encodes real durations (>1 distinct note
+                 <type>), False for the uniform-placeholder pieces.
+
+    Timing is reconstructed per part with a running beat clock, honouring
+    <divisions>, <chord/> (simultaneous, no time advance), <backup>/<forward>
+    (voice handling) and rests (advance time, no event). On any failure returns
+    (None, None, tempo_bpm, None, False).
+    """
+    try:
+        tree = ET.parse(filepath)
+    except Exception as e:
+        print(f"Error parsing XML {filepath}: {e}")
+        return None, None, None, None, False
+    root = tree.getroot()
+
+    tempo_bpm = None
+    for sound in root.findall('.//sound'):
+        t = sound.get('tempo')
+        if t:
+            try:
+                tempo_bpm = int(float(t))
+                break
+            except Exception:
+                pass
+
+    events = []          # {'fret','string','onset'}
+    technique_count = 0
+    total_note_count = 0
+    types_seen = set()
+
+    parts = root.findall('.//part') or [root]
+    divisions = 1
+    for part in parts:
+        cur_time = 0.0   # beats (quarter notes) from part start
+        last_onset = 0.0
+        for measure in part.findall('.//measure'):
+            for el in measure:
+                tag = el.tag
+                if tag == 'attributes':
+                    d = el.find('divisions')
+                    if d is not None and d.text:
+                        try:
+                            divisions = int(d.text) or divisions
+                        except Exception:
+                            pass
+                elif tag == 'backup':
+                    d = el.find('duration')
+                    if d is not None and d.text:
+                        try:
+                            cur_time -= int(d.text) / divisions
+                        except Exception:
+                            pass
+                elif tag == 'forward':
+                    d = el.find('duration')
+                    if d is not None and d.text:
+                        try:
+                            cur_time += int(d.text) / divisions
+                        except Exception:
+                            pass
+                elif tag == 'note':
+                    is_chord = el.find('chord') is not None
+                    is_rest = el.find('rest') is not None
+                    d = el.find('duration')
+                    dur = 0.0
+                    if d is not None and d.text:
+                        try:
+                            dur = int(d.text) / divisions
+                        except Exception:
+                            dur = 0.0
+                    onset = last_onset if is_chord else cur_time
+
+                    fret = el.find('.//fret')
+                    string = el.find('.//string')
+                    if not is_rest and fret is not None and string is not None:
+                        try:
+                            events.append({
+                                'fret': int(fret.text),
+                                'string': int(string.text),
+                                'onset': onset,
+                            })
+                            total_note_count += 1
+                            tp = el.find('type')
+                            if tp is not None and tp.text:
+                                types_seen.add(tp.text)
+                            notations = el.find('notations')
+                            if notations is not None:
+                                technical = notations.find('technical')
+                                if technical is not None:
+                                    for name in ('hammer-on', 'pull-off', 'slide'):
+                                        if technical.find(name) is not None:
+                                            technique_count += 1
+                                            break
+                                if notations.find('slur') is not None:
+                                    technique_count += 1
+                                ornaments = notations.find('ornaments')
+                                if ornaments is not None and ornaments.find('tremolo') is not None:
+                                    technique_count += 1
+                        except Exception:
+                            pass
+
+                    if not is_chord:
+                        last_onset = onset
+                        cur_time += dur
+
+    if not events:
+        return None, None, tempo_bpm, None, False
+
+    # Group simultaneous notes into chord events, ordered in time.
+    events.sort(key=lambda e: e['onset'])
+    chords, onsets, cur, cur_onset = [], [], [], None
+    for e in events:
+        o = round(e['onset'], 4)
+        if cur and abs(o - cur_onset) > 1e-6:
+            chords.append(cur)
+            onsets.append(cur_onset)
+            cur = []
+        cur.append({'fret': e['fret'], 'string': e['string']})
+        cur_onset = o
+    if cur:
+        chords.append(cur)
+        onsets.append(cur_onset)
+
+    technique_ratio = technique_count / total_note_count if total_note_count > 0 else 0
+    has_rhythm = len(types_seen) > 1
+    return chords, onsets, tempo_bpm, technique_ratio, has_rhythm
+
 def parse_guitar_xml(filepath):
     chords, tempo_bpm, technique_ratio = get_chords_from_xml(filepath)
     if chords is None:
@@ -207,6 +342,105 @@ def calculate_descriptors_v2(chords):
 
     return features
 
+def calculate_descriptors_v3(chords, onsets=None, has_rhythm=True):
+    features = calculate_descriptors_v2(chords)
+    
+    rhythm_feats = {
+        'max_avg_chord_stretch_window': np.nan,
+        'p95_position_shift_window': np.nan,
+        'max_note_density_window': np.nan,
+        'avg_stretch_velocity_beats': np.nan,
+        'p90_stretch_velocity_beats': np.nan,
+        'avg_position_shift_speed_beats': np.nan,
+        'max_position_shift_speed_beats': np.nan,
+        'polyphonic_arpeggio_intensity_beats': np.nan
+    }
+    features.update(rhythm_feats)
+    
+    if not has_rhythm or onsets is None or not chords or len(onsets) != len(chords):
+        return features
+
+    W = 16.0
+    window_densities = []
+    window_avg_stretches = []
+    window_p95_shifts = []
+
+    for i, t_start in enumerate(onsets):
+        t_end = t_start + W
+        window_indices = [j for j, o in enumerate(onsets) if t_start <= o < t_end]
+        if not window_indices:
+            continue
+        
+        total_notes_win = sum(len(chords[j]) for j in window_indices)
+        window_densities.append(total_notes_win / W)
+        
+        win_stretches = []
+        for j in window_indices:
+            c = chords[j]
+            fixed_frets = [n['fret'] for n in c if n['fret'] > 0]
+            if len(c) > 1 and fixed_frets:
+                win_stretches.append(max(fixed_frets) - min(fixed_frets))
+        if win_stretches:
+            window_avg_stretches.append(float(np.mean(win_stretches)))
+            
+        win_shifts = []
+        for idx in range(len(window_indices) - 1):
+            j1 = window_indices[idx]
+            j2 = window_indices[idx + 1]
+            if j2 == j1 + 1:
+                fs1 = [n['fret'] for n in chords[j1]]
+                fs2 = [n['fret'] for n in chords[j2]]
+                mean_f1 = np.mean(fs1) if fs1 else 0.0
+                mean_f2 = np.mean(fs2) if fs2 else 0.0
+                win_shifts.append(abs(mean_f2 - mean_f1))
+        if win_shifts:
+            window_p95_shifts.append(float(np.percentile(win_shifts, 95)))
+            
+    features['max_note_density_window'] = float(np.max(window_densities)) if window_densities else 0.0
+    features['max_avg_chord_stretch_window'] = float(np.max(window_avg_stretches)) if window_avg_stretches else 0.0
+    features['p95_position_shift_window'] = float(np.max(window_p95_shifts)) if window_p95_shifts else 0.0
+
+    stretch_velocities = []
+    for idx in range(len(chords) - 1):
+        c = chords[idx]
+        fixed_frets = [n['fret'] for n in c if n['fret'] > 0]
+        if len(c) > 1 and fixed_frets:
+            stretch = max(fixed_frets) - min(fixed_frets)
+            dt = onsets[idx + 1] - onsets[idx]
+            stretch_velocities.append(stretch / max(dt, 0.01))
+            
+    if stretch_velocities:
+        features['avg_stretch_velocity_beats'] = float(np.mean(stretch_velocities))
+        features['p90_stretch_velocity_beats'] = float(np.percentile(stretch_velocities, 90))
+    else:
+        features['avg_stretch_velocity_beats'] = 0.0
+        features['p90_stretch_velocity_beats'] = 0.0
+
+    shift_speeds = []
+    for idx in range(len(chords) - 1):
+        fs1 = [n['fret'] for n in chords[idx]]
+        fs2 = [n['fret'] for n in chords[idx + 1]]
+        mean_f1 = np.mean(fs1) if fs1 else 0.0
+        mean_f2 = np.mean(fs2) if fs2 else 0.0
+        shift = abs(mean_f2 - mean_f1)
+        dt = onsets[idx + 1] - onsets[idx]
+        shift_speeds.append(shift / max(dt, 0.01))
+        
+    if shift_speeds:
+        features['avg_position_shift_speed_beats'] = float(np.mean(shift_speeds))
+        features['max_position_shift_speed_beats'] = float(np.max(shift_speeds))
+    else:
+        features['avg_position_shift_speed_beats'] = 0.0
+        features['max_position_shift_speed_beats'] = 0.0
+
+    total_duration = onsets[-1] - onsets[0]
+    total_notes = sum(len(c) for c in chords)
+    avg_polyphony = features.get('avg_polyphony', total_notes / len(chords))
+    note_density = total_notes / max(total_duration, 1.0)
+    features['polyphonic_arpeggio_intensity_beats'] = float(note_density * avg_polyphony)
+
+    return features
+
 def calculate_descriptors_from_chords(chords):
     """
     Compute all 12 guitar difficulty descriptors from a list of chord events.
@@ -235,7 +469,17 @@ def calculate_descriptors_from_chords(chords):
             f_counts = {}
             for f in fixed_frets:
                 f_counts[f] = f_counts.get(f, 0) + 1
-            if any(cnt >= 3 for cnt in f_counts.values()):
+            is_barre = False
+            for f, cnt in f_counts.items():
+                if cnt >= 3:
+                    f_strings = sorted([n['string'] for n in c if n['fret'] == f])
+                    for i in range(len(f_strings) - 2):
+                        if f_strings[i+1] == f_strings[i] + 1 and f_strings[i+2] == f_strings[i] + 2:
+                            is_barre = True
+                            break
+                if is_barre:
+                    break
+            if is_barre:
                 barre_count += 1
             stretch        = max(fixed_frets) - min(fixed_frets)
             total_stretch += stretch
