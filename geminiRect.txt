@@ -1,0 +1,15 @@
+1. Upgrade from Additive (GAM) to Interaction-Aware (GA2M) Architecture
+The Limit: RubricNet is a strictly additive model (GAM). It assumes each feature acts independently: $\sum f_i(x_i)$. In reality, musical difficulty is highly interactive. For example, a large position shift (max_position_shift) is moderately difficult on its own, but extremely difficult if performed while holding a barre chord (barre_ratio).
+The Solution: We can implement a GA2M (Generalized Additive Model with Interactions) structure. This adds a set of controlled, pairwise interaction subnetworks: $$\sum f_i(x_i) + \sum g_{ij}(x_i, x_j)$$ This would allow the model to capture compound physical challenges (like "barre + stretch" or "high tempo + string jumps") while remaining fully interpretable via 2D heatmaps.
+2. End-to-End Joint Fingering Optimization
+The Limit: We currently run a fingering solver as a pre-processing step to generate the CSV, and the neural network assumes that fingering is ground truth.
+The Solution: Instead of a static solver, we could train a model that jointly optimizes the fingering and the difficulty estimation. If a passage has three possible fingerings, a human player will choose the easiest one. By making the fingering solver search for the path that minimizes the predicted RubricNet difficulty, we mimic human biomechanics and get a far more accurate representation of actual playability.
+3. Replace Median Imputation with Generative Feature Reconstruction
+The Limit: 10% of the pieces have no timing data, and setting their rhythm features to the dataset median dilutes the model's predictive power.
+The Solution: We can train a small auxiliary model (like a regression tree or a sequence-to-sequence network) to predict the missing rhythmic features (like expected tempo or arpeggio density) based on the pitches and note densities of the non-rhythmic pieces, rather than using a flat dataset-wide median.
+4. Ordinal Loss Refinements & Multi-Task Learning
+The Limit: The current ordinal loss treats all classification errors outside the target bin equally.
+The Solution: We could incorporate a hierarchical loss or multi-task learning where the network is simultaneously trained to predict:
+The fine-grained 8-class level.
+The coarse 3-class level (Easy, Medium, Hard).
+Structural complexity labels (e.g. homophonic vs. polyphonic). This helps the representation layers generalize better across boundaries.

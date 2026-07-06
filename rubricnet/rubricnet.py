@@ -39,12 +39,18 @@ class TraditionalLinear(nn.Module):
 
 
 class Rubricnet(nn.Module):
-    def __init__(self, descriptor_input_sizes, num_classes, dropout):
+    def __init__(self, descriptor_input_sizes, num_classes, dropout, num_coarse_classes=None):
         super(Rubricnet, self).__init__()
         # Initialize linear layers for each descriptor. Assuming each input descriptor is a single value.
         self.descriptor_layers = nn.ModuleList([nn.Linear(1, 1) for _ in range(descriptor_input_sizes)])
         # Final layer to map aggregated score to ordinal classes. Adjusts to take a single aggregated score.
         self.final_layer = nn.Linear(1, num_classes)
+        # Optional auxiliary head: a second linear readout of the same aggregated
+        # score (no new hidden layers, no cross-descriptor interactions) that
+        # predicts a coarser ordinal grouping. Multi-task training on both targets
+        # shares gradient signal across the class-boundary problem without
+        # touching the additive rubric itself.
+        self.coarse_layer = nn.Linear(1, num_coarse_classes) if num_coarse_classes else None
         self.dropout = dropout
 
     def forward(self, descriptors):
@@ -61,6 +67,9 @@ class Rubricnet(nn.Module):
         # Apply sigmoid to map logits to probabilities
         probabilities = torch.sigmoid(logits)
         #probabilities = F.log_softmax(logits, dim=1)
+        if self.coarse_layer is not None:
+            coarse_probabilities = torch.sigmoid(self.coarse_layer(aggregated_score))
+            return probabilities, coarse_probabilities
         return probabilities
 
     def get_regression_values(self, descriptors):
@@ -89,21 +98,36 @@ def _prediction2label(pred):
 
 
 class OrdinalLoss(nn.Module):
-    """Ordinal regression with encoding as in https://arxiv.org/pdf/0704.1028.pdf"""
+    """Ordinal regression with encoding as in https://arxiv.org/pdf/0704.1028.pdf
 
-    def __init__(self, weight_class=None):
+    label_smoothing_temp softens the single 1->0 transition in the cumulative
+    target around the true class boundary (via a sigmoid ramp) instead of a
+    hard step, so a piece that's borderline between two equal-frequency bins
+    isn't penalized as harshly as one that's confidently misclassified.
+    0 (default) reproduces the original hard-step encoding exactly.
+    """
+
+    def __init__(self, weight_class=None, label_smoothing_temp=0.0):
         super(OrdinalLoss, self).__init__()
         self.weights = weight_class
+        self.label_smoothing_temp = label_smoothing_temp
 
     def forward(self, predictions, targets):
-        # Fill in ordinal target function, i.e., 0 -> [1,0,0,...]
-        modified_target = torch.zeros_like(predictions)
-        for i, target in enumerate(targets):
-            modified_target[i, 0:target + 1] = 1
-
         # if torch tensor is empty, return 0
         if predictions.shape[0] == 0:
             return 0
+
+        num_classes = predictions.shape[1]
+        targets = targets.float().unsqueeze(1)  # [batch, 1]
+        class_idx = torch.arange(num_classes, device=predictions.device).unsqueeze(0)  # [1, num_classes]
+
+        if self.label_smoothing_temp and self.label_smoothing_temp > 0:
+            # Soft step centered on the target->target+1 boundary: 1 at low
+            # indices, 0 at high indices, with a smooth sigmoid transition
+            # instead of a hard jump.
+            modified_target = torch.sigmoid((targets - class_idx + 0.5) / self.label_smoothing_temp)
+        else:
+            modified_target = (class_idx <= targets).float()
         # loss
         if self.weights is not None:
             self.weights = self.weights.to(predictions.device)
@@ -114,7 +138,8 @@ class OrdinalLoss(nn.Module):
 
 
 class LogisticRegressionOrdinal(pl.LightningModule):
-    def __init__(self, input_dim, num_classes, lr, hidden_size, num_layers, dropout, decay_lr, weight_decay):
+    def __init__(self, input_dim, num_classes, lr, hidden_size, num_layers, dropout, decay_lr, weight_decay,
+                 label_smoothing_temp=0.0, num_coarse_classes=None, coarse_loss_weight=0.3):
         super(LogisticRegressionOrdinal, self).__init__()
         self.input_dim = input_dim
         self.num_classes = num_classes
@@ -124,9 +149,13 @@ class LogisticRegressionOrdinal(pl.LightningModule):
         self.dropout = dropout
         self.decay_lr = decay_lr
         self.weight_decay = weight_decay
+        self.label_smoothing_temp = label_smoothing_temp
+        self.num_coarse_classes = num_coarse_classes
+        self.coarse_loss_weight = coarse_loss_weight
         # self.linear = torch.nn.Linear(input_dim, num_classes)
-        self.linear1 = Rubricnet(input_dim, num_classes, dropout)
-        self.loss_fn = OrdinalLoss()
+        self.linear1 = Rubricnet(input_dim, num_classes, dropout, num_coarse_classes=num_coarse_classes)
+        self.loss_fn = OrdinalLoss(label_smoothing_temp=label_smoothing_temp)
+        self.coarse_loss_fn = OrdinalLoss(label_smoothing_temp=label_smoothing_temp) if num_coarse_classes else None
         #self.loss_fn = torch.nn.NLLLoss()
         self.learning_rate = lr
 
@@ -134,20 +163,31 @@ class LogisticRegressionOrdinal(pl.LightningModule):
         return self.linear1(x)
 
     def training_step(self, batch, batch_idx):
-        x, y = batch
-        y_pred = self(x)
-        loss = self.loss_fn(y_pred, y.long())
+        if self.num_coarse_classes:
+            x, y, y_coarse = batch
+            y_pred, y_coarse_pred = self(x)
+            loss = self.loss_fn(y_pred, y.long()) + self.coarse_loss_weight * self.coarse_loss_fn(y_coarse_pred, y_coarse.long())
+        else:
+            x, y = batch
+            y_pred = self(x)
+            loss = self.loss_fn(y_pred, y.long())
         return loss
 
     def validation_step(self, batch, batch_idx, dataloader_idx=0):
-        x, y = batch
-        y_logits = self(x)
+        if self.num_coarse_classes:
+            x, y, y_coarse = batch
+            y_logits, y_coarse_logits = self(x)
+        else:
+            x, y = batch
+            y_logits = self(x)
         y_pred = _prediction2label(y_logits)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=UserWarning)
             acc = balanced_accuracy_score(y.cpu().detach(), y_pred.cpu().detach())
             mse = get_mse_macro(y.cpu().detach(), y_pred.cpu().detach())
             loss = self.loss_fn(y_logits, y.long())
+            if self.num_coarse_classes:
+                loss = loss + self.coarse_loss_weight * self.coarse_loss_fn(y_coarse_logits, y_coarse.long())
 
         # Identify the dataset being evaluated
         if dataloader_idx == 0:  # Training dataset evaluation
@@ -200,9 +240,15 @@ class RubricnetSklearn:
         self.dropout = args.dropout
         self.decay_lr = args.decay_lr
         self.weight_decay = args.weight_decay
+        self.label_smoothing_temp = getattr(args, 'label_smoothing_temp', 0.0)
+        self.num_coarse_classes = getattr(args, 'num_coarse_classes', None)
+        self.coarse_loss_weight = getattr(args, 'coarse_loss_weight', 0.3)
         model = LogisticRegressionOrdinal(input_dim, num_classes, lr=args.lr, hidden_size=args.hidden_size,
                                           num_layers=args.num_layers, dropout=args.dropout, decay_lr=args.decay_lr,
-                                          weight_decay=args.weight_decay)
+                                          weight_decay=args.weight_decay,
+                                          label_smoothing_temp=self.label_smoothing_temp,
+                                          num_coarse_classes=self.num_coarse_classes,
+                                          coarse_loss_weight=self.coarse_loss_weight)
         self.model = model
         early_stopping = EarlyStopping(
             monitor='acc/val/dataloader_idx_1',
@@ -240,7 +286,9 @@ class RubricnetSklearn:
         self.model = LogisticRegressionOrdinal.load_from_checkpoint(
             path, input_dim=self.input_dim, num_classes=self.num_classes, lr=self.lr,
             hidden_size=self.hidden_size, num_layers=self.num_layers, dropout=self.dropout,
-            decay_lr=self.decay_lr, weight_decay=self.weight_decay
+            decay_lr=self.decay_lr, weight_decay=self.weight_decay,
+            label_smoothing_temp=self.label_smoothing_temp,
+            num_coarse_classes=self.num_coarse_classes, coarse_loss_weight=self.coarse_loss_weight
         ).to(self.model.device)
 
     def calculate_weights(self, y_train, num_classes=9):
@@ -255,7 +303,8 @@ class RubricnetSklearn:
         self.model.loss_fn.weights = self.model.loss_fn.weights.to(
             self.model.device)  # Move to the same device as the model
 
-    def fit(self, X_train, y_train, X_val, y_val, X_test, y_test):
+    def fit(self, X_train, y_train, X_val, y_val, X_test, y_test,
+            y_train_coarse=None, y_val_coarse=None, y_test_coarse=None):
         X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
         y_train_tensor = torch.tensor(y_train.to_numpy(), dtype=torch.float32)
         self.calculate_weights(y_train_tensor, num_classes=self.num_classes)
@@ -265,13 +314,22 @@ class RubricnetSklearn:
         y_test_tensor = torch.tensor(y_test.to_numpy(), dtype=torch.float32)
 
         # Now use TensorDataset with the tensors
-        train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
-        val_dataset = TensorDataset(X_val_tensor, y_val_tensor)
-        test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
+        if self.num_coarse_classes:
+            y_train_coarse_tensor = torch.tensor(y_train_coarse, dtype=torch.float32)
+            y_val_coarse_tensor = torch.tensor(y_val_coarse, dtype=torch.float32)
+            y_test_coarse_tensor = torch.tensor(y_test_coarse, dtype=torch.float32)
+            train_dataset = TensorDataset(X_train_tensor, y_train_tensor, y_train_coarse_tensor)
+            val_dataset = TensorDataset(X_val_tensor, y_val_tensor, y_val_coarse_tensor)
+            test_dataset = TensorDataset(X_test_tensor, y_test_tensor, y_test_coarse_tensor)
+        else:
+            train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
+            val_dataset = TensorDataset(X_val_tensor, y_val_tensor)
+            test_dataset = TensorDataset(X_test_tensor, y_test_tensor)
 
         def get_label_callback(dataset):
-            # Extracts labels for the ImbalancedDatasetSampler
-            labels = [label.item() for _, label in dataset]
+            # Extracts the (fine-grained) label for the ImbalancedDatasetSampler;
+            # index 1 is y_train regardless of whether a coarse target (index 2) is present.
+            labels = [item[1].item() for item in dataset]
             return torch.tensor(labels)
 
         # Prepare DataLoaders
@@ -296,6 +354,8 @@ class RubricnetSklearn:
         X_tensor = torch.tensor(X, dtype=torch.float32)
         with torch.no_grad():
             predictions = self.model(X_tensor)
+        if isinstance(predictions, tuple):
+            predictions = predictions[0]
         return _prediction2label(predictions)
         #return torch.argmax(predictions, dim=1)
 

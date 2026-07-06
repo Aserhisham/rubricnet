@@ -24,7 +24,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from guitar.baselines import get_fold_xy, load_data
-from guitar.prepare_splits import ALL_FEATURES_V2, ALL_FEATURES_V3, NUM_CLASSES
+from guitar.prepare_splits import ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED, NUM_CLASSES
 from rubricnet.rubricnet import RubricnetSklearn
 
 
@@ -42,6 +42,9 @@ DEFAULT_HYPERPARAMS = dict(
     decay_lr=0.5,
     weight_decay=1e-4,
     patience=20,
+    label_smoothing_temp=0.0,
+    num_coarse_classes=None,
+    coarse_loss_weight=0.3,
 )
 
 ALIAS_EXPERIMENT_V2 = "guitar_rubricnet_final_v2"
@@ -255,9 +258,24 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--v2", action="store_true", help="Use version 2 features")
     parser.add_argument("--v3", action="store_true", help="Use version 3 features")
+    parser.add_argument("--v3-pruned", action="store_true", help="Use version 3 features minus near-zero-signal descriptors")
+    parser.add_argument("--label-smoothing-temp", type=float, default=None,
+                        help="Ordinal label smoothing temperature (0 = hard step, e.g. 0.3 = mild smoothing). Only applies to --v3 runs.")
+    parser.add_argument("--coarse-loss-weight", type=float, default=None,
+                        help="Enable the auxiliary coarse 3-class head with this loss weight (e.g. 0.3). Only applies to --v3 runs.")
     args = parser.parse_args()
 
-    if args.v3:
+    is_experimental = bool(args.v3_pruned or args.label_smoothing_temp or args.coarse_loss_weight)
+    coarse_aux_enabled = bool(args.coarse_loss_weight)
+
+    if args.v3_pruned:
+        csv_path = "features/guitar_descriptors_v3.csv"
+        columns = ALL_FEATURES_V3_PRUNED
+        alias_experiment = "guitar_rubricnet_final_v3_pruned"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v3.json"
+        out_path = "guitar/rubricnet_results_v3_pruned.json"
+        print("Training RubricNet on V3 pruned features...")
+    elif args.v3:
         csv_path = "features/guitar_descriptors_v3.csv"
         columns = ALL_FEATURES_V3
         alias_experiment = "guitar_rubricnet_final_v3"
@@ -272,11 +290,28 @@ def main():
         out_path = "guitar/rubricnet_results_v2.json"
         print("Training RubricNet on V2 features...")
 
+    if args.label_smoothing_temp:
+        temp_tag = str(args.label_smoothing_temp).replace(".", "p")
+        alias_experiment = f"{alias_experiment}_smooth_{temp_tag}"
+        out_path = out_path.replace(".json", f"_smooth_{temp_tag}.json")
+        print(f"Using ordinal label smoothing temperature={args.label_smoothing_temp}")
+
+    if args.coarse_loss_weight:
+        weight_tag = str(args.coarse_loss_weight).replace(".", "p")
+        alias_experiment = f"{alias_experiment}_coarseaux_{weight_tag}"
+        out_path = out_path.replace(".json", f"_coarseaux_{weight_tag}.json")
+        print(f"Using auxiliary coarse 3-class head with loss weight={args.coarse_loss_weight}")
+
     features, splits = load_data(
         csv_path=csv_path,
         columns=columns
     )
     hyperparams = load_hyperparams(best_hyperparams_path)
+    if args.label_smoothing_temp:
+        hyperparams["label_smoothing_temp"] = args.label_smoothing_temp
+    if args.coarse_loss_weight:
+        hyperparams["num_coarse_classes"] = 3
+        hyperparams["coarse_loss_weight"] = args.coarse_loss_weight
 
     seeds = [0, 1, 2]
     
@@ -333,11 +368,20 @@ def main():
                 args=args,
                 logging=False
             )
-            clf.fit(
-                scaler.transform(X_train), y_train,
-                scaler.transform(X_val), y_val,
-                scaler.transform(X_test), y_test,
-            )
+            if coarse_aux_enabled:
+                clf.fit(
+                    scaler.transform(X_train), y_train,
+                    scaler.transform(X_val), y_val,
+                    scaler.transform(X_test), y_test,
+                    y_train_coarse=map_8_to_3(y_train), y_val_coarse=map_8_to_3(y_val),
+                    y_test_coarse=map_8_to_3(y_test),
+                )
+            else:
+                clf.fit(
+                    scaler.transform(X_train), y_train,
+                    scaler.transform(X_val), y_val,
+                    scaler.transform(X_test), y_test,
+                )
             clf.load_model(f"checkpoints/{alias}/split_{split_idx}.ckpt")
 
             y_pred = clf.predict(scaler.transform(X_test)).cpu().numpy()
@@ -400,8 +444,14 @@ def main():
         }, f, indent=2)
     print(f"\nWrote final detailed results to {out_path}")
 
-    # Generate results table in RESULTS.md
-    write_results_markdown()
+    # Generate results table in RESULTS.md (skipped for experimental feature
+    # sets/hyperparams: write_results_markdown() overwrites the manually
+    # curated Interpretability Analysis section unconditionally, so only the
+    # canonical v2/v3 runs should trigger it).
+    if is_experimental:
+        print(f"Experimental run: not touching guitar/RESULTS.md (see {out_path} for numbers)")
+    else:
+        write_results_markdown()
 
     # Print summary output to terminal
     print("\n--- Final Results Summary (Mean +/- Std over 15 runs) ---")

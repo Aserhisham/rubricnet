@@ -26,7 +26,7 @@ from sklearn.metrics import balanced_accuracy_score, mean_squared_error
 from sklearn.preprocessing import StandardScaler
 
 from guitar.baselines import get_fold_xy, load_data
-from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, FEATURE_GROUPS, NUM_CLASSES
+from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED, FEATURE_GROUPS, NUM_CLASSES
 from rubricnet.rubricnet import RubricnetSklearn
 
 N_SPLITS = 5
@@ -35,6 +35,11 @@ FEATURE_SETS = {
     "guitar_all": ALL_FEATURES,
     "guitar_all_v2": ALL_FEATURES_V2,
     "guitar_all_v3": ALL_FEATURES_V3,
+    "guitar_all_v3_pruned": ALL_FEATURES_V3_PRUNED,
+    # Same columns as guitar_all_v3; distinct key so this retune (which adds
+    # label_smoothing_temp to the search space) writes to its own study/output
+    # file instead of overwriting the frozen Phase D best_hyperparams_guitar_all_v3.json.
+    "guitar_all_v3_smooth": ALL_FEATURES_V3,
     "lh_only": FEATURE_GROUPS["lh"],
     "rh_only": FEATURE_GROUPS["rh"],
     "global_only": FEATURE_GROUPS["global"],
@@ -70,6 +75,10 @@ def objective(trial):
         dropout=trial.suggest_float("dropout", 0.1, 0.5),
         decay_lr=trial.suggest_float("decay_lr", 0.3, 0.9),
         lr=trial.suggest_float("lr", 5e-3, 1e-1, log=True),
+        # Manual sweep (T=0.15/0.3/0.6 on the frozen v3 hyperparams) found a small
+        # win at T=0.15 and degradation above it, so search a range centered there
+        # jointly with the other hyperparameters rather than reusing them as-is.
+        label_smoothing_temp=trial.suggest_float("label_smoothing_temp", 0.0, 0.4),
     )
 
     n_features = FEATURES_DATA.shape[1]

@@ -94,6 +94,23 @@ FEATURE_GROUPS_V3 = {
 }
 ALL_FEATURES_V3 = FEATURE_GROUPS_V3["lh"] + FEATURE_GROUPS_V3["rh"] + FEATURE_GROUPS_V3["global"]
 
+# V3 minus the descriptors feature_audit_v2.md measured at |Spearman rho| <= 0.16
+# against raw Difficulty (tempo_bpm, arpeggio_density, fret_change_rate,
+# avg_string_jump, chord_ratio, avg_polyphony) but marked "Kept" anyway. In a
+# strictly additive model these near-zero-signal descriptors only add noise to
+# the summed score, so this set isolates whether dropping them helps.
+_DEAD_V3 = {
+    "tempo_bpm", "arpeggio_density", "fret_change_rate",
+    "avg_string_jump", "chord_ratio", "avg_polyphony",
+}
+FEATURE_GROUPS_V3_PRUNED = {
+    group: [f for f in feats if f not in _DEAD_V3]
+    for group, feats in FEATURE_GROUPS_V3.items()
+}
+ALL_FEATURES_V3_PRUNED = (
+    FEATURE_GROUPS_V3_PRUNED["lh"] + FEATURE_GROUPS_V3_PRUNED["rh"] + FEATURE_GROUPS_V3_PRUNED["global"]
+)
+
 NUM_CLASSES = 8
 
 # Bin edges from equal-frequency binning over the 724-piece dataset (inclusive level ranges).

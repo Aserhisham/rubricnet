@@ -28,7 +28,7 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, mean_absolu
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 
-from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, NUM_CLASSES, make_piece_id
+from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED, NUM_CLASSES, make_piece_id
 from rubricnet.rubricnet import RubricnetSklearn
 
 N_SPLITS = 5
@@ -164,9 +164,16 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--v2", action="store_true", help="Use version 2 features")
     parser.add_argument("--v3", action="store_true", help="Use version 3 features")
+    parser.add_argument("--v3-pruned", action="store_true", help="Use version 3 features minus near-zero-signal descriptors")
     args = parser.parse_args()
 
-    if args.v3:
+    if args.v3_pruned:
+        csv_path = "features/guitar_descriptors_v3.csv"
+        columns = ALL_FEATURES_V3_PRUNED
+        alias = "guitar_baseline_ordinal_v3_pruned"
+        out_path = "guitar/baseline_results_v3_pruned.json"
+        print("Running baselines on V3 pruned features...")
+    elif args.v3:
         csv_path = "features/guitar_descriptors_v3.csv"
         columns = ALL_FEATURES_V3
         alias = "guitar_baseline_ordinal_v3"
