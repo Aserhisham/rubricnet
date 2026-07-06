@@ -1,0 +1,39 @@
+\chapter{Introduction}
+\label{ch:introduction}
+
+\section{Introduction and Motivation}
+Selecting repertoire that matches a student's current technical level is a central task in music learning. In classical guitar pedagogy, difficulty judgments directly influence lesson planning, sequencing of repertoire, practice efficiency, and student motivation. Yet, these judgments are often based on subjective teacher experience and informal consensus rather than transparent, reproducible, and objective criteria. Graded repertoire databases, such as GuitarBurst~\cite{guitarburst}, demonstrate that there is clear practical demand for structured difficulty information in the classical guitar domain. However, these databases are compiled manually and do not automatically explain how score-level technical characteristics translate into a given difficulty level.
+
+Recent work in music information retrieval (MIR) has shown that symbolic music representations, such as MusicXML and MIDI, can support automatic difficulty estimation. For instance, Yaroch used machine learning models to estimate score difficulty from symbolic features extracted from MusicXML~\cite{yaroch2025measure}. Ramoneda et al. demonstrated that piano difficulty estimation can be approached through a small set of interpretable descriptors organized in a rubric-like model~\cite{ramoneda2024rubricnet}. However, most of this prior work has focused exclusively on piano repertoire. The currently strongest interpretable model, RubricNet~\cite{ramoneda2024rubricnet}, uses descriptors tailored specifically to keyboard performance (e.g., separate hand profiles, hand-span constraints) rather than guitar technique.
+
+This mismatch creates a clear research gap. Guitar-specific work has begun to formalize playability, particularly for rhythm guitar chord progressions, through descriptors such as barre usage, chord fingering difficulty, chord transitions, and right-hand plucking complexity~\cite{vasquez2023quantifying}. Yet there remains no widely used, interpretable difficulty model aimed at classical solo guitar repertoire that combines symbolic analysis with guitar-specific technical descriptors and an external graded repertoire resource.
+
+The motivation of this project is to bridge this gap by designing a model that not only predicts a piece's difficulty level with high accuracy but also provides a structured, musicologically meaningful explanation of *why* the piece is difficult. This project adapts the explainable RubricNet difficulty-estimation framework developed for piano to the classical guitar domain, grounding descriptor design in the instrument's actual technical demands and evaluating performance against a professional graded repertoire database.
+
+\section{Research Questions}
+This project is guided by the following four core research questions:
+\begin{enumerate}
+    \item \textbf{RQ1:} Which guitar-specific symbolic descriptors best capture the technical difficulty of classical guitar pieces, as reflected in graded repertoire resources such as GuitarBurst~\cite{guitarburst}?
+    \item \textbf{RQ2:} Can an interpretable, rubric-based model using these hand-crafted descriptors predict piece-level classical guitar difficulty with useful accuracy?
+    \item \textbf{RQ3:} Does combining multiple dimensions of difficulty—namely left-hand technique, right-hand technique, and global score complexity—improve prediction accuracy compared to any single dimension alone?
+    \item \textbf{RQ4:} To what extent do the model's descriptor contributions align with common pedagogical intuitions about what makes a classical guitar piece difficult?
+\end{enumerate}
+
+\section{Research Goals}
+To address the research questions, this thesis pursues the following concrete goals:
+\begin{enumerate}
+    \item \textbf{Goal 1}: Define a compact set of guitar-specific, interpretable descriptors that can be computed directly from symbolic notation (MusicXML and GuitarPro tokens).
+    \item \textbf{Goal 2}: Build a piece-level difficulty classifier for classical guitar based on these descriptors.
+    \item \textbf{Goal 3}: Evaluate whether a multi-dimensional feature design combining separate descriptors for left-hand technique, right-hand technique, and global score complexity performs better than one-dimensional alternatives.
+    \item \textbf{Goal 4}: Demonstrate that model-level interpretability is not only technically achievable but also pedagogically meaningful in the context of classical guitar education.
+\end{enumerate}
+
+\section{Thesis Structure}
+The remainder of this thesis is structured as follows:
+\begin{itemize}
+    \item \textbf{Chapter 2: Related Work} reviews the existing literature on symbolic difficulty estimation, multi-dimensional music representation, the RubricNet architecture, and guitar playability metrics.
+    \item \textbf{Chapter 3: Methodology} describes our dataset collection, PDF-to-XML rhythm alignment pipeline, the mathematical formulation of our descriptors (V1, V2, and V3 sets), and the RubricNet architecture.
+    \item \textbf{Chapter 4: Evaluation and Results} details the experimental setup and presents classification performance across models (ordinal regression, Decision Trees, Random Forests, and RubricNet variants).
+    \item \textbf{Chapter 5: Discussion \& Interpretability} analyzes the model's interpretability, validates descriptor monotonicity, and compares context-free and context-aware physical proxies.
+    \item \textbf{Chapter 6: Conclusion and Future Work} summarizes our findings and outlines future research paths.
+\end{itemize}

@@ -1,0 +1,26 @@
+\chapter{Related Work}
+\label{ch:related_work}
+
+This chapter reviews prior research that establishes the methodological and theoretical foundations of this thesis. We position our classical guitar difficulty estimation framework at the intersection of symbolic score analysis, multi-dimensional difficulty modeling, interpretable neural architectures, and guitar-specific playability heuristics.
+
+\section{Symbolic Difficulty Estimation}
+Automatic difficulty assessment of musical scores is a growing subfield of Music Information Retrieval (MIR). A foundational starting point for symbolic-level estimation is the work of Yaroch~\cite{yaroch2025measure}, who utilized MusicXML representations to estimate piano score difficulty on a measure-by-measure basis. By extracting symbolic features (such as note density, interval sizes, and basic rhythmic properties) and training linear regression models and convolutional neural networks, Yaroch demonstrated that symbolic notation contains sufficient statistical signal to estimate technical difficulty. However, that work was trained on a relatively small dataset and relied on self-assigned difficulty ratings rather than standardized, professional grading systems. Furthermore, the models utilized were black-box neural networks or simple global regressions, offering limited explainability.
+
+\section{Multi-Dimensional Difficulty Representation}
+Difficulty is a complex, multi-faceted concept that depends on multiple pedagogical factors rather than a single metric of note density. Ramoneda et al.~\cite{ramoneda2024combining} argue that musical difficulty should be decomposed into distinct dimensions representing notation (reading complexity), technique (physical execution), and expressiveness (interpretative complexity). 
+
+In their study of piano repertoire, they showed that training separate estimators for these distinct dimensions and combining them leads to a significant increase in classification performance compared to a flat, single-vector feature representation. This multi-dimensional approach strongly supports the design of our classical guitar model, which isolates left-hand technical demands, right-hand execution, and global notation complexity into distinct descriptor categories.
+
+\section{The RubricNet Model}
+The core methodological framework of this thesis is adapted from RubricNet, introduced by Ramoneda et al. at ISMIR 2024~\cite{ramoneda2024rubricnet}. RubricNet was designed as a "white-box" ordinal classification model for piano difficulty estimation using the CIPI dataset. Unlike standard neural networks where features interact in complex, non-linear hidden layers, RubricNet enforces an additive structure: each hand-crafted feature is passed through its own independent, single-hidden-layer subnetwork (a linear layer followed by a non-linear activation like tanh). The scalar outputs of these subnetworks are then summed directly to form a single difficulty score:
+\begin{equation}
+    S(x) = \sum_{i=1}^{M} g_i(x_i)
+\end{equation}
+where $x_i$ represents the $i$-th descriptor and $g_i$ represents its associated subnetwork.
+
+Because there are no interactions between features before the summation, the contribution of each descriptor to the final difficulty estimate can be read off directly. This mirrors the structure of a music pedagogy rubric, where a teacher evaluates different aspects of performance independently and sums the scores. Although RubricNet achieved high interpretability and competitive accuracy, its descriptors were designed exclusively for the piano (e.g., separating left-hand and right-hand piano staves, measuring piano key spans). Our work represents the first adaptation of this additive, explainable neural architecture to the classical guitar.
+
+\section{Guitar Playability Metrics}
+On the guitar side, V{\'a}squez et al.~\cite{vasquez2023quantifying} proposed a playability metric for rhythm guitar chord progressions. They formulated a rubric using expert-informed criteria such as the uncommonness of chord shapes, finger displacement, barre chord usage, right-hand plucking complexity, and rhythmic regularity. 
+
+While their study provides an important precedent for guitar-specific descriptor design, it was limited to pop song chord playing (strumming chord charts) rather than solo classical guitar. Classical guitar solo repertoire is substantially more complex, involving multi-voiced contrapuntal textures, horizontal position shifts along the neck, and intricate right-hand arpeggiation. Our research extends these playability concepts to classical solo scores, reconciling the symbolic representations of solo pieces with structured difficulty labels.

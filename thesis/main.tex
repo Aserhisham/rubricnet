@@ -1,0 +1,132 @@
+\documentclass[12pt,oneside]{report}
+
+% Page Layout & Margins
+\usepackage[a4paper, left=3.5cm, right=2.5cm, top=3cm, bottom=3cm]{geometry}
+\linespread{1.5} % Line spacing
+
+% Standard Packages
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{microtype}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{color}
+
+% Table styling utilities
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+
+% Code Listing Settings
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+% PDF Metadata
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    citecolor=blue,
+    pdftitle={Interpretable Difficulty Estimation for Classical Guitar from Symbolic Notation},
+    pdfauthor={Aser Abdelhakeem},
+    pdfsubject={Bachelor's Thesis},
+}
+
+\begin{document}
+
+% ==================== Title Page ====================
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1.5cm}
+        
+        \Huge
+        \textbf{Interpretable Difficulty Estimation for Classical Guitar from Symbolic Notation}
+        
+        \vspace{1.5cm}
+        
+        \Large
+        \textbf{Aser Abdelhakeem}
+        
+        \vspace{2.5cm}
+        
+        \large
+        A Bachelor's Thesis submitted in partial fulfillment of the requirements for the degree of Bachelor of Science in Computer Science
+        
+        \vspace{2.5cm}
+        
+        \includegraphics[width=0.3\textwidth]{figures/logo_placeholder.png} % Optional logo
+        
+        \vspace{2cm}
+        
+        \large
+        Department of Computer Science\\
+        University Name\\
+        \vspace{0.5cm}
+        May 2026
+        
+    \end{center}
+\end{titlepage}
+
+% ==================== Front Matter ====================
+\pagenumbering{roman}
+
+\chapter*{Abstract}
+Select repertoire that matches a student's current technical level is a central task in music learning. In classical guitar, difficulty judgments influence lesson planning, sequencing of repertoire, practice efficiency, and student motivation, yet these judgments are often based on subjective teacher experience rather than transparent and reproducible criteria. This thesis presents a multi-dimensional, interpretable difficulty estimation framework for classical guitar pieces from symbolic notation (MusicXML and GuitarPro tokens). Grounded in the piano-oriented RubricNet model, our framework incorporates 32 hand-crafted descriptors organized across three technical dimensions: Left-Hand Technique, Right-Hand Technique, and Global Score Complexity.
+
+To reconcile diverse score representations across a 716-piece classical guitar dataset, we implement a rhythm-alignment algorithm utilizing Needleman-Wunsch sequence matching that transplants MIDI timing information onto PDF-derived score structures. We extend the baseline descriptor definitions to include context-aware speed measures and windowed bottleneck features representing localized passages of extreme technical demand. Our RubricNet V3 model achieves 31.0\% exact 8-class classification accuracy (and 67.6\% coarse 3-class accuracy), outperforming a black-box Random Forest baseline on balanced accuracy, mean absolute error (MAE), mean squared error (MSE), and Kendall's $\tau$. Furthermore, the additive subnetwork design enables direct visualization of descriptor contributions, establishing that the model's predictions align with pedagogical intuition and offer a transparent, interpretable rubric for guitar education.
+
+\newpage
+
+\chapter*{Acknowledgments}
+I would like to express my gratitude to my advisor and mentors for their guidance throughout this project. I am also grateful to the creators of the GuitarBurst database, GAPS, and DADA-GP datasets for making their data publicly accessible, enabling this research.
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\newpage
+
+% ==================== Main Chapters ====================
+\pagenumbering{arabic}
+
+\include{chapters/1_introduction}
+\include{chapters/2_related_work}
+\include{chapters/3_methodology}
+\include{chapters/4_results}
+\include{chapters/5_discussion}
+\include{chapters/6_conclusion}
+
+% ==================== Bibliography ====================
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

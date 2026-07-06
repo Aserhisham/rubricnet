@@ -1,0 +1,265 @@
+Interpretable Difficulty Estimation for Classical
+Guitar from Symbolic Notation
+Aser Abdelhakeem
+May 2026
+
+1
+
+Introduction and Motivation
+
+Selecting repertoire that matches a student’s current technical level is a central
+task in music learning. In classical guitar, difficulty judgments influence lesson
+planning, sequencing of repertoire, practice efficiency, and student motivation,
+yet these judgments are often based on subjective teacher experience and informal consensus rather than transparent and reproducible criteria. Graded repertoire systems such as GuitarBurst[1] show that there is clear practical demand
+for structured difficulty information in the classical guitar domain, but they do
+not automatically explain how score level technical characteristics translate into
+a given difficulty level.
+Recent work in music information retrieval has shown that symbolic music
+representations such as MusicXML can support automatic difficulty estimation.
+Yaroch used machine learning models to estimate score difficulty from symbolic
+features extracted from MusicXML[5], and Ramoneda et al. showed that difficulty estimation can also be approached through a small set of interpretable
+descriptors organised in a rubric like model [2]. However, most of this work has
+focused on piano repertoire, and the currently strongest interpretable approach,
+RubricNet [2], uses descriptors tailored to keyboard performance rather than
+guitar technique.
+This creates a clear research gap. Guitar specific work has begun to formalise playability, particularly for rhythm guitar chord progressions, through
+descriptors such as barre usage, chord fingering difficulty, chord transitions, and
+right-hand complexity[4]. Yet there is still no widely used interpretable difficulty
+model aimed at classical guitar solo repertoire that combines symbolic analysis with guitar specific technical descriptors and an external graded repertoire
+resource such as GuitarBurst[1]. The motivation of this project is therefore to
+design a model that does not only predict a difficulty level, but also provides a
+structured explanation of why a classical guitar piece is difficult. The project
+aims to adapt recent explainable difficulty-estimation methods developed for
+piano to the domain of classical guitar, grounding the descriptor design in the
+actual technical demands of the instrument and in established graded repertoire
+resources.
+1
+
+2
+
+Research Questions and Research Goals
+
+The project is guided by the following research questions:
+1. Which guitar-specific symbolic descriptors best capture the technical difficulty of classical guitar pieces as reflected in graded repertoire resources
+such as GuitarBurst[1]?
+2. Can an interpretable rubric based model using these descriptors predict
+piece level classical guitar difficulty with useful accuracy?
+3. Does combining multiple dimensions of difficulty, such as left hand technique, right hand technique, and global score complexity, improve prediction compared with any single dimension alone?
+4. To what extent do the model’s descriptor contributions align with common
+pedagogical intuitions about what makes a classical guitar piece difficult?
+The research goals follow directly from these questions.
+1. The project aims to define a compact set of guitar specific, interpretable
+descriptors that can be computed from symbolic notation.
+2. It aims to build a piece level difficulty classifier for classical guitar based
+on these descriptors.
+3. It aims to evaluate whether a multidimensional feature design, combining
+separate descriptors for left hand technique, right hand technique, and
+global score complexity performs better than one dimensional alternatives.
+4. It aims to show that interpretability is not only technically possible but
+pedagogically meaningful in the context of classical guitar education.
+Taken together, these goals define the contribution of the work as a compact,
+interpretable difficulty-estimation framework for classical guitar that combines
+symbolic score analysis, guitar-specific descriptors, and a rubric-like model architecture.
+
+3
+
+Related Work
+
+A useful starting point is Yaroch’s thesis[5]. Yaroch used MusicXML based
+feature extraction together with linear regression and convolutional neural networks to estimate difficulty measure by measure, showing that symbolic notation
+can support automatic difficulty analysis. That work is important because it
+confirms the feasibility of symbolic score difficulty prediction, but it remains
+instrument agnostic, is trained on a small dataset, and relies on self-assigned
+difficulty ratings rather than a widely accepted grading source.
+A more relevant methodological foundation comes from Ramoneda et al. [3],
+the authors argue that difficulty is multidimensional and depends on notation,
+2
+
+technique, and expressiveness rather than on a single type of feature. They
+show that combining different dimensions improves difficulty prediction for piano repertoire, which strongly supports a guitar model that separates left hand
+demands, right hand demands, and global score complexity.
+The most relevant work is Ramoneda et al.’s[2]. This paper introduces
+RubricNet, a white-box model in which each descriptor contributes transparently to the final difficulty estimate, much like a teaching rubric. RubricNet
+is attractive for the present project because it offers a realistic and explainable
+alternative to black box neural models. At the same time, its descriptors are
+largely piano oriented, which opens the possibility of adapting the framework
+to guitar specific technique.
+On the guitar side, Vasquez et al.[4] provide an important precedent for
+descriptor design. That paper develops a rubric based playability metric for
+rhythm guitar using expert informed criteria such as uncommonness of chords,
+chord finger positioning, barre difficulty, right hand complexity, and rhythmic
+regularity. Although its repertoire domain is pop song chord playing rather than
+classical solo guitar, it demonstrates that guitar difficulty can be formalised in
+interpretable terms. This supports the idea that a classical guitar difficulty
+model should use descriptors grounded in actual guitar technique rather than
+generic symbolic complexity alone.
+Taken together, these studies suggest a promising synthesis: symbolic score
+analysis from Yaroch, a multidimensional view of difficulty from Ramoneda’s
+CIPI work, an explainable descriptor-based architecture from RubricNet, and
+guitar-specific rubric design from the chord-playability literature.
+
+4
+
+Method
+
+The proposed method is to build an interpretable, rubric based piece level classifier for classical guitar difficulty. The input will be symbolic representations
+of classical guitar pieces, ideally in MusicXML form, and the output will be a
+predicted difficulty class derived from an external graded repertoire source such
+as GuitarBurst[1].
+
+4.1
+
+Dataset and Labels
+
+The dataset will consist of a curated set of classical guitar pieces with published
+difficulty labels. GuitarBurst[1] is the preferred primary source for the pieces to
+be used and their difficulty classification because it provides a large graded repertoire database for classical guitar and is explicitly intended to support repertoire
+selection. In addition, selections from existing symbolic guitar datasets such as
+GAPS (Guitar Aligned Performance Scores) and the DADA-GP GuitarPro collection will be used as score sources, with GuitarBurst difficulty levels providing
+the target labels wherever pieces can be matched across datasets. Since GuitarBurst[1] uses a fine grained 1–20 difficulty scale, these labels may be grouped
+into fewer ordinal classes to reduce sparsity and make evaluation more robust.
+
+3
+
+4.2
+
+Descriptor Design
+
+The project will define a compact descriptor set organised into three dimensions:
+• Left-hand technique, for example barre usage, maximum and average
+stretch span, position-shift frequency, and chord grip complexity.
+• Right-hand technique, for example arpeggio-pattern variation, string-crossing
+irregularity, and the presence of special techniques where available in the
+notation.
+• Global score complexity, for example note density, polyphony, rhythmic
+complexity, and other symbolic descriptors adapted from previous difficulty estimation work.
+The emphasis will be on descriptors that are small in number, computable
+from notation, and understandable to teachers and students. In this sense, the
+descriptor set is intended to function like a guitar pedagogy rubric rather than
+a large opaque feature vector.
+
+4.3
+
+Model
+
+The main model will follow the logic of RubricNet: a small feed-forward neural
+network in which each descriptor is passed through its own linear layer with a
+non-linear activation (e.g. tanh), and the resulting contributions are summed
+into an aggregate difficulty score that is then mapped to an ordinal difficulty
+class. This architecture is parameter-efficient and makes it possible to inspect
+the contribution of each descriptor for any individual piece, similar to a rubric
+in music pedagogy.
+To ensure a fair comparison between models, hyperparameters will be tuned
+systematically, but within a scope appropriate for a bachelor thesis. For the
+RubricNet-style neural model, key hyperparameters such as learning rate, number of hidden units, dropout rate, and batch size will be selected via a small
+grid or random search over a set of reasonable candidates, using cross-validation
+on the training data. For simpler baseline models (e.g. ordinal regression or
+tree-based classifiers), central hyperparameters such as regularisation strength,
+maximum tree depth, or number of trees (in the case of a Random Forest) will
+be tuned in an analogous way.
+As a first baseline, an ordinal regression model will be implemented on
+the same descriptor set, providing a simple, linear and transparent comparison
+model. In addition, a tree-based method such as a decision tree or Random Forest classifier will be used as a second baseline, since such models often achieve
+robust performance and offer model-level interpretability through feature importance measures.
+If time permits, a small fuzzy-logic classifier will also be explored as an
+alternative, highly interpretable approach. In this case, difficulty would be
+modeled through fuzzy rules formulated in natural language (e.g. “if barre
+frequency is high and position shifts are large, then difficulty is rather high”).
+4
+
+This would allow a direct comparison between a data-driven rubric model and
+an explicit rule-based system.
+
+5
+
+Evaluation Plan
+
+The evaluation will address both predictive performance and interpretability.
+
+5.1
+
+Predictive Evaluation
+
+The main predictive evaluation will compare several model variants:
+• A model using only left hand descriptors.
+• A model using only right hand descriptors.
+• A model using only global score descriptors.
+• A model using left hand + right hand descriptors.
+• A full model using all three dimensions together.
+This comparison directly addresses whether combining multiple dimensions of
+difficulty improves prediction over any single dimension alone, following the logic
+suggested by Ramoneda et al.’s multi dimensional piano work[3]. Performance
+will be evaluated using ordinal classification metrics such as accuracy, mean
+absolute error in predicted class, and confusion patterns between neighboring
+difficulty levels.
+
+5.2
+
+Interpretability Analysis
+
+Beyond prediction accuracy, the project will analyse which descriptors contribute most strongly to the predicted difficulty of each piece and how those
+contributions vary across difficulty levels. If possible, this analysis will be supplemented by a qualitative check against pedagogical expectations: for instance,
+whether pieces at higher levels indeed receive stronger contributions from barres,
+position shifts, polyphony, or right-hand complexity.
+In addition, the importance of entire feature groups (left-hand, right-hand,
+global score complexity) will be investigated using a group level feature selection
+analysis inspired by multi objective approaches. The idea is to search for small
+feature subsets that maintain high classification performance while minimising
+the number of descriptors from a given group; if performance drops markedly
+when a group is constrained, that group is considered important, whereas similar
+performance with a strongly reduced group indicates lower importance.
+This part of the evaluation is important because the goal of the project is
+not only to predict difficulty, but also to make the model’s reasoning meaningful
+to teachers and learners. In this way, the evaluation will address both methodological questions (can explainable descriptor-based models transfer from piano
+to guitar?) and pedagogical questions (does the model provide insights that are
+useful for repertoire selection and teaching practice?).
+5
+
+6
+
+Timeline
+
+May-June 2026 Finalise literature review and descriptor list; select and pre-process
+datasets, draft initial versions of Introduction and Related Work.
+June-July 2026 Implement feature extraction pipeline and initial baselines.
+July-August 2026 Implement RubricNet-style model and run first experiments.
+August-September 2026 Hyperparameter tuning, ablation studies (single vs
+multi-dimension), start writing Methods and Evaluation sections.
+September 2026 Refine all chapters, and prepare final presentation.
+
+References
+[1]
+
+GuitarBurst. GuitarBurst: Graded Classical Guitar Repertoire Database.
+2021. url: https://guitarburst.com (visited on 05/04/2026).
+
+[2]
+
+P. Ramoneda, V. Eremenko, A. D’Hooge, E. Parada-Cabaleiro, and X.
+Serra. “Towards Explainable and Interpretable Musical Difficulty Estimation: A Parameter-Efficient Approach”. In: Proceedings of the 25th International Society for Music Information Retrieval Conference, ISMIR 2024,
+San Francisco, California, USA and Online, November 10-14, 2024. Ed. by
+B. Kaneshiro, G. J. Mysore, O. Nieto, C. Donahue, C. A. Huang, J. H. Lee,
+B. McFee, and M. C. McCallum. 2024, pp. 520–528. doi: 10.5281/ZENODO.
+14877389.
+
+[3]
+
+P. Ramoneda, D. Jeong, V. Eremenko, N. C. Tamer, M. Miron, and X.
+Serra. “Combining piano performance dimensions for score difficulty classification”. In: Expert Systems with Applications 238 (2024), p. 121776.
+
+[4]
+
+M. A. V. V. Vásquez, M. Baelemans, J. Driedger, W. H. Zuidema, and J. A.
+Burgoyne. “Quantifying the Ease of Playing Song Chords on the Guitar”.
+In: Proceedings of the 24th International Society for Music Information
+Retrieval Conference (ISMIR). 2023, pp. 725–732.
+
+[5]
+
+E. J. Yaroch. “Measure by Measure: Developing an Artificial Intelligence
+Algorithm for Music Difficulty Assessment”. Master’s thesis. MA thesis.
+Coral Gables, FL: University of Miami, 2025.
+
+6
+
+

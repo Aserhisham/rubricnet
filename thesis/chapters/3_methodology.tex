@@ -1,0 +1,140 @@
+\chapter{Methodology}
+\label{ch:methodology}
+
+This chapter details our dataset construction, the rhythm-alignment algorithm developed to resolve score formatting issues, the evolution of our descriptor feature sets (V1, V2, and V3), and the mathematical formulation of the RubricNet model.
+
+\section{Dataset Collection and Reconciling}
+The primary challenge in classical guitar difficulty estimation is the lack of a single, unified database containing both high-quality symbolic scores and reliable difficulty grades. To address this, we construct a curated dataset of classical guitar pieces by matching symbolic files across multiple databases with professional difficulty labels.
+
+\subsection{Difficulty Labels: GuitarBurst}
+We obtain our target difficulty labels from GuitarBurst~\cite{guitarburst}, an online database that indexes over 5,000 classical guitar works and categorizes their difficulties using a 1–20 scale. The GuitarBurst grading system is widely accepted by educators and is based on criteria including left-hand finger stretch, position shifts, right-hand patterns, and musical complexity. 
+
+\subsection{Symbolic Score Sources}
+We extract symbolic representations from three distinct sources:
+\begin{enumerate}
+    \item \textbf{GAPS (Guitar Aligned Performance Scores)}: A small, high-quality corpus containing MusicXML scores aligned with audio recordings.
+    \item \textbf{DADA-GP}: A large-scale corpus of guitar tablature transcripts represented in a custom tokenized GuitarPro format.
+    \item \textbf{Public Domain PDFs}: A large collection of vector-graphic PDF scores scraped from Mutopia and other repositories.
+\end{enumerate}
+
+\subsection{Matching and Deduplication}
+We reconcile these symbolic files against GuitarBurst using a fuzzy string matching pipeline on titles and composer names. After a manual auditing process (documented in \texttt{data/checked\_pieces.md}), we identify and resolve discrepancies. We filter out duplicate pieces across different sources and remove a small number of corrupted files. The final dataset consists of \textbf{716 unique classical guitar pieces} spanning the full difficulty range, with the source distribution shown in Table~\ref{tab:dataset_sources}.
+
+\begin{table}[h]
+\centering
+\caption{Dataset Source Distribution}
+\label{tab:dataset_sources}
+\begin{tabular}{lr}
+\toprule
+\textbf{Source} & \textbf{Number of Pieces} \\
+\midrule
+Public Domain PDFs & 655 \\
+DADA-GP (GuitarPro) & 49 \\
+GAPS (MusicXML) & 12 \\
+\midrule
+\textbf{Total} & \textbf{716} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+To address label sparsity and improve model robustness, the raw 1–20 GuitarBurst difficulty levels are grouped into 8 ordinal classes using stratified, equal-frequency binning. The bin edges are defined as:
+\begin{equation*}
+    \mathcal{C} = \{ [1\text{--}3], [4\text{--}5], [6\text{--}7], [8], [9\text{--}10], [11\text{--}12], [13\text{--}15], [16\text{--}20] \}
+\end{equation*}
+
+\section{Rhythm Alignment Algorithm}
+A major technical obstacle was that public domain PDF scores (655 out of 716 files), while containing correct pitch and fret information, do not carry temporal duration data in their raw vector-graphic formats. The default PDF parser output represented every note as a uniform quarter note.
+
+To recover temporal structures, we developed a rhythm-alignment algorithm (\texttt{align\_midi\_rhythm.py}). For each PDF piece, we downloaded a corresponding MIDI performance file. We then aligned the note-pitch sequences using the Needleman-Wunsch sequence alignment algorithm. Once a high-coverage alignment was established, we transplanted the MIDI file's temporal parameters onto the PDF's pitch structure.
+
+Specifically, the algorithm performs the following:
+\begin{enumerate}
+    \item \textbf{Time Signature Resolution}: Instead of trusting the default 4/4 signature of the PDF parser, the algorithm reads the time signature directly from the MIDI meta-events.
+    \item \textbf{Onset Duration Calculation}: Rather than using the sounding duration (which is often inflated on guitar due to ringing bass strings), the note duration is calculated using the Inter-Onset Interval (IOI):
+    \begin{equation}
+        \text{IOI}(n_t) = \text{Onset}(n_{t+1}) - \text{Onset}(n_t)
+    \end{equation}
+    \item \textbf{MusicXML Serialization}: The aligned pitches and timings are serialized into rhythm-corrected MusicXML files.
+\end{enumerate}
+This pipeline successfully aligned 512 PDF pieces, skip-filtering 136 pieces due to low alignment coverage. Ultimately, 639 of our 716 pieces (89.2\%) carry complete, rhythmically correct note durations.
+
+\section{Feature Engineering: V1, V2, and V3 Descriptors}
+Because RubricNet is strictly additive (no feature-to-feature interactions), the model cannot learn non-linear combinations of raw inputs. Therefore, all technical complexities must be explicitly hand-crafted.
+
+\subsection{V1 Descriptors}
+The initial descriptor set (V1) consisted of 12 features representing basic technical demands:
+\begin{itemize}
+    \item \textbf{Left-Hand}: \texttt{barre\_ratio} (fraction of barre chords), \texttt{avg\_chord\_stretch} (average fret span of multi-note chords), \texttt{max\_chord\_stretch} (maximum fret span), \texttt{avg\_position\_shift} (average fret difference between successive events), and \texttt{fret\_change\_rate} (frequency of fret changes per note).
+    \item \textbf{Right-Hand}: \texttt{arpeggio\_density} (fraction of string changes), \texttt{avg\_string\_jump} (average string span jump), \texttt{max\_string\_jump} (maximum string jump), and \texttt{special\_technique\_ratio} (ratio of slurs/slides).
+    \item \textbf{Global}: \texttt{avg\_polyphony} (average active voices), \texttt{total\_notes} (total note count), and \texttt{tempo\_bpm} (tempo).
+\end{itemize}
+
+A Spearman correlation audit against the raw 1–20 labels revealed that several V1 descriptors were statistically "dead" ($|\rho| \le 0.14$), such as \texttt{fret\_change\_rate} ($\rho = -0.05$), \texttt{arpeggio\_density} ($\rho = -0.10$), and \texttt{avg\_string\_jump} ($\rho = -0.07$). Furthermore, we discovered that the initial PDF parser was corrupting fret annotations, capping performance.
+
+\subsection{V2 Descriptors}
+To address these limitations, we resolved the PDF parsing issues and expanded the feature set to V2, introducing 15 new descriptors:
+\begin{itemize}
+    \item \textbf{Length Scaling}: \texttt{log\_total\_notes} $= \log(1 + \text{total\_notes})$.
+    \item \textbf{Fret Height}: \texttt{avg\_fret}, \texttt{p90\_fret}, \texttt{high\_position\_ratio} (fraction of notes above fret 7), and \texttt{open\_string\_ratio} (fraction of open strings, fret 0).
+    \item \textbf{Stretch Distribution}: \texttt{p90\_chord\_stretch}, \texttt{chord\_ratio} (fraction of chord events with $\ge 2$ notes), \texttt{avg\_string\_span}, and \texttt{unique\_shape\_rate} (measure of chord shape vocabulary).
+    \item \textbf{Movement}: \texttt{shift\_rate} (frequency of vertical position shifts $> 2$ frets), \texttt{max\_position\_shift}, and \texttt{std\_position\_shift}.
+    \item \textbf{Variety/Entropy}: \texttt{fret\_entropy} (Shannon entropy of frets used), \texttt{string\_entropy} (entropy of strings used), and \texttt{repetition\_ratio} (fraction of consecutive identical chord shapes).
+\end{itemize}
+
+\subsection{V3 Descriptors (Rhythm \& Bottleneck Aware)}
+With the alignment pipeline establishing rhythm details for 89.2\% of the dataset, we introduced V3 descriptors to capture temporal and localized complexity. These are calculated in *beats* rather than absolute seconds, making them independent of tempo fluctuations:
+\begin{enumerate}
+    \item \textbf{Local Bottlenecks (Sliding Window)}: Musical difficulty is set by a piece's hardest passage, not its average. We slide a window of 4 measures across the score to compute:
+    \begin{itemize}
+        \item \texttt{max\_avg\_chord\_stretch\_window} (maximum chord stretch in any window).
+        \item \texttt{p95\_position\_shift\_window} (peak position shift).
+        \item \texttt{max\_note\_density\_window} (peak note density).
+    \end{itemize}
+    \item \textbf{Context-Aware Physical Proxies}: We multiply physical demands by their execution speed in beats:
+    \begin{itemize}
+        \item \texttt{avg\_stretch\_velocity\_beats} (stretch change per beat).
+        \item \texttt{avg\_position\_shift\_speed\_beats} (fret shift distance divided by beat duration).
+        \item \texttt{polyphonic\_arpeggio\_intensity\_beats} (polyphony scaled by note rate).
+    \end{itemize}
+\end{enumerate}
+Missing values for pieces lacking rhythm data (10.8\%) are imputed using the train-fold median.
+
+\section{RubricNet Model Architecture}
+RubricNet is an additive ordinal neural network wrapper. Let $x \in \mathbb{R}^M$ represent the $M$ input descriptors of a piece.
+
+\subsection{Additive Subnetwork Formulation}
+For each descriptor $x_i$, a subnetwork $g_i: \mathbb{R} \to \mathbb{R}$ consisting of a single linear layer and a tanh activation is defined:
+\begin{equation}
+    g_i(x_i) = w_i^{(2)} \tanh(w_i^{(1)} x_i + b_i^{(1)})
+\end{equation}
+where $w_i^{(1)}, w_i^{(2)}, b_i^{(1)} \in \mathbb{R}$ are the learnable parameters of subnetwork $i$. The aggregated score $S(x)$ is the direct sum of these outputs:
+\begin{equation}
+    S(x) = \sum_{i=1}^{M} g_i(x_i)
+\end{equation}
+
+\subsection{Ordinal Target Encoding and Activation}
+To predict ordinal classes, we follow the Cao et al. rank encoding method~\cite{cao2020rank}. For a classification problem with $K$ classes, a label $k \in \{0, 1, \dots, K-1\}$ is represented as a vector of $K-1$ binary targets $y = [y_1, y_2, \dots, y_{K-1}]^T$:
+\begin{equation}
+    y_j = \begin{cases}
+        1 & \text{if } k > j \\
+        0 & \text{otherwise}
+    \end{cases}
+\end{equation}
+
+The model predicts the probability that the true label exceeds class boundary $j$ using the logistic function:
+\begin{equation}
+    p_j = \sigma(S(x) - \theta_j)
+\end{equation}
+where $\theta_j$ is a learnable bias threshold parameter for boundary $j$, constrained such that $\theta_1 < \theta_2 < \dots < \theta_{K-1}$, and $\sigma$ is the sigmoid function.
+
+\subsection{Loss Function and Label Smoothing}
+The network is trained by minimizing the cumulative binary cross-entropy loss:
+\begin{equation}
+    \mathcal{L} = - \sum_{j=1}^{K-1} [ y_j \log(p_j) + (1 - y_j) \log(1 - p_j) ]
+\end{equation}
+
+To address boundary sensitivity where pieces lie near class thresholds, we implement Ordinal Label Smoothing (OLS) by modifying the targets $y_j$ with temperature parameter $T$:
+\begin{equation}
+    y_j^{\text{smooth}} = \sigma\left( \frac{k - j}{T} \right)
+\end{equation}
+Setting $T \to 0$ recovers the hard step function of Cao et al.

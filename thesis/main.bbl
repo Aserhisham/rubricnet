@@ -1,0 +1,44 @@
+\begin{thebibliography}{1}
+
+\bibitem{cao2020rank}
+Wenzhi Cao, Vahid Mirjalili, and Sebastian Raschka.
+\newblock Rank consistent ordinal regression for neural networks with
+  application to age estimation.
+\newblock In {\em Pattern Recognition Letters}, volume 140, pages 325--331,
+  2020.
+
+\bibitem{guitarburst}
+{GuitarBurst}.
+\newblock Guitarburst: Graded classical guitar repertoire database.
+\newblock \url{https://guitarburst.com}, 2021.
+\newblock Accessed: 2026-05-04.
+
+\bibitem{ramoneda2024rubricnet}
+Pere Ramoneda, Vsevolod Eremenko, Annelies D'Hooge, Emilia Parada-Cabaleiro,
+  and Xavier Serra.
+\newblock Towards explainable and interpretable musical difficulty estimation:
+  A parameter-efficient approach.
+\newblock In {\em Proceedings of the 25th International Society for Music
+  Information Retrieval Conference (ISMIR)}, pages 520--528, 2024.
+
+\bibitem{ramoneda2024combining}
+Pere Ramoneda, Dasaem Jeong, Vsevolod Eremenko, Nazif~Can Tamer, Marius Miron,
+  and Xavier Serra.
+\newblock Combining piano performance dimensions for score difficulty
+  classification.
+\newblock {\em Expert Systems with Applications}, 238:121776, 2024.
+
+\bibitem{vasquez2023quantifying}
+Miguel A. V.~V. V{\'a}squez, Max Baelemans, Jonathan Driedger, Willem~H.
+  Zuidema, and John~Ashley Burgoyne.
+\newblock Quantifying the ease of playing song chords on the guitar.
+\newblock In {\em Proceedings of the 24th International Society for Music
+  Information Retrieval Conference (ISMIR)}, pages 725--732, 2023.
+
+\bibitem{yaroch2025measure}
+Edward~J. Yaroch.
+\newblock Measure by measure: Developing an artificial intelligence algorithm
+  for music difficulty assessment.
+\newblock M.a. thesis, University of Miami, 2025.
+
+\end{thebibliography}
