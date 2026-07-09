@@ -441,6 +441,96 @@ def calculate_descriptors_v3(chords, onsets=None, has_rhythm=True):
 
     return features
 
+
+INTERACTION_COLUMNS = [
+    "barre_difficulty_tempo",
+    "stretch_under_time_pressure",
+    "position_shift_entropy",
+    "open_string_efficiency",
+    "arpeggio_stretch_coupling",
+]
+
+
+def _min_inter_onset_interval(onsets):
+    """Smallest positive gap between consecutive distinct onsets (in beats).
+
+    Returns None when it cannot be determined (empty / single onset / all
+    simultaneous), so callers can substitute a sensible default.
+    """
+    if not onsets or len(onsets) < 2:
+        return None
+    uniq = sorted(set(round(float(o), 4) for o in onsets))
+    gaps = [b - a for a, b in zip(uniq[:-1], uniq[1:]) if b - a > 1e-6]
+    return float(min(gaps)) if gaps else None
+
+
+def calculate_interaction_descriptors_v3(features, onsets=None, has_rhythm=True):
+    """Hand-crafted multi-factor (interaction) descriptors for guitar difficulty.
+
+    These compose already-computed v2/v3 base descriptors to express difficulty
+    that an additive model cannot represent from the marginals alone, while
+    staying interpretable (each is a named product/ratio of known descriptors).
+
+    Args:
+        features: dict of base descriptors (output of calculate_descriptors_v2 /
+                  calculate_descriptors_v3, or a row of the extracted CSV). All
+                  five outputs read from this dict; only #2 also uses timing.
+        onsets:   optional list of onset times in quarter-note beats, used to
+                  derive the minimum inter-onset interval for #2.
+        has_rhythm: whether `onsets` encodes real durations; when False (or when
+                  the interval is undeterminable) a default of 1.0 beat is used.
+
+    Returns:
+        dict with the five keys in INTERACTION_COLUMNS. No NaN/inf: every input
+        is guarded and defaults to 0.0 when missing.
+    """
+    def g(key):
+        v = features.get(key, 0.0)
+        try:
+            v = float(v)
+        except (TypeError, ValueError):
+            return 0.0
+        return v if np.isfinite(v) else 0.0
+
+    barre_ratio = g("barre_ratio")
+    std_position_shift = g("std_position_shift")
+    p90_chord_stretch = g("p90_chord_stretch")
+    string_entropy = g("string_entropy")
+    open_string_ratio = g("open_string_ratio")
+    max_position_shift = g("max_position_shift")
+    arpeggio_density = g("arpeggio_density")
+    avg_chord_stretch = g("avg_chord_stretch")
+
+    # 1. Barres are harder when the left hand is also shifting positions a lot.
+    barre_difficulty_tempo = barre_ratio * (1.0 + std_position_shift)
+
+    # 2. Wide stretches are harder when there is little time between onsets.
+    min_ioi = _min_inter_onset_interval(onsets) if has_rhythm else None
+    if min_ioi is None:
+        min_ioi = 1.0
+    stretch_under_time_pressure = p90_chord_stretch / (min_ioi + 0.1)
+
+    # 3. Frequent position shifts combined with string variety = left-hand load.
+    position_shift_entropy = std_position_shift * string_entropy
+
+    # 4. Avoiding open strings while shifting positions is demanding.
+    open_string_efficiency = (1.0 - open_string_ratio) * (max_position_shift + 1.0)
+
+    # 5. Arpeggios that also span wide stretches are harder (gated on density).
+    arpeggio_stretch_coupling = (
+        arpeggio_density * avg_chord_stretch if arpeggio_density > 0.1 else 0.0
+    )
+
+    out = {
+        "barre_difficulty_tempo": float(barre_difficulty_tempo),
+        "stretch_under_time_pressure": float(stretch_under_time_pressure),
+        "position_shift_entropy": float(position_shift_entropy),
+        "open_string_efficiency": float(open_string_efficiency),
+        "arpeggio_stretch_coupling": float(arpeggio_stretch_coupling),
+    }
+    return {k: (v if np.isfinite(v) else 0.0) for k, v in out.items()}
+
+
 def calculate_descriptors_from_chords(chords):
     """
     Compute all 12 guitar difficulty descriptors from a list of chord events.

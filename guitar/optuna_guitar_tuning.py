@@ -27,7 +27,10 @@ from sklearn.metrics import balanced_accuracy_score, mean_squared_error
 from sklearn.preprocessing import StandardScaler
 
 from guitar.baselines import get_fold_xy, load_data
-from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED, FEATURE_GROUPS, NUM_CLASSES, make_piece_id
+from guitar.prepare_splits import (
+    ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED,
+    ALL_FEATURES_V3_BASE, ALL_FEATURES_V3_BASE_NEW, FEATURE_GROUPS, NUM_CLASSES, make_piece_id,
+)
 from rubricnet.rubricnet import RubricnetSklearn
 from guitar.train_guitar_rubricnet import map_20_to_8_numpy
 
@@ -39,6 +42,8 @@ FEATURE_SETS = {
     "guitar_all_v3": ALL_FEATURES_V3,
     "guitar_all_v3_pruned": ALL_FEATURES_V3_PRUNED,
     "guitar_all_v3_smooth": ALL_FEATURES_V3,
+    "guitar_all_v3_base": ALL_FEATURES_V3_BASE,
+    "guitar_all_v3_base_new": ALL_FEATURES_V3_BASE_NEW,
     "guitar_all_v4": ALL_FEATURES_V3,
     "lh_only": FEATURE_GROUPS["lh"],
     "rh_only": FEATURE_GROUPS["rh"],
@@ -167,6 +172,8 @@ def main():
     # Load correct CSV path dynamically
     if cli_args.v4 or "v4" in FEATURES:
         csv_path = "features/guitar_descriptors_v4.csv"
+    elif "v3_base_new" in FEATURES:
+        csv_path = "features/guitar_descriptors_v3_base.csv"
     elif "_v3" in FEATURES:
         csv_path = "features/guitar_descriptors_v3.csv"
     elif "_v2" in FEATURES:

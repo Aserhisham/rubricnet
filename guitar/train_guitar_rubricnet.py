@@ -24,7 +24,10 @@ if __package__ in (None, ""):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from guitar.baselines import get_fold_xy, load_data
-from guitar.prepare_splits import ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED, NUM_CLASSES, make_piece_id
+from guitar.prepare_splits import (
+    ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED,
+    ALL_FEATURES_V3_BASE, ALL_FEATURES_V3_BASE_NEW, NUM_CLASSES, make_piece_id,
+)
 from rubricnet.rubricnet import RubricnetSklearn
 
 
@@ -289,6 +292,8 @@ def main():
     parser.add_argument("--v3", action="store_true", help="Use version 3 features")
     parser.add_argument("--v4", action="store_true", help="Use version 4 features")
     parser.add_argument("--v3-pruned", action="store_true", help="Use version 3 features minus near-zero-signal descriptors")
+    parser.add_argument("--v3-base", action="store_true", help="Use V3 base features (unified provenance, no rhythm-aware features)")
+    parser.add_argument("--v3-base-new", action="store_true", help="Use V3 base + hand-crafted interaction features")
     parser.add_argument("--raw-levels", action="store_true", help="Train on raw 1-20 difficulty levels")
     parser.add_argument("--label-smoothing-temp", type=float, default=None,
                         help="Ordinal label smoothing temperature (0 = hard step, e.g. 0.3 = mild smoothing). Only applies to --v3/--v4 runs.")
@@ -296,10 +301,24 @@ def main():
                         help="Enable the auxiliary coarse 3-class head with this loss weight (e.g. 0.3). Only applies to --v3/--v4 runs.")
     args = parser.parse_args()
 
-    is_experimental = bool(args.v3_pruned or args.label_smoothing_temp or args.coarse_loss_weight)
+    is_experimental = bool(args.v3_pruned or args.v3_base or args.v3_base_new or args.label_smoothing_temp or args.coarse_loss_weight)
     coarse_aux_enabled = bool(args.coarse_loss_weight)
 
-    if args.v3_pruned:
+    if args.v3_base_new:
+        csv_path = "features/guitar_descriptors_v3_base.csv"
+        columns = ALL_FEATURES_V3_BASE_NEW
+        alias_experiment = "guitar_rubricnet_final_v3_base_new"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v3_base_new.json"
+        out_path = "guitar/rubricnet_results_v3_base_new.json"
+        print("Training RubricNet on V3 base + interaction features...")
+    elif args.v3_base:
+        csv_path = "features/guitar_descriptors_v3.csv"
+        columns = ALL_FEATURES_V3_BASE
+        alias_experiment = "guitar_rubricnet_final_v3_base"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v3_base.json"
+        out_path = "guitar/rubricnet_results_v3_base.json"
+        print("Training RubricNet on V3 base features (no rhythm)...")
+    elif args.v3_pruned:
         csv_path = "features/guitar_descriptors_v3.csv"
         columns = ALL_FEATURES_V3_PRUNED
         alias_experiment = "guitar_rubricnet_final_v3_pruned"
@@ -453,7 +472,11 @@ def main():
             y_pred = clf.predict(scaler.transform(X_test)).cpu().numpy()
             if args.raw_levels:
                 y_pred = map_20_to_8_numpy(y_pred)
-            
+            # Guard against ordinal-decode underflow on collapsing folds: a
+            # prediction below the lowest class is the lowest class. No-op for
+            # runs that never underflow (e.g. v3), so prior results are unchanged.
+            y_pred = np.clip(y_pred, 0, NUM_CLASSES - 1)
+
             # Compute 8-class metrics
             fold_m = compute_metrics(y_test, y_pred)
             

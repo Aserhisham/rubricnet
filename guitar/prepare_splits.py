@@ -111,6 +111,29 @@ ALL_FEATURES_V3_PRUNED = (
     FEATURE_GROUPS_V3_PRUNED["lh"] + FEATURE_GROUPS_V3_PRUNED["rh"] + FEATURE_GROUPS_V3_PRUNED["global"]
 )
 
+# Option A: "V3 base" is the V2/unified descriptor set WITHOUT the eight
+# rhythm-aware window/velocity features -- i.e. exactly the V2 feature groups,
+# but read from the unified-provenance v3 CSV. This isolates whether the rhythm
+# features helped at all before layering interaction features on top.
+FEATURE_GROUPS_V3_BASE = FEATURE_GROUPS_V2
+ALL_FEATURES_V3_BASE = ALL_FEATURES_V2
+
+# Five hand-crafted interaction descriptors (see
+# guitar_features.calculate_interaction_descriptors_v3). Kept in a dedicated
+# group so importance plots read cleanly.
+FEATURE_GROUP_INTERACTION = [
+    "barre_difficulty_tempo",
+    "stretch_under_time_pressure",
+    "position_shift_entropy",
+    "open_string_efficiency",
+    "arpeggio_stretch_coupling",
+]
+FEATURE_GROUPS_V3_BASE_NEW = {
+    **FEATURE_GROUPS_V3_BASE,
+    "interaction": FEATURE_GROUP_INTERACTION,
+}
+ALL_FEATURES_V3_BASE_NEW = ALL_FEATURES_V3_BASE + FEATURE_GROUP_INTERACTION
+
 NUM_CLASSES = 8
 
 # Bin edges from equal-frequency binning over the 724-piece dataset (inclusive level ranges).

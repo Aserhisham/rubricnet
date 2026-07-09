@@ -28,7 +28,10 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, mean_absolu
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeClassifier
 
-from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED, NUM_CLASSES, make_piece_id
+from guitar.prepare_splits import (
+    ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED,
+    ALL_FEATURES_V3_BASE, ALL_FEATURES_V3_BASE_NEW, NUM_CLASSES, make_piece_id,
+)
 from rubricnet.rubricnet import RubricnetSklearn
 
 N_SPLITS = 5
@@ -165,9 +168,23 @@ def main():
     parser.add_argument("--v2", action="store_true", help="Use version 2 features")
     parser.add_argument("--v3", action="store_true", help="Use version 3 features")
     parser.add_argument("--v3-pruned", action="store_true", help="Use version 3 features minus near-zero-signal descriptors")
+    parser.add_argument("--v3-base", action="store_true", help="Use V3 base features (unified provenance, no rhythm-aware features)")
+    parser.add_argument("--v3-base-new", action="store_true", help="Use V3 base + hand-crafted interaction features")
     args = parser.parse_args()
 
-    if args.v3_pruned:
+    if args.v3_base_new:
+        csv_path = "features/guitar_descriptors_v3_base.csv"
+        columns = ALL_FEATURES_V3_BASE_NEW
+        alias = "guitar_baseline_ordinal_v3_base_new"
+        out_path = "guitar/baseline_results_v3_base_new.json"
+        print("Running baselines on V3 base + interaction features...")
+    elif args.v3_base:
+        csv_path = "features/guitar_descriptors_v3.csv"
+        columns = ALL_FEATURES_V3_BASE
+        alias = "guitar_baseline_ordinal_v3_base"
+        out_path = "guitar/baseline_results_v3_base.json"
+        print("Running baselines on V3 base features (no rhythm)...")
+    elif args.v3_pruned:
         csv_path = "features/guitar_descriptors_v3.csv"
         columns = ALL_FEATURES_V3_PRUNED
         alias = "guitar_baseline_ordinal_v3_pruned"
