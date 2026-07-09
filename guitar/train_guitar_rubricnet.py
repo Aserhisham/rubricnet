@@ -24,7 +24,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from guitar.baselines import get_fold_xy, load_data
-from guitar.prepare_splits import ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED, NUM_CLASSES
+from guitar.prepare_splits import ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED, NUM_CLASSES, make_piece_id
 from rubricnet.rubricnet import RubricnetSklearn
 
 
@@ -98,6 +98,12 @@ def compute_metrics(y_true, y_pred):
     }
 
 
+def map_20_to_8_numpy(y):
+    y_clamped = np.clip(y, 0, 19).astype(int)
+    mapping = np.array([0, 0, 0, 1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6, 6, 7, 7, 7, 7, 7])
+    return mapping[y_clamped]
+
+
 def write_results_markdown():
     """Writes the comparative RESULTS.md table."""
     # Load V1 baseline results if available
@@ -135,6 +141,18 @@ def write_results_markdown():
     if os.path.exists("guitar/rubricnet_results_v3.json"):
         with open("guitar/rubricnet_results_v3.json") as f:
             v3_rubricnet = json.load(f)
+
+    # Load RubricNet V4 results if available
+    v4_rubricnet = {}
+    if os.path.exists("guitar/rubricnet_results_v4.json"):
+        with open("guitar/rubricnet_results_v4.json") as f:
+            v4_rubricnet = json.load(f)
+
+    # Load RubricNet V4 Raw results if available
+    v4_rubricnet_raw = {}
+    if os.path.exists("guitar/rubricnet_results_v4_raw.json"):
+        with open("guitar/rubricnet_results_v4_raw.json") as f:
+            v4_rubricnet_raw = json.load(f)
 
     # Compile the table rows
     # Columns: Model | Accuracy | Balanced Acc | Acc+/-1 | MAE | MSE | Kendall Tau
@@ -211,6 +229,13 @@ def write_results_markdown():
     if v3_rubricnet and "metrics" in v3_rubricnet:
         add_row("RubricNet V3 (Ours)", v3_rubricnet["metrics"], is_list=True)
 
+    # 13. RubricNet V4
+    if v4_rubricnet and "metrics" in v4_rubricnet:
+        add_row("RubricNet V4 (LH Fixes)", v4_rubricnet["metrics"], is_list=True)
+    # 14. RubricNet V4 Raw
+    if v4_rubricnet_raw and "metrics" in v4_rubricnet_raw:
+        add_row("RubricNet V4 (LH Fixes + 1-20 Raw Target)", v4_rubricnet_raw["metrics"], is_list=True)
+
     # Coarse 3-class mapping evaluation table (Phase 7)
     coarse_rows = []
     def add_coarse_row(name, metrics_dict):
@@ -229,6 +254,10 @@ def write_results_markdown():
         add_coarse_row("RubricNet V2 (Coarse 3-class)", v2_rubricnet["metrics"])
     if v3_rubricnet and "metrics" in v3_rubricnet:
         add_coarse_row("RubricNet V3 (Coarse 3-class)", v3_rubricnet["metrics"])
+    if v4_rubricnet and "metrics" in v4_rubricnet:
+        add_coarse_row("RubricNet V4 (Coarse 3-class)", v4_rubricnet["metrics"])
+    if v4_rubricnet_raw and "metrics" in v4_rubricnet_raw:
+        add_coarse_row("RubricNet V4 Raw (Coarse 3-class)", v4_rubricnet_raw["metrics"])
 
     md_content = []
     md_content.append("# Evaluation Results\n")
@@ -258,11 +287,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--v2", action="store_true", help="Use version 2 features")
     parser.add_argument("--v3", action="store_true", help="Use version 3 features")
+    parser.add_argument("--v4", action="store_true", help="Use version 4 features")
     parser.add_argument("--v3-pruned", action="store_true", help="Use version 3 features minus near-zero-signal descriptors")
+    parser.add_argument("--raw-levels", action="store_true", help="Train on raw 1-20 difficulty levels")
     parser.add_argument("--label-smoothing-temp", type=float, default=None,
-                        help="Ordinal label smoothing temperature (0 = hard step, e.g. 0.3 = mild smoothing). Only applies to --v3 runs.")
+                        help="Ordinal label smoothing temperature (0 = hard step, e.g. 0.3 = mild smoothing). Only applies to --v3/--v4 runs.")
     parser.add_argument("--coarse-loss-weight", type=float, default=None,
-                        help="Enable the auxiliary coarse 3-class head with this loss weight (e.g. 0.3). Only applies to --v3 runs.")
+                        help="Enable the auxiliary coarse 3-class head with this loss weight (e.g. 0.3). Only applies to --v3/--v4 runs.")
     args = parser.parse_args()
 
     is_experimental = bool(args.v3_pruned or args.label_smoothing_temp or args.coarse_loss_weight)
@@ -282,6 +313,16 @@ def main():
         best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v3.json"
         out_path = "guitar/rubricnet_results_v3.json"
         print("Training RubricNet on V3 features...")
+    elif args.v4:
+        csv_path = "features/guitar_descriptors_v4.csv"
+        columns = ALL_FEATURES_V3
+        alias_experiment = "guitar_rubricnet_final_v4"
+        if args.raw_levels:
+            best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v4_raw.json"
+        else:
+            best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v3.json"
+        out_path = "guitar/rubricnet_results_v4.json"
+        print("Training RubricNet on V4 features...")
     else:
         csv_path = "features/guitar_descriptors_v2.csv"
         columns = ALL_FEATURES_V2
@@ -289,6 +330,11 @@ def main():
         best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v2.json"
         out_path = "guitar/rubricnet_results_v2.json"
         print("Training RubricNet on V2 features...")
+
+    if args.raw_levels:
+        alias_experiment = f"{alias_experiment}_raw"
+        out_path = out_path.replace(".json", "_raw.json")
+        print("Training on raw 1-20 difficulty levels...")
 
     if args.label_smoothing_temp:
         temp_tag = str(args.label_smoothing_temp).replace(".", "p")
@@ -313,6 +359,11 @@ def main():
         hyperparams["num_coarse_classes"] = 3
         hyperparams["coarse_loss_weight"] = args.coarse_loss_weight
 
+    if args.raw_levels:
+        df_raw = pd.read_csv(csv_path)
+        df_raw["piece_id"] = df_raw.apply(make_piece_id, axis=1)
+        raw_difficulty_map = {row["piece_id"]: int(row["Difficulty"]) - 1 for _, row in df_raw.iterrows()}
+
     seeds = [0, 1, 2]
     
     # Structure to hold metrics for all seeds and folds
@@ -335,6 +386,11 @@ def main():
     for seed in seeds:
         print(f"\nTraining with Seed {seed}:")
         pl.seed_everything(seed, workers=True)
+        
+        import shutil
+        checkpoint_dir = f"checkpoints/{alias_experiment}_seed_{seed}"
+        if os.path.exists(checkpoint_dir):
+            shutil.rmtree(checkpoint_dir)
         
         seed_acc = []
         seed_bacc = []
@@ -359,32 +415,44 @@ def main():
 
             scaler = StandardScaler().fit(X_train)
             alias = f"{alias_experiment}_seed_{seed}"
-            args = Args(alias_experiment=alias, **hyperparams)
+            args_cls = Args(alias_experiment=alias, **hyperparams)
             
             clf = RubricnetSklearn(
                 input_dim=len(columns),
-                num_classes=NUM_CLASSES,
+                num_classes=20 if args.raw_levels else NUM_CLASSES,
                 split=split_idx,
-                args=args,
+                args=args_cls,
                 logging=False
             )
+
+            if args.raw_levels:
+                y_train_fit = pd.Series([raw_difficulty_map[i] for i in X_train.index], index=X_train.index)
+                y_val_fit = pd.Series([raw_difficulty_map[i] for i in X_val.index], index=X_val.index)
+                y_test_fit = pd.Series([raw_difficulty_map[i] for i in X_test.index], index=X_test.index)
+            else:
+                y_train_fit = y_train
+                y_val_fit = y_val
+                y_test_fit = y_test
+
             if coarse_aux_enabled:
                 clf.fit(
-                    scaler.transform(X_train), y_train,
-                    scaler.transform(X_val), y_val,
-                    scaler.transform(X_test), y_test,
+                    scaler.transform(X_train), y_train_fit,
+                    scaler.transform(X_val), y_val_fit,
+                    scaler.transform(X_test), y_test_fit,
                     y_train_coarse=map_8_to_3(y_train), y_val_coarse=map_8_to_3(y_val),
                     y_test_coarse=map_8_to_3(y_test),
                 )
             else:
                 clf.fit(
-                    scaler.transform(X_train), y_train,
-                    scaler.transform(X_val), y_val,
-                    scaler.transform(X_test), y_test,
+                    scaler.transform(X_train), y_train_fit,
+                    scaler.transform(X_val), y_val_fit,
+                    scaler.transform(X_test), y_test_fit,
                 )
             clf.load_model(f"checkpoints/{alias}/split_{split_idx}.ckpt")
 
             y_pred = clf.predict(scaler.transform(X_test)).cpu().numpy()
+            if args.raw_levels:
+                y_pred = map_20_to_8_numpy(y_pred)
             
             # Compute 8-class metrics
             fold_m = compute_metrics(y_test, y_pred)

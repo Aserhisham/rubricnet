@@ -317,13 +317,26 @@ study DB and `guitar/best_hyperparams_guitar_all_v3_smooth.json`, deliberately n
 overwriting the frozen `best_hyperparams_guitar_all_v3.json` that the committed
 `RESULTS.md` V3 numbers depend on.
 
+### Era 8 — RubricNet V4 and 20-Level Ordinal Training (2026-07-06 to 2026-07-07)
+
+This era expanded RubricNet to V4, introducing new Left-Hand position and barre detection features, and tackled direct 20-level ordinal difficulty training:
+- **Stabilizing 20-class target space**: Training directly on raw 1-20 labels initially suffered from severe gradient collapse and loss explosion.
+  - *Monotonic Initialization*: In the 20-class target space, random initialization of the final projection layer thresholds caused gradient signals to cancel out. We implemented monotonic initialization (weights set to 1.0, biases set to decreasing steps `-0.5 * i`) to provide a strong inductive bias and restore gradient flow.
+  - *Capped vs. Unweighted Loss*: Inverse-frequency class weighting (even when capped) was found to destabilize learning because extremely sparse classes (only 3-5 samples) introduced high-variance, noisy updates. Disabling class weights for `num_classes > 8` and training with an unweighted loss achieved a stable Kendall $\tau$ correlation of 0.5569.
+- **Solving the Checkpoint Versioning Gotcha**: Discovered a critical bug where PyTorch Lightning auto-incremented checkpoint files (saving as `split_0-v1.ckpt` instead of overwriting) while the evaluation script loaded the stale, collapsed first run. Added systematic directory cleanup at the start of each seed and tuning trial.
+- **Optuna Tuning & Validation**:
+  - Updated `optuna_guitar_tuning.py` to support V4 and raw 1-20 target mappings.
+  - Executed a 15-trial Optuna sweep specifically for the raw 20-class target space, producing `guitar/best_hyperparams_guitar_all_v4_raw.json` with optimized regularization and label smoothing parameters.
+  - Retrained the final 20-level model across 3 seeds × 5 folds. The tuned model improved validation accuracy from **0.168** to **0.3028** and mapped test accuracy to **0.1815** (Coarse 3-class accuracy of **0.4352**), resolving the model collapse.
+- **Interpretability Analysis**: Updated `interpret_rubricnet.py` to support V4 and V4 Raw. Generated publication-grade monotonicity and feature importance charts for all four models (V2, V3, V4, V4 Raw) in `guitar/figures/` and populated the results in `RESULTS.md`.
+
 ---
 
-## 3. Current state (as of 2026-07-06)
+## 3. Current state (as of 2026-07-07)
 
-`guitar/RESULTS.md` has three full model generations side by side (V1/V2/V3 × ordinal
+`guitar/RESULTS.md` has four full model generations side by side (V1/V2/V3/V4 × ordinal
 regression / decision tree / Random Forest / RubricNet), plus a coarse 3-class table and
-an interpretability section for both V2 and V3. The dataset stands at **716 pieces**
+an interpretability section for V2, V3, V4, and V4 Raw. The dataset stands at **716 pieces**
 (source breakdown: 655 PDF-derived, 49 DADA-GP, 12 GAPS), 8 difficulty classes from
 equal-frequency binning of the 1–20 GuitarBurst scale (edges `[1-3, 4-5, 6-7, 8, 9-10,
 11-12, 13-15, 16-20]`, class sizes 37–136), with 639/716 (89%) carrying real rhythm data.
@@ -438,10 +451,13 @@ extractor/                    inherited piano (CIPI) feature extraction, not use
                                (this is also where the *piano* fingering solver lives --
                                guitar has no equivalent, tabs already commit to string+fret)
 
-features/guitar_descriptors_v3.csv   current feature table, 716 rows, ~45 columns + has_rhythm
+features/guitar_descriptors_v4.csv   current feature table with Left-Hand/barre fixes, 716 rows.
 
-Era 7 scratch outputs (not merged into RESULTS.md): guitar/baseline_results_v3_pruned.json,
-guitar/rubricnet_results_v3_pruned.json, guitar/rubricnet_results_v3_smooth_0p{15,3,6}.json,
-guitar/rubricnet_results_v3_coarseaux_0p{15,3,6}.json,
-guitar/best_hyperparams_guitar_all_v3_smooth.json (Phase E retune output, in progress)
+Era 7 & 8 outputs:
+  - guitar/best_hyperparams_guitar_all_v4_raw.json (Optuna tuned params for 20-level ordinal training)
+  - guitar/rubricnet_results_v4_raw.json (15-run detailed metrics for raw target model)
+  - guitar/rubricnet_results_v4.json (15-run detailed metrics for V4 8-class model)
+  - guitar/descriptor_scores_fold0_v4.csv & descriptor_scores_fold0_v4_raw.csv (extracted descriptor ranges on the test set)
+  - guitar/figures/monotonicity_v4.png & monotonicity_v4_raw.png (V4 monotonicity curves)
+  - guitar/figures/importance_comparison_v4.png & importance_comparison_v4_raw.png (V4 feature comparison plots)
 ```

@@ -45,6 +45,11 @@ class Rubricnet(nn.Module):
         self.descriptor_layers = nn.ModuleList([nn.Linear(1, 1) for _ in range(descriptor_input_sizes)])
         # Final layer to map aggregated score to ordinal classes. Adjusts to take a single aggregated score.
         self.final_layer = nn.Linear(1, num_classes)
+        if num_classes > 8:
+            nn.init.constant_(self.final_layer.weight, 1.0)
+            with torch.no_grad():
+                for i in range(num_classes):
+                    self.final_layer.bias[i] = -0.5 * i
         # Optional auxiliary head: a second linear readout of the same aggregated
         # score (no new hidden layers, no cross-descriptor interactions) that
         # predicts a coarser ordinal grouping. Multi-task training on both targets
@@ -93,8 +98,16 @@ class Rubricnet(nn.Module):
 
 def _prediction2label(pred):
     """Convert ordinal predictions to class labels."""
+    if pred.shape[1] > 8:
+        return (pred > 0.5).sum(axis=1) - 1
     return (pred > 0.5).cumprod(axis=1).sum(axis=1) - 1
     #return torch.argmax(pred, dim=1)
+
+
+def map_20_to_8_tensor(y_tensor):
+    y_clamped = torch.clamp(y_tensor, 0, 19)
+    mapping = torch.tensor([0, 0, 0, 1, 1, 2, 2, 3, 4, 4, 5, 5, 6, 6, 6, 7, 7, 7, 7, 7], device=y_tensor.device)
+    return mapping[y_clamped.long()]
 
 
 class OrdinalLoss(nn.Module):
@@ -183,8 +196,14 @@ class LogisticRegressionOrdinal(pl.LightningModule):
         y_pred = _prediction2label(y_logits)
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", category=UserWarning)
-            acc = balanced_accuracy_score(y.cpu().detach(), y_pred.cpu().detach())
-            mse = get_mse_macro(y.cpu().detach(), y_pred.cpu().detach())
+            if self.num_classes == 20:
+                y_mapped = map_20_to_8_tensor(y)
+                y_pred_mapped = map_20_to_8_tensor(y_pred)
+                acc = balanced_accuracy_score(y_mapped.cpu().detach(), y_pred_mapped.cpu().detach())
+                mse = get_mse_macro(y_mapped.cpu().detach(), y_pred_mapped.cpu().detach())
+            else:
+                acc = balanced_accuracy_score(y.cpu().detach(), y_pred.cpu().detach())
+                mse = get_mse_macro(y.cpu().detach(), y_pred.cpu().detach())
             loss = self.loss_fn(y_logits, y.long())
             if self.num_coarse_classes:
                 loss = loss + self.coarse_loss_weight * self.coarse_loss_fn(y_coarse_logits, y_coarse.long())
@@ -298,7 +317,10 @@ class RubricnetSklearn:
             weight_class.append(count.get(ii, 0))  # Use .get to handle missing classes gracefully
         weight_class = torch.tensor(weight_class, dtype=torch.float32)
         weight_class = weight_class / weight_class.sum()  # Normalize
-        weight_class = 1.0 / (weight_class + 1e-6)  # Avoid division by zero and normalize
+        if num_classes > 8:
+            weight_class = 1.0 / (weight_class + 0.05)
+        else:
+            weight_class = 1.0 / (weight_class + 1e-6)  # Avoid division by zero and normalize
         self.model.loss_fn.weights = weight_class  # Assign weights to the loss function
         self.model.loss_fn.weights = self.model.loss_fn.weights.to(
             self.model.device)  # Move to the same device as the model

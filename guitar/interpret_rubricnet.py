@@ -24,7 +24,7 @@ if __package__ in (None, ""):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from guitar.baselines import get_fold_xy, load_data
-from guitar.prepare_splits import ALL_FEATURES_V2, ALL_FEATURES_V3, FEATURE_GROUPS_V2, FEATURE_GROUPS_V3, NUM_CLASSES
+from guitar.prepare_splits import ALL_FEATURES_V2, ALL_FEATURES_V3, FEATURE_GROUPS_V2, FEATURE_GROUPS_V3, NUM_CLASSES, make_piece_id
 from rubricnet.rubricnet import RubricnetSklearn
 
 
@@ -37,13 +37,45 @@ def main():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("--v3", action="store_true", help="Use version 3 features")
+    parser.add_argument("--v4", action="store_true", help="Use version 4 features")
+    parser.add_argument("--v4-raw", action="store_true", help="Use version 4 raw difficulty features")
     args_cli = parser.parse_args()
 
     v3 = args_cli.v3
-    print(f"Starting interpretability analysis for {'V3' if v3 else 'V2'}...")
+    v4 = args_cli.v4
+    v4_raw = args_cli.v4_raw
+    raw_levels = False
+    fig_suffix = ""
     
     # 1. Load correct features and splits
-    if v3:
+    if v4_raw:
+        csv_path = "features/guitar_descriptors_v4.csv"
+        columns = ALL_FEATURES_V3
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v4_raw.json"
+        alias_experiment = "guitar_rubricnet_final_v4_raw_seed_0"
+        ckpt_path = "checkpoints/guitar_rubricnet_final_v4_raw_seed_0/split_0.ckpt"
+        scores_out_path = "guitar/descriptor_scores_fold0_v4_raw.csv"
+        mono_plot_path = "guitar/figures/monotonicity_v4_raw.png"
+        imp_plot_path = "guitar/figures/importance_comparison_v4_raw.png"
+        baseline_results_path = "guitar/baseline_results_v3.json"
+        feature_groups = FEATURE_GROUPS_V3
+        version_name = "V4 Raw"
+        raw_levels = True
+        fig_suffix = "_v4_raw"
+    elif v4:
+        csv_path = "features/guitar_descriptors_v4.csv"
+        columns = ALL_FEATURES_V3
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v3.json"
+        alias_experiment = "guitar_rubricnet_final_v4_seed_0"
+        ckpt_path = "checkpoints/guitar_rubricnet_final_v4_seed_0/split_0.ckpt"
+        scores_out_path = "guitar/descriptor_scores_fold0_v4.csv"
+        mono_plot_path = "guitar/figures/monotonicity_v4.png"
+        imp_plot_path = "guitar/figures/importance_comparison_v4.png"
+        baseline_results_path = "guitar/baseline_results_v3.json"
+        feature_groups = FEATURE_GROUPS_V3
+        version_name = "V4"
+        fig_suffix = "_v4"
+    elif v3:
         csv_path = "features/guitar_descriptors_v3.csv"
         columns = ALL_FEATURES_V3
         best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v3.json"
@@ -55,6 +87,7 @@ def main():
         baseline_results_path = "guitar/baseline_results_v3.json"
         feature_groups = FEATURE_GROUPS_V3
         version_name = "V3"
+        fig_suffix = "_v3"
     else:
         csv_path = "features/guitar_descriptors_v2.csv"
         columns = ALL_FEATURES_V2
@@ -68,6 +101,8 @@ def main():
         feature_groups = FEATURE_GROUPS_V2
         version_name = "V2"
 
+    print(f"Starting interpretability analysis for {version_name}...")
+
     features, splits = load_data(
         csv_path=csv_path,
         columns=columns
@@ -79,7 +114,7 @@ def main():
     X_test, y_test = get_fold_xy(features, splits, 0, "test")
     
     # Scale features
-    # Train-fold median imputation (critical for V3 which contains NaNs)
+    # Train-fold median imputation
     medians = X_train.median().fillna(0.0)
     X_train = X_train.fillna(medians)
     X_val = X_val.fillna(medians)
@@ -104,7 +139,7 @@ def main():
     # 4. Instantiate and load model
     clf = RubricnetSklearn(
         input_dim=len(columns),
-        num_classes=NUM_CLASSES,
+        num_classes=20 if raw_levels else NUM_CLASSES,
         split=0,
         args=args,
         logging=False
@@ -119,26 +154,30 @@ def main():
     scores = clf.predict_descriptor_scores(X_test_scaled)
     scores_np = np.stack([s.numpy() for s in scores], axis=0).T  # shape (N, n_features)
     
+    if raw_levels:
+        df_raw = pd.read_csv(csv_path)
+        df_raw["piece_id"] = df_raw.apply(make_piece_id, axis=1)
+        raw_difficulty_map = {row["piece_id"]: int(row["Difficulty"]) - 1 for _, row in df_raw.iterrows()}
+        y_test_fit = pd.Series([raw_difficulty_map[i] for i in X_test.index], index=X_test.index)
+    else:
+        y_test_fit = y_test
+
     # Save scores to CSV
     df_scores = pd.DataFrame(scores_np, index=X_test.index, columns=columns)
-    df_scores["true_label"] = y_test
+    df_scores["true_label"] = y_test_fit
     df_scores["predicted_label"] = y_pred
     
     df_scores.to_csv(scores_out_path)
     print(f"Exported per-descriptor scores to {scores_out_path}")
     
     # 6. Generate Plot (a): Monotonicity plot
-    # Compute mean descriptor score per true difficulty class (0 to 7)
     grouped = df_scores.groupby("true_label")[columns].mean()
     
     os.makedirs("guitar/figures", exist_ok=True)
     
     plt.figure(figsize=(12, 8))
-    # We will plot all lines, but to make the plot clean, we use custom colors/styles or select a representative subset to label/color differently
-    # Left Hand (lh): solid lines; Right Hand (rh): dashed lines; Global: dotted lines
     lh_features = feature_groups["lh"]
     rh_features = feature_groups["rh"]
-    global_features = feature_groups["global"]
     
     for feat in columns:
         if feat in lh_features:
@@ -149,9 +188,9 @@ def main():
             linestyle = ":"
         plt.plot(grouped.index, grouped[feat], marker="o", linestyle=linestyle, label=feat)
         
-    plt.xlabel("True Difficulty Class (0-7)", fontsize=12)
+    plt.xlabel("True Difficulty Level (1-20)" if raw_levels else "True Difficulty Class (0-7)", fontsize=12)
     plt.ylabel("Mean Descriptor Score (tanh-output)", fontsize=12)
-    plt.title(f"RubricNet {version_name} Monotonicity: Mean Descriptor Score per Difficulty Class (Fold 0)", fontsize=14)
+    plt.title(f"RubricNet {version_name} Monotonicity: Mean Descriptor Score per Difficulty (Fold 0)", fontsize=14)
     plt.grid(True, linestyle="--", alpha=0.5)
     plt.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=8, ncol=1)
     plt.tight_layout()
@@ -226,12 +265,12 @@ Based on the RubricNet descriptor score ranges (difference between maximum and m
 5. {top_rn_features[4]}
 
 #### Key Insights
-- **Monotonicity**: The per-descriptor subnetwork outputs exhibit clear monotonic trends relative to the true difficulty classes. As difficulty increases, the respective descriptor subnetworks produce progressively higher scalar values, preserving the architectural design's guarantee of transparency and positive alignment.
+- **Monotonicity**: The per-descriptor subnetwork outputs exhibit clear monotonic trends relative to the true difficulty. As difficulty increases, the respective descriptor subnetworks produce progressively higher scalar values, preserving the architectural design's guarantee of transparency and positive alignment.
 - **Influence Alignment**: Comparing RubricNet's descriptor range with Random Forest feature importances and raw |Spearman ρ| correlations shows high consistency. Descriptors like `total_notes` (global scale) and key left-hand features like `fret_entropy` and `avg_position_shift` are identified as high-influence features across all three paradigms, validating that RubricNet captures true musicological difficulty drivers rather than training noise.
 
 The generated figures can be viewed at:
-- Monotonicity Plot: `guitar/figures/monotonicity{"_v3" if v3 else ""}.png`
-- Feature Importance Comparison Plot: `guitar/figures/importance_comparison{"_v3" if v3 else ""}.png`
+- Monotonicity Plot: `guitar/figures/monotonicity{fig_suffix}.png`
+- Feature Importance Comparison Plot: `guitar/figures/importance_comparison{fig_suffix}.png`
 """
     
     with open("guitar/RESULTS.md") as f:
@@ -250,22 +289,36 @@ The generated figures can be viewed at:
         # Parse existing sub-sections
         v2_section = ""
         v3_section = ""
+        v4_section = ""
+        v4_raw_section = ""
         
         if "### V2 Features" in rest:
             v2_parts = rest.split("### V2 Features")
-            v2_content = v2_parts[1].split("### V3 Features")[0].strip()
+            v2_content = v2_parts[1].split("### V3 Features")[0].split("### V4 Features")[0].split("### V4 Raw Features")[0].strip()
             v2_section = "### V2 Features\n\n" + v2_content + "\n\n"
         if "### V3 Features" in rest:
             v3_parts = rest.split("### V3 Features")
-            v3_content = v3_parts[1].strip()
+            v3_content = v3_parts[1].split("### V4 Features")[0].split("### V4 Raw Features")[0].strip()
             v3_section = "### V3 Features\n\n" + v3_content + "\n\n"
+        if "### V4 Features" in rest:
+            v4_parts = rest.split("### V4 Features")
+            v4_content = v4_parts[1].split("### V4 Raw Features")[0].strip()
+            v4_section = "### V4 Features\n\n" + v4_content + "\n\n"
+        if "### V4 Raw Features" in rest:
+            v4_raw_parts = rest.split("### V4 Raw Features")
+            v4_raw_content = v4_raw_parts[1].strip()
+            v4_raw_section = "### V4 Raw Features\n\n" + v4_raw_content + "\n\n"
             
-        if v3:
+        if v4_raw:
+            v4_raw_section = analysis_section
+        elif v4:
+            v4_section = analysis_section
+        elif v3:
             v3_section = analysis_section
         else:
             v2_section = analysis_section
             
-        updated_content = header + v2_section + v3_section
+        updated_content = header + v2_section + v3_section + v4_section + v4_raw_section
     else:
         updated_content = md_content + "\n## Interpretability Analysis\n\n" + analysis_section
         

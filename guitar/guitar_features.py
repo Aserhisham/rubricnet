@@ -628,6 +628,429 @@ def get_chords_from_pdf(filepath):
     return all_chords, tempo_bpm
 
 
+def get_timed_chords_from_xml_v4(filepath):
+    try:
+        tree = ET.parse(filepath)
+    except Exception as e:
+        print(f"Error parsing XML {filepath}: {e}")
+        return None, None, None, None, False
+    root = tree.getroot()
+
+    tempo_bpm = None
+    for sound in root.findall('.//sound'):
+        t = sound.get('tempo')
+        if t:
+            try:
+                tempo_bpm = int(float(t))
+                break
+            except Exception:
+                pass
+
+    events = []          # {'fret','string','onset'}
+    technique_count = 0
+    total_note_count = 0
+    types_seen = set()
+
+    parts = root.findall('.//part') or [root]
+    for part in parts:
+        divisions = 1
+        cur_time = 0.0   # beats (quarter notes) from part start
+        last_onset = 0.0
+        for measure in part.findall('.//measure'):
+            for el in measure:
+                tag = el.tag
+                if tag == 'attributes':
+                    d = el.find('divisions')
+                    if d is not None and d.text:
+                        try:
+                            divisions = int(d.text) or divisions
+                        except Exception:
+                            pass
+                elif tag == 'backup':
+                    d = el.find('duration')
+                    if d is not None and d.text:
+                        try:
+                            cur_time -= int(d.text) / divisions
+                        except Exception:
+                            pass
+                elif tag == 'forward':
+                    d = el.find('duration')
+                    if d is not None and d.text:
+                        try:
+                            cur_time += int(d.text) / divisions
+                        except Exception:
+                            pass
+                elif tag == 'note':
+                    is_chord = el.find('chord') is not None
+                    is_rest = el.find('rest') is not None
+                    d = el.find('duration')
+                    dur = 0.0
+                    if d is not None and d.text:
+                        try:
+                            dur = int(d.text) / divisions
+                        except Exception:
+                            dur = 0.0
+                    onset = last_onset if is_chord else cur_time
+
+                    fret = el.find('.//fret')
+                    string = el.find('.//string')
+                    if not is_rest and fret is not None and string is not None:
+                        try:
+                            events.append({
+                                'fret': int(fret.text),
+                                'string': int(string.text),
+                                'onset': onset,
+                            })
+                            total_note_count += 1
+                            tp = el.find('type')
+                            if tp is not None and tp.text:
+                                types_seen.add(tp.text)
+                            notations = el.find('notations')
+                            if notations is not None:
+                                technical = notations.find('technical')
+                                if technical is not None:
+                                    for name in ('hammer-on', 'pull-off', 'slide'):
+                                        if technical.find(name) is not None:
+                                            technique_count += 1
+                                            break
+                                if notations.find('slur') is not None:
+                                    technique_count += 1
+                                ornaments = notations.find('ornaments')
+                                if ornaments is not None and ornaments.find('tremolo') is not None:
+                                    technique_count += 1
+                        except Exception:
+                            pass
+
+                    if not is_chord:
+                        last_onset = onset
+                        cur_time += dur
+
+    if not events:
+        return None, None, tempo_bpm, None, False
+
+    # Group simultaneous notes into chord events, ordered in time.
+    events.sort(key=lambda e: e['onset'])
+    chords, onsets, cur, cur_onset = [], [], [], None
+    for e in events:
+        o = round(e['onset'], 4)
+        if cur and abs(o - cur_onset) > 1e-6:
+            chords.append(cur)
+            onsets.append(cur_onset)
+            cur = []
+        cur.append({'fret': e['fret'], 'string': e['string']})
+        cur_onset = o
+    if cur:
+        chords.append(cur)
+        onsets.append(cur_onset)
+
+    technique_ratio = technique_count / total_note_count if total_note_count > 0 else 0
+    has_rhythm = len(types_seen) > 1
+    return chords, onsets, tempo_bpm, technique_ratio, has_rhythm
+
+
+def calculate_descriptors_from_chords_v4(chords):
+    if not chords:
+        return {}
+
+    features = {}
+    total_notes   = sum(len(c) for c in chords)
+    barre_count   = 0
+    total_stretch = 0
+    max_stretch   = 0
+    chord_count   = 0  # multi-note chords with at least one fretted note
+    avg_frets     = []
+
+    # ── LH: barre, stretch, position ────────────────────────────────────────
+    first_fretted_pos = 0.0
+    for c in chords:
+        fixed_frets = [n['fret'] for n in c if n['fret'] > 0]
+        if fixed_frets:
+            first_fretted_pos = float(np.mean(fixed_frets))
+            break
+
+    last_pos = first_fretted_pos
+    for c in chords:
+        fs          = [n['fret'] for n in c]
+        fixed_frets = [f for f in fs if f > 0]
+        
+        if fixed_frets:
+            last_pos = float(np.mean(fixed_frets))
+        avg_frets.append(last_pos)
+
+        if len(c) > 1 and fixed_frets:
+            min_fret = min(fixed_frets)
+            barre_strings = [n['string'] for n in c if n['fret'] == min_fret]
+            is_barre = False
+            if len(barre_strings) >= 2:
+                if max(barre_strings) - min(barre_strings) >= 2:
+                    is_barre = True
+            
+            if is_barre:
+                barre_count += 1
+            stretch        = max(fixed_frets) - min(fixed_frets)
+            total_stretch += stretch
+            max_stretch    = max(max_stretch, stretch)
+            chord_count   += 1
+
+    features['barre_ratio']      = barre_count / len(chords)
+    features['avg_chord_stretch'] = total_stretch / chord_count if chord_count else 0
+    features['max_chord_stretch'] = max_stretch
+
+    shifts = np.abs(np.diff(avg_frets))
+    features['avg_position_shift'] = float(np.mean(shifts)) if len(shifts) else 0
+
+    # fret_change_rate
+    fret_sets     = [frozenset(n['fret'] for n in c) for c in chords]
+    fret_changes  = sum(1 for i in range(1, len(chords)) if fret_sets[i] != fret_sets[i - 1])
+    features['fret_change_rate'] = fret_changes / (total_notes - 1) if total_notes > 1 else 0
+
+    # ── RH: string jumps, arpeggio density ──────────────────────────────────
+    string_jumps        = []
+    single_transitions  = 0
+    string_changes      = 0
+
+    for i in range(1, len(chords)):
+        p_strs   = [n['string'] for n in chords[i - 1]]
+        c_strs   = [n['string'] for n in chords[i]]
+        min_dist = min(abs(s1 - s2) for s1 in p_strs for s2 in c_strs)
+        string_jumps.append(min_dist)
+
+        if len(chords[i - 1]) == 1 and len(chords[i]) == 1:
+            single_transitions += 1
+            if chords[i - 1][0]['string'] != chords[i][0]['string']:
+                string_changes += 1
+
+    features['arpeggio_density'] = string_changes / single_transitions if single_transitions else 0
+    features['avg_string_jump']  = float(np.mean(string_jumps)) if string_jumps else 0
+    features['max_string_jump']  = int(max(string_jumps)) if string_jumps else 0
+    features['special_technique_ratio'] = 0
+
+    # ── Global ───────────────────────────────────────────────────────────────
+    features['avg_polyphony'] = total_notes / len(chords)
+    features['total_notes']   = total_notes
+
+    return features
+
+
+def calculate_descriptors_v2_v4(chords):
+    features = calculate_descriptors_from_chords_v4(chords)
+    if not chords:
+        new_feats = {
+            'log_total_notes': 0.0,
+            'avg_fret': 0.0,
+            'p90_fret': 0.0,
+            'high_position_ratio': 0.0,
+            'open_string_ratio': 0.0,
+            'p90_chord_stretch': 0.0,
+            'chord_ratio': 0.0,
+            'avg_string_span': 0.0,
+            'unique_shape_rate': 0.0,
+            'shift_rate': 0.0,
+            'max_position_shift': 0.0,
+            'std_position_shift': 0.0,
+            'fret_entropy': 0.0,
+            'string_entropy': 0.0,
+            'repetition_ratio': 0.0
+        }
+        features.update(new_feats)
+        return features
+
+    all_notes = [n for c in chords for n in c]
+    total_notes = len(all_notes)
+    all_frets = [n['fret'] for n in all_notes]
+    all_strings = [n['string'] for n in all_notes]
+
+    features['log_total_notes'] = float(np.log1p(total_notes))
+
+    if all_frets:
+        features['avg_fret'] = float(np.mean(all_frets))
+        features['p90_fret'] = float(np.percentile(all_frets, 90))
+        features['high_position_ratio'] = float(sum(1 for f in all_frets if f >= 7) / len(all_frets))
+        features['open_string_ratio'] = float(sum(1 for f in all_frets if f == 0) / len(all_frets))
+    else:
+        features['avg_fret'] = 0.0
+        features['p90_fret'] = 0.0
+        features['high_position_ratio'] = 0.0
+        features['open_string_ratio'] = 0.0
+
+    stretches = []
+    for c in chords:
+        fs = [n['fret'] for n in c]
+        fixed_frets = [f for f in fs if f > 0]
+        if len(c) > 1 and fixed_frets:
+            stretches.append(max(fixed_frets) - min(fixed_frets))
+    
+    if stretches:
+        features['p90_chord_stretch'] = float(np.percentile(stretches, 90))
+    else:
+        features['p90_chord_stretch'] = 0.0
+
+    features['chord_ratio'] = float(sum(1 for c in chords if len(c) >= 2) / len(chords))
+
+    spans = [max(n['string'] for n in c) - min(n['string'] for n in c) for c in chords if len(c) >= 2]
+    features['avg_string_span'] = float(np.mean(spans)) if spans else 0.0
+
+    shapes = [tuple(sorted((n['string'], n['fret']) for n in c)) for c in chords if len(c) >= 2]
+    features['unique_shape_rate'] = float(len(set(shapes)) / len(shapes)) if shapes else 0.0
+
+    # Hand positions without open strings
+    first_fretted_pos = 0.0
+    for c in chords:
+        fixed_frets = [n['fret'] for n in c if n['fret'] > 0]
+        if fixed_frets:
+            first_fretted_pos = float(np.mean(fixed_frets))
+            break
+
+    avg_frets = []
+    last_pos = first_fretted_pos
+    for c in chords:
+        fixed_frets = [n['fret'] for n in c if n['fret'] > 0]
+        if fixed_frets:
+            last_pos = float(np.mean(fixed_frets))
+        avg_frets.append(last_pos)
+
+    if len(chords) >= 2:
+        diffs = np.abs(np.diff(avg_frets))
+        features['shift_rate'] = float(np.mean(diffs > 2))
+        features['max_position_shift'] = float(np.max(diffs))
+        features['std_position_shift'] = float(np.std(diffs))
+    else:
+        features['shift_rate'] = 0.0
+        features['max_position_shift'] = 0.0
+        features['std_position_shift'] = 0.0
+
+    if all_frets:
+        counts = Counter(all_frets)
+        probs = [cnt / len(all_frets) for cnt in counts.values()]
+        features['fret_entropy'] = float(-sum(p * np.log2(p) for p in probs))
+    else:
+        features['fret_entropy'] = 0.0
+
+    if all_strings:
+        counts = Counter(all_strings)
+        probs = [cnt / len(all_strings) for cnt in counts.values()]
+        features['string_entropy'] = float(-sum(p * np.log2(p) for p in probs))
+    else:
+        features['string_entropy'] = 0.0
+
+    if len(chords) >= 2:
+        chord_sets = [frozenset((n['string'], n['fret']) for n in c) for c in chords]
+        repeated = sum(1 for i in range(1, len(chords)) if chord_sets[i] == chord_sets[i - 1])
+        features['repetition_ratio'] = float(repeated / (len(chords) - 1))
+    else:
+        features['repetition_ratio'] = 0.0
+
+    return features
+
+
+def calculate_descriptors_v4(chords, onsets=None, has_rhythm=True):
+    features = calculate_descriptors_v2_v4(chords)
+    
+    rhythm_feats = {
+        'max_avg_chord_stretch_window': np.nan,
+        'p95_position_shift_window': np.nan,
+        'max_note_density_window': np.nan,
+        'avg_stretch_velocity_beats': np.nan,
+        'p90_stretch_velocity_beats': np.nan,
+        'avg_position_shift_speed_beats': np.nan,
+        'max_position_shift_speed_beats': np.nan,
+        'polyphonic_arpeggio_intensity_beats': np.nan
+    }
+    features.update(rhythm_feats)
+    
+    if not has_rhythm or onsets is None or not chords or len(onsets) != len(chords):
+        return features
+
+    # Precompute hand positions without open strings averaged, fallback to previous position
+    first_fretted_pos = 0.0
+    for c in chords:
+        fixed_frets = [n['fret'] for n in c if n['fret'] > 0]
+        if fixed_frets:
+            first_fretted_pos = float(np.mean(fixed_frets))
+            break
+
+    hand_positions = []
+    last_pos = first_fretted_pos
+    for c in chords:
+        fixed_frets = [n['fret'] for n in c if n['fret'] > 0]
+        if fixed_frets:
+            last_pos = float(np.mean(fixed_frets))
+        hand_positions.append(last_pos)
+
+    W = 16.0
+    window_densities = []
+    window_avg_stretches = []
+    window_p95_shifts = []
+
+    for i, t_start in enumerate(onsets):
+        t_end = t_start + W
+        window_indices = [j for j, o in enumerate(onsets) if t_start <= o < t_end]
+        if not window_indices:
+            continue
+        
+        total_notes_win = sum(len(chords[j]) for j in window_indices)
+        window_densities.append(total_notes_win / W)
+        
+        win_stretches = []
+        for j in window_indices:
+            c = chords[j]
+            fixed_frets = [n['fret'] for n in c if n['fret'] > 0]
+            if len(c) > 1 and fixed_frets:
+                win_stretches.append(max(fixed_frets) - min(fixed_frets))
+        if win_stretches:
+            window_avg_stretches.append(float(np.mean(win_stretches)))
+            
+        win_shifts = []
+        for idx in range(len(window_indices) - 1):
+            j1 = window_indices[idx]
+            j2 = window_indices[idx + 1]
+            if j2 == j1 + 1:
+                win_shifts.append(abs(hand_positions[j2] - hand_positions[j1]))
+        if win_shifts:
+            window_p95_shifts.append(float(np.percentile(win_shifts, 95)))
+            
+    features['max_note_density_window'] = float(np.max(window_densities)) if window_densities else 0.0
+    features['max_avg_chord_stretch_window'] = float(np.max(window_avg_stretches)) if window_avg_stretches else 0.0
+    features['p95_position_shift_window'] = float(np.max(window_p95_shifts)) if window_p95_shifts else 0.0
+
+    stretch_velocities = []
+    for idx in range(len(chords) - 1):
+        c = chords[idx]
+        fixed_frets = [n['fret'] for n in c if n['fret'] > 0]
+        if len(c) > 1 and fixed_frets:
+            stretch = max(fixed_frets) - min(fixed_frets)
+            dt = onsets[idx + 1] - onsets[idx]
+            stretch_velocities.append(stretch / max(dt, 0.0625))
+            
+    if stretch_velocities:
+        features['avg_stretch_velocity_beats'] = float(np.mean(stretch_velocities))
+        features['p90_stretch_velocity_beats'] = float(np.percentile(stretch_velocities, 90))
+    else:
+        features['avg_stretch_velocity_beats'] = 0.0
+        features['p90_stretch_velocity_beats'] = 0.0
+
+    shift_speeds = []
+    for idx in range(len(chords) - 1):
+        shift = abs(hand_positions[idx + 1] - hand_positions[idx])
+        dt = onsets[idx + 1] - onsets[idx]
+        shift_speeds.append(shift / max(dt, 0.0625))
+        
+    if shift_speeds:
+        features['avg_position_shift_speed_beats'] = float(np.mean(shift_speeds))
+        features['max_position_shift_speed_beats'] = float(np.percentile(shift_speeds, 95))
+    else:
+        features['avg_position_shift_speed_beats'] = 0.0
+        features['max_position_shift_speed_beats'] = 0.0
+
+    total_duration = onsets[-1] - onsets[0]
+    total_notes = sum(len(c) for c in chords)
+    avg_polyphony = features.get('avg_polyphony', total_notes / len(chords))
+    note_density = total_notes / max(total_duration, 1.0)
+    features['polyphonic_arpeggio_intensity_beats'] = float(note_density * avg_polyphony)
+
+    return features
+
+
 def parse_guitar_pdf(filepath):
     chords, tempo_bpm = get_chords_from_pdf(filepath)
     if chords is None:

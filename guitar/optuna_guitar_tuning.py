@@ -22,12 +22,14 @@ if __package__ in (None, ""):
 from statistics import mean, stdev
 
 import optuna
+import pandas as pd
 from sklearn.metrics import balanced_accuracy_score, mean_squared_error
 from sklearn.preprocessing import StandardScaler
 
 from guitar.baselines import get_fold_xy, load_data
-from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED, FEATURE_GROUPS, NUM_CLASSES
+from guitar.prepare_splits import ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED, FEATURE_GROUPS, NUM_CLASSES, make_piece_id
 from rubricnet.rubricnet import RubricnetSklearn
+from guitar.train_guitar_rubricnet import map_20_to_8_numpy
 
 N_SPLITS = 5
 
@@ -36,10 +38,8 @@ FEATURE_SETS = {
     "guitar_all_v2": ALL_FEATURES_V2,
     "guitar_all_v3": ALL_FEATURES_V3,
     "guitar_all_v3_pruned": ALL_FEATURES_V3_PRUNED,
-    # Same columns as guitar_all_v3; distinct key so this retune (which adds
-    # label_smoothing_temp to the search space) writes to its own study/output
-    # file instead of overwriting the frozen Phase D best_hyperparams_guitar_all_v3.json.
     "guitar_all_v3_smooth": ALL_FEATURES_V3,
+    "guitar_all_v4": ALL_FEATURES_V3,
     "lh_only": FEATURE_GROUPS["lh"],
     "rh_only": FEATURE_GROUPS["rh"],
     "global_only": FEATURE_GROUPS["global"],
@@ -49,6 +49,8 @@ FEATURE_SETS = {
 # Set by main() before study.optimize() so objective() can see them.
 FEATURES = "guitar_all"
 FEATURES_DATA, SPLITS_DATA = None, None
+RAW_DIFFICULTY_MAP = None
+RAW_LEVELS = False
 
 
 class Args:
@@ -75,11 +77,14 @@ def objective(trial):
         dropout=trial.suggest_float("dropout", 0.1, 0.5),
         decay_lr=trial.suggest_float("decay_lr", 0.3, 0.9),
         lr=trial.suggest_float("lr", 5e-3, 1e-1, log=True),
-        # Manual sweep (T=0.15/0.3/0.6 on the frozen v3 hyperparams) found a small
-        # win at T=0.15 and degradation above it, so search a range centered there
-        # jointly with the other hyperparameters rather than reusing them as-is.
         label_smoothing_temp=trial.suggest_float("label_smoothing_temp", 0.0, 0.4),
     )
+
+    # Clean old checkpoints for this trial to avoid versioning conflicts
+    import shutil
+    checkpoint_dir = f"checkpoints/{args.alias_experiment}"
+    if os.path.exists(checkpoint_dir):
+        shutil.rmtree(checkpoint_dir)
 
     n_features = FEATURES_DATA.shape[1]
     acc_val, acc_test, mse_val, mse_test = [], [], [], []
@@ -97,21 +102,43 @@ def objective(trial):
 
         scaler = StandardScaler().fit(X_train)
 
-        clf = RubricnetSklearn(input_dim=n_features, num_classes=NUM_CLASSES, split=split, args=args, logging=False)
+        clf = RubricnetSklearn(
+            input_dim=n_features,
+            num_classes=20 if RAW_LEVELS else NUM_CLASSES,
+            split=split,
+            args=args,
+            logging=False
+        )
+
+        if RAW_LEVELS:
+            y_train_fit = pd.Series([RAW_DIFFICULTY_MAP[i] for i in X_train.index], index=X_train.index)
+            y_val_fit = pd.Series([RAW_DIFFICULTY_MAP[i] for i in X_val.index], index=X_val.index)
+            y_test_fit = pd.Series([RAW_DIFFICULTY_MAP[i] for i in X_test.index], index=X_test.index)
+        else:
+            y_train_fit, y_val_fit, y_test_fit = y_train, y_val, y_test
+
         clf.fit(
-            scaler.transform(X_train), y_train,
-            scaler.transform(X_val), y_val,
-            scaler.transform(X_test), y_test,
+            scaler.transform(X_train), y_train_fit,
+            scaler.transform(X_val), y_val_fit,
+            scaler.transform(X_test), y_test_fit,
         )
         clf.load_model(f"checkpoints/{args.alias_experiment}/split_{split}.ckpt")
 
         pred_val = clf.predict(scaler.transform(X_val)).cpu().numpy()
         pred_test = clf.predict(scaler.transform(X_test)).cpu().numpy()
 
+        if RAW_LEVELS:
+            pred_val = map_20_to_8_numpy(pred_val)
+            pred_test = map_20_to_8_numpy(pred_test)
+
         acc_val.append(balanced_accuracy_score(y_val, pred_val))
         acc_test.append(balanced_accuracy_score(y_test, pred_test))
         mse_val.append(get_mse_macro(y_val, pred_val))
         mse_test.append(get_mse_macro(y_test, pred_test))
+
+    # Clean up checkpoint directory to save disk space
+    if os.path.exists(checkpoint_dir):
+        shutil.rmtree(checkpoint_dir)
 
     trial.set_user_attr("acc_test", mean(acc_test))
     trial.set_user_attr("acc_test_std", stdev(acc_test))
@@ -121,25 +148,38 @@ def objective(trial):
 
 
 def main():
-    global FEATURES, FEATURES_DATA, SPLITS_DATA
+    global FEATURES, FEATURES_DATA, SPLITS_DATA, RAW_DIFFICULTY_MAP, RAW_LEVELS
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--features", default="guitar_all", choices=list(FEATURE_SETS))
     parser.add_argument("--n-trials", type=int, default=20)
     parser.add_argument("--study-name", default=None)
+    parser.add_argument("--v4", action="store_true", help="Use V4 features")
+    parser.add_argument("--raw-levels", action="store_true", help="Train on raw 1-20 difficulty levels")
     cli_args = parser.parse_args()
 
     FEATURES = cli_args.features
+    RAW_LEVELS = cli_args.raw_levels
     study_name = cli_args.study_name or f"guitar_rubricnet_{FEATURES}"
+    if RAW_LEVELS:
+        study_name = f"{study_name}_raw"
     
     # Load correct CSV path dynamically
-    if "_v3" in FEATURES:
+    if cli_args.v4 or "v4" in FEATURES:
+        csv_path = "features/guitar_descriptors_v4.csv"
+    elif "_v3" in FEATURES:
         csv_path = "features/guitar_descriptors_v3.csv"
     elif "_v2" in FEATURES:
         csv_path = "features/guitar_descriptors_v2.csv"
     else:
         csv_path = "features/guitar_descriptors.csv"
+        
     FEATURES_DATA, SPLITS_DATA = load_data(csv_path=csv_path, columns=FEATURE_SETS[FEATURES])
+
+    if RAW_LEVELS:
+        df_raw = pd.read_csv(csv_path)
+        df_raw["piece_id"] = df_raw.apply(make_piece_id, axis=1)
+        RAW_DIFFICULTY_MAP = {row["piece_id"]: int(row["Difficulty"]) - 1 for _, row in df_raw.iterrows()}
 
     sqlite_url = f"sqlite:///guitar/{study_name}.db"
     study = optuna.create_study(
@@ -161,7 +201,11 @@ def main():
     print(f"  test: acc={best.user_attrs['acc_test']:.4f} mse={best.user_attrs['mse_test']:.4f}")
     print(f"  params: {best.params}")
 
-    out_path = f"guitar/best_hyperparams_{FEATURES}.json"
+    out_path = f"guitar/best_hyperparams_{FEATURES}"
+    if RAW_LEVELS:
+        out_path = f"{out_path}_raw"
+    out_path = f"{out_path}.json"
+    
     with open(out_path, "w") as f:
         json.dump({"features": FEATURES, "params": best.params, "trial_number": best.number}, f, indent=2)
     print(f"\nWrote {out_path}")

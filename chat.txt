@@ -1,0 +1,86 @@
+1. The headline claim is not yet statistically defensible — this is the biggest risk
+RubricNet V3 "beats RF" at 0.2911 ± 0.0278 balanced accuracy vs RF's 0.2888 ± 0.0185. That difference (0.0023) is a tenth of your standard deviation. An examiner will spot this immediately. What to do:
+
+Run paired significance tests. You have identical folds for every model, so use paired comparisons: per-fold differences, Wilcoxon signed-rank or a paired t-test over folds. Report the p-value even if it's not significant — "statistically indistinguishable from RF while fully interpretable" is still a strong thesis claim (matching a black box at equal accuracy with interpretability is a win, and it's exactly how the original RubricNet paper frames itself).
+Make the RF baseline fair before claiming victory over it. Right now the comparison is tilted in ways an examiner could attack:
+RF is a plain classifier with default settings (baselines.py:199) while RubricNet got a multi-objective Optuna search. Tune RF too (depth, min_samples_leaf, class_weight).
+RubricNet gets aggressive class balancing; RF gets none. Add class_weight="balanced" as an RF variant.
+For MAE/MSE/τ, the right black-box competitor is a RandomForestRegressor with rounding (or a gradient-boosted ordinal model). A classifier RF ignores class order, so beating it on MAE/τ is expected. If RubricNet still matches an ordinal-aware RF on MAE, the claim is much stronger.
+Fill in the table gaps: Acc±1 and Kendall τ are "N/A" for every baseline in RESULTS.md. They're one line each to compute — do it, so all models are compared on all metrics.
+Consider adding Quadratic Weighted Kappa, the standard ordinal-task metric; reviewers of MIR difficulty papers expect it.
+2. The RQ3 ablation is wired to the wrong features
+Your thesis's RQ3 (does LH + RH + Global beat any single dimension?) is served by the lh_only/rh_only/global_only sets in optuna_guitar_tuning.py:43-46 — but those point at the V1 FEATURE_GROUPS, and the CSV-path logic would load the V1 feature file. If you run the ablation as-is it will silently answer RQ3 for the obsolete feature set. Add lh_only_v3 / rh_only_v3 / global_only_v3 keys backed by FEATURE_GROUPS_V3 (the group structure already exists in prepare_splits.py:79-94). This ablation is a whole research question and hasn't been run yet — it's probably your highest-value pending experiment.
+
+3. Feature-extraction correctness issues (real, fixable, on-theme)
+The project already proved once (the PDF fret-corruption episode) that parser bugs silently cap performance. I found several more candidates:
+
+The barre detector misses the most common barre in guitar: the full F-major shape. guitar_features.py:473-481 requires ≥3 notes on the same fret on 3 adjacent strings. F major (1-3-3-2-1-1) has fret 1 on strings 6, 2, 1 — not adjacent — so the canonical barre chord is not counted. E-shape and most movable barres have interior strings fretted higher, so they fail too. A better rule: ≥2 strings at the same minimum fret of the chord, spanning ≥3 strings, with no fretted note below it. Given barre_ratio is a pedagogically central descriptor for guitar, this undercount could be materially hurting both accuracy and the interpretability story.
+Position shifts include open strings in the "hand position" estimate. avg_frets.append(np.mean(fs)) at guitar_features.py:466 (and again in the v3 shift-speed code at guitar_features.py:421-424) averages fret 0 into the position. A melody at fret 7 over an open bass reads as "position 3.5", so alternating open/fretted notes manufactures large phantom shifts. Hand position should be estimated from fretted notes only (fall back to the previous position for all-open chords). This affects avg_position_shift, shift_rate, max_position_shift, std_position_shift, and all the v3 shift-speed features — a big slice of your LH group.
+max_position_shift_speed_beats is dominated by the dt floor. With dt floored at 0.01 beats (guitar_features.py:410,427), two onsets that are near-simultaneous due to rounding produce speeds of 100× the shift. You wisely used p90 for stretch velocity but max for shift speed — switch to p95, or floor dt at a musically meaningful value (e.g. 1/16 beat).
+divisions leaks across parts in the timed parser (guitar_features.py:113-114): it's initialized once outside the part loop, so a second part that doesn't declare divisions inherits the previous part's. Also, events from all parts get merged into single chords by onset — fine for solo scores, but if any file has two parts (duet, or a converter that split voices into parts), polyphony and stretch inflate. Worth one audit pass over all_xmls counting parts per file.
+You're sitting on unused pitch information. You only read fret+string, but pitch = string tuning + fret. That unlocks a whole family of cheap, pedagogically meaningful descriptors: melodic interval sizes, chromaticism (out-of-key ratio), pitch range, scale-run detection (stepwise runs at high note density = a classic difficulty driver), tremolo detection (rapid same-pitch repetition — a hallmark of advanced repertoire like Recuerdos de la Alhambra). Your RH group is the weakest (2 of 6 features audited as dead) and this is where new RH-ish signal could come from.
+After fixing the barre/position bugs, re-run the Spearman audit — that's your established, cheap gate for whether a fix mattered.
+
+4. Training/balancing machinery worth auditing (inherited from the piano code)
+You are double-balancing, despite the invariant saying not to. The ImbalancedDatasetSampler does inverse-frequency oversampling in the train loader (rubricnet.py:337-342), and calculate_weights puts inverse-frequency weights in the loss (rubricnet.py:294-304). (The sampler's modify_weights=True hardcoded factor is a 23-class piano artifact — for your 8 classes it's a constant 0.903 that cancels after normalization, so the sampler is effectively plain inverse-frequency.) Compounded balancing pushes the model hard toward rare classes, which plausibly explains why RubricNet's raw accuracy lags RF while balanced accuracy leads. A one-day ablation — sampler-only vs loss-weights-only vs both — might recover raw accuracy for free.
+The loss "class weighting" isn't actually per-sample. In OrdinalLoss.forward (rubricnet.py:132-136) the weight vector is broadcast over the output dimensions (the cumulative thresholds), identically for every sample — it never looks at the sample's own class. That's a strange weighting scheme (it upweights rare-class threshold neurons globally rather than rare-class samples). It's inherited from the paper's code so you may want to keep it for comparability, but you should at least understand and describe it correctly in the thesis; a per-sample-weight variant is another cheap experiment.
+Model selection is very noisy: checkpointing and early stopping key off balanced accuracy on a validation set of only ~57 pieces spread over 8 classes (~7 per class — one piece flipping changes bacc by ~1.8 points). This is likely a large chunk of your fold-to-fold variance. Options: monitor validation MAE or the (smoother) validation loss instead, or enlarge val to 15–20%. Any of these changes the protocol, so re-run all models under it — but reduced variance directly helps your significance tests in §1.
+5. Evaluation robustness for the thesis defense
+Composer-grouped split as a robustness check. MIR has a well-known "artist filter" pitfall: graded-repertoire datasets are full of composers whose pieces cluster in level (Carcassi studies, Sor studies…). A model can partially learn "sounds like Carulli → easy". Keep your frozen splits as the main protocol, but run one grouped-by-composer 5-fold as an appendix experiment. If performance holds, your claim gets much stronger; if it drops, you want to know before your examiner does.
+Quantify label noise from data/checked_pieces.md: you already manually verified pieces per level — turn that into a number ("human agreement with GuitarBurst was X% within ±1 level"). It contextualizes why 31% 8-class accuracy is respectable, and gives you an approximate human ceiling to cite.
+The already-planned experiments are the right ones: rhythm-complete-subset ablation (how much of V3's gain is rhythm vs the cleaner parser?) and the context-free vs context-aware A/B. Do those before inventing new levers.
+6. Strengthen the interpretability chapter (your actual selling point)
+total_notes and log_total_notes are both in the model and are ranked #1–2 most influential in both V2 and V3. That's the same fact counted twice in the rubric, and "the piece is long" is arguably exposure, not technical difficulty. Drop the raw one (keep log), and add a length-controlled analysis (e.g., correlation of predictions with difficulty within length quartiles) — an examiner will ask whether the model just learned "longer = harder".
+Quantify monotonicity instead of asserting it: per descriptor, report Spearman ρ between the subnetwork's scalar score and true difficulty on the test set. A table of these numbers is a much stronger RQ4 answer than the current prose in RESULTS.md.
+Report the sign of each descriptor's learned direction and check it against pedagogical expectation (e.g., open_string_ratio should score negative). Agreements and disagreements are both thesis content.
+Add 2–3 case studies: a known-easy and a known-hard piece with their full rubric breakdown, compared to what a teacher would say. This is the single most persuasive artifact for RQ4 and costs an afternoon.
+Note in the write-up that correlated descriptors in an additive model split credit arbitrarily — it's the standard caveat for GAM-style models and shows you know the limits of your own method.
+7. Process and repo hygiene
+Add golden tests for the parsers. The fret-corruption bug survived two full experimental eras because nothing checked parser output. Commit 3–4 tiny hand-verified MusicXML fixtures (one with backup/voices, one chord-heavy, one no-rhythm placeholder) and assert exact chords/onsets/descriptors. This is cheap insurance for every future feature change.
+Commit your current state: docs/PROJECT_HISTORY.md, the Era-7 result JSONs, and the modified scripts are all untracked/dirty. The RESULTS.md-clobbering incident showed why committed state saves you.
+In train_guitar_rubricnet.py:362, the hyperparam Args object shadows the argparse args inside the loop — it works today but is a trap; rename one.
+Consider splitting the auto-generated tables and the hand-written interpretability text into separate files, so the generator can never clobber prose again (the is_experimental guard helps, but separation removes the failure mode entirely).
+Where I'd start
+Fix the barre and open-string-position bugs (§3), re-run the Spearman audit, and if it moves, re-extract + rerun V3 — this could be a genuine accuracy lever, and it's on-theme (features, not model, are the story — your own §4 diagnosis).
+Wire up and run the RQ3 group ablation on V3 (§2) — it's a whole research question that's currently unanswered.
+Make the RF comparison fair and add significance tests (§1) — this decides what your headline sentence is allowed to say.
+Then the interpretability quantification and case studies (§6), which convert your architecture choice into thesis-defense material.
+The balancing audit (§4) and composer-grouped split (§5) are the best "if time permits" items — either could quietly explain a chunk of your remaining gap to RF on raw accuracy.
+
+okay, a lot of those changes are good, but is there anything to do to actually improve my accuracy?
+Yes — and it's worth being clear-eyed about which levers are real. Your own project history already proved where accuracy comes from in this setup: every real jump (V1→V2→V3) came from fixing feature signal, and tuning plateaued early both times. So here's what I'd actually bet on, ranked by expected payoff per effort.
+
+Tier 1 — likely real gains
+1. Fix the two LH feature bugs, then re-extract. This is the highest-probability lever because it's the same shape as your biggest historical win (the PDF fret corruption). Right now:
+
+The barre detector misses the F-major/E-shape family entirely (same-fret-on-3-adjacent-strings almost never holds for real barres), so barre_ratio — probably the single most pedagogically loaded guitar descriptor — is badly undercounted.
+Hand position averages in open strings (fret 0), so alternating open/fretted textures manufacture phantom position shifts, polluting five or six of your LH columns at once.
+Fix both, re-run the Spearman audit as your gate. If barre_ratio's |ρ| jumps the way fret_entropy did in V3, you'll feel it in accuracy.
+
+2. Train on the raw 1–20 levels instead of the 8 pre-binned classes. This is the cleanest untried lever. Your ordinal loss currently can't tell that a level-8 piece and a level-9 piece are nearly identical — the binning throws that away before training. Instead: train the same architecture with 20 ordinal thresholds on raw GuitarBurst levels, then map predicted levels through your existing bin_difficulty for evaluation. Evaluation protocol, splits, and bins stay frozen — only the training target gets finer. Label smoothing (which gave you a small consistent win) is essentially a crude approximation of exactly this, which is evidence the underlying idea is right. I'd expect this to beat the smoothing gain.
+
+3. Ensemble your 3 seeds into one prediction. You already train 3 seeds × 5 folds — you're currently averaging their metrics and throwing away the ensemble. Average the sigmoid outputs across seeds before _prediction2label instead. Critically, this does not break interpretability: the average of additive models is still additive — each descriptor's rubric score is just the mean of its three subnet scores. Seed-averaging typically buys 1–2 points on a noisy 716-piece task, and it's nearly free. (Report both single-model and ensemble numbers in the thesis.)
+
+4. Audit the double class-balancing — this targets raw accuracy specifically. You have inverse-frequency oversampling in the loader and inverse-frequency weights in the loss. Compounded balancing sacrifices raw accuracy (which RF still wins) to protect rare classes. Run the 2×2: sampler only / loss weights only / both / neither. If raw accuracy is a metric you care about winning, this is the cheapest place it might be hiding. One evening of compute.
+
+Tier 2 — smaller but cheap
+5. Retrain on train+val for the final model. Val (~57 pieces, ~8%) is only used for early stopping. Standard trick: use val to pick the stopping epoch, then retrain on train+val for that many epochs. +8% training data on a data-starved task.
+
+6. Calibrate the decoding thresholds. _prediction2label hard-codes 0.5 for every cumulative threshold. Tuning the per-threshold cutoffs on the val set (or using expected-rank decoding) costs nothing at train time and often recovers a point of accuracy in ordinal setups, especially with your class imbalance.
+
+7. Switch the checkpoint/early-stop monitor off tiny-val balanced accuracy. With ~7 pieces per class in val, one piece flipping moves the selection metric ~1.8 points — you're partly selecting checkpoints on noise. Monitoring val MAE (smoother, ordinal-aware) tends to raise the mean of test accuracy by reducing selection variance. Also directly helps your significance story.
+
+8. Finish Phase E (the joint smoothing retune already running) — but expect it to be worth ≤1 point; don't wait on it before doing 1–4.
+
+Tier 3 — bigger bets
+9. New pitch-derived features. You have pitch for free (tuning + fret) and use none of it. The highest-value candidates for difficulty specifically: scale-run detection (stepwise pitch motion at high note density), tremolo/repeated-note density, chromaticism. Your RH group is nearly dead — this is where new signal would live. More speculative than #1 because these are new features rather than fixes to known-broken ones.
+
+10. More data. 716 pieces / 8 classes is the fundamental constraint; nothing above escapes it. You have an unmatched-pieces pool from the matching era — even +100 pieces concentrated in the thin bins (class sizes go down to 37) would likely beat any modeling trick on this list. Expensive, but it's the only lever with an uncapped ceiling.
+
+Keep expectations calibrated
+One honest note: with GuitarBurst labels that your own spot-checks show are imperfect, and 8 bins whose neighbors are musically near-identical, the achievable ceiling on exact 8-class accuracy is probably somewhere in the 40s — not 60+. Your Acc±1 is already 0.73. So the realistic goal for this round is something like 0.31 → 0.34–0.36, cleanly ahead of RF, with the ±1 and coarse-3-class numbers as the headline "practical accuracy" story. If a change claims much more than that, suspect a leak before celebrating.
+
+If I were sequencing it: #1 and #4 tonight (independent, both cheap), #2 next (it's the most interesting methodological contribution of the four — "train fine, evaluate coarse" is a citable design choice), #3 last since it stacks on top of whatever wins.
+
+okay, do the LH features and lets try the 1-20 levels
+okay, do the LH features and lets try the 1-20 levels. Otherwise do tier 2 and do the new pitch derived features
