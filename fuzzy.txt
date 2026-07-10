@@ -1,0 +1,533 @@
+Comparing Fuzzy Rule Based Approaches
+for Music Genre Classification
+Frederik Heerde1,2 , Igor Vatolkin1(B) , and Günter Rudolph1
+1
+Department of Computer Science, TU Dortmund, Dortmund, Germany
+{Frederik.Heerde,Igor.Vatolkin,Guenter.Rudolph}@tu-dortmund.de
+2
+QuinScape GmbH, Dortmund, Germany
+Abstract. Most of the studies on music genre classiﬁcation are focused
+on classiﬁcation quality only. However, listeners and musicologists would
+favor comprehensible models, which describe semantic properties of gen-
+res like instrument or chord statistics, instead of complex black-box
+transforms of signal features either manually engineered or learned by
+neural networks. Fuzzy rules – until now not a widely applied method
+in music classiﬁcation – oﬀer the advantage of understandability for end
+users, in particular in combination with carefully designed semantic fea-
+tures. In this work, we tune and compare three approaches which operate
+on fuzzy rules: a complete search of primitive rules, an evolutionary app-
+roach, and fuzzy pattern trees. Additionally, we include random forest
+classiﬁer as a baseline. The experiments were conducted on an artist-
+ﬁltered subset of the 1517-Artists database, for which 245 semantic prop-
+erties describing instruments, moods, singing style, melody, harmony,
+inﬂuence on listener, and eﬀects were extracted to train the classiﬁca-
+tion models.
+Keywords: Fuzzy rule bases · Music genre recognition · Semantic
+features
+1
+Introduction
+Fuzzy sets, ﬁrst introduced in [15], extend classical sets by allowing elements to
+be their members to a certain degree μ. This makes it possible to express concepts
+mathematically that have ambiguous transitions. Furthermore, they serve as a
+basis for fuzzy logic, whose fuzzy statements, such as “Tempo is high”, have a
+degree of truth between 1 (true) and 0 (false). Fuzzy statements can be negated
+and combined with fuzzy operators. In this work, we use not, and, or, and
+avg, a special case of an operator proposed in [6] that calculates the average
+degree of truth of two fuzzy statements. We examine three fuzzy rule based
+classiﬁcation approaches and apply them to music genre recognition. During the
+training stage, they build a set of fuzzy rules for every genre. Together, these sets
+form the rule base. The rules consist of a fuzzy statement as premise and a genre
+as conclusion, e.g., “If Mood Reﬂective is very high then Jazz”. A prediction
+c Springer Nature Switzerland AG 2020
+
+J. Romero et al. (Eds.): EvoMUSART 2020, LNCS 12103, pp. 35–48, 2020.
+https://doi.org/10.1007/978-3-030-43859-3_336
+F. Heerde et al.
+is made by determining the genre for which the premises of its rules yield the
+highest degree of truth on average.
+Because predictions based on fuzzy rules can be expressed in natural lan-
+guage, the classiﬁcation models can be very comprehensible, as long as the used
+features are understandable as well. This is an advantage over other classiﬁers
+with complex black-box models and makes fuzzy rules favorable for end users.
+On the other side, these features cannot always be robustly extracted from com-
+plex polyphonic audio signals. Still, it was shown in [9] that high-level features
+are a good basis for classiﬁcation. Furthermore, rule bases can be easily modiﬁed
+on request by music experts.
+We compare three fuzzy rule based classiﬁcation approaches. The ﬁrst app-
+roach from [13] is a complete search that calculates a relevance measure for every
+possible primitive rule and uses the most relevant rules for classiﬁcation. The
+second approach, called fuzzy pattern trees [11], constructs one fuzzy rule per
+genre iteratively in a tree like manner. The third approach is a modiﬁcation
+from an evolutionary algorithm proposed in [8]. It generates random rule bases
+and optimizes them via mutation and recombination. In our experiments, we
+compare these methods with a random forest classiﬁer as a baseline. To ensure
+interpretability, we classify genres only based on semantic mid-level features like
+instruments, harmonic properties, predicted moods, etc.
+The remainder of this paper is organized as follows. First, Sect. 2 outlines
+the work related to ours. In Sect. 3, we explain the operating principles of the
+investigated algorithms. The experiments are presented in Sect. 4. Lastly, we
+draw a conclusion in Sect. 5.
+2
+Related Work
+When using primitive fuzzy rules in the rule base, a complete search can be
+executed, as shown in [13]. They established a measure for the relevance of one
+rule. All possible primitive rules were sorted according to this measure in an
+descending order. When classifying, they used the m most relevant primitive
+rules, where the optimal m needed to be determined. This is not feasible for
+rule bases with complex rules, though, as the number of possibilities increase
+drastically.
+An interesting alternative are fuzzy pattern trees, that were originally pro-
+posed in [6] and further explored in [10,11]. By constructing the rules incremen-
+tally and only keeping track of the most promising ones, the number of possible
+rules to evaluate was greatly reduced as opposed to a complete search.
+Furthermore, there are numerous evolutionary approaches to build fuzzy rule
+bases. They diﬀer in the representation of the algorithm’s solution, or individ-
+ual. For example, in both [5] and [1], an evolutionary algorithm was proposed, in
+which individuals represent single rules. However, their approaches diﬀer in the
+way they form the rule base from the result of the algorithm. [5] followed an iter-
+ative approach, in which an evolutionary algorithm generates one rule at a time,
+which is added to the rule base. After each iteration, a boosting algorithm givesComparing Fuzzy Rule Based Approaches for Music Genre Classiﬁcation
+37
+more weight to the training examples that the current rule base misclassiﬁes.
+This aﬀects the ﬁtness function used by the evolutionary algorithm to enforce a
+rule that covers the misclassiﬁed training examples better. In contrast, the algo-
+rithm in [1] used the best population as a rule base. To prevent homogeneous
+rule bases, they incorporated a measure for diversity in their ﬁtness function.
+Afterwards, they simpliﬁed the rule bases by removing redundant rules. An indi-
+vidual can also be interpreted as the whole rule base, as seen in [8]. This is also
+the approach we chose as a basis for ours.
+The fuzzy sets that are used to fuzzify feature values can be optimized after
+the model was trained, as done with a genetic algorithm in [3,4].
+Apart from fuzzy rule based approaches, there exist also fuzzy classiﬁcation
+methods, in which models assign a degree of membership to each class instead of
+making a crisp prediction. Here, we give a few examples related to music classi-
+ﬁcation. In [14], a fuzzy k-NN classiﬁer and a fuzzy Nearest-Mean classiﬁer were
+applied for the fuzzy classiﬁcation of music to emotions. In [7], a modiﬁcation
+of the fuzzy C-Means clustering algorithm was used to group pieces of music
+by genre in the feature space. Calculating the distance to each cluster centroid
+results in the wanted degrees of membership to each class.
+3Methodology
+3.1Random Forest
+As a baseline, we included random forest (RF) in our experiments. This classi-
+ﬁcation algorithm was proposed in [2] and is an ensemble of small decision trees
+which are trained with a randomly selected subset of all features. RF has several
+advantages: It is fast, robust to overﬁtting, and has only a few parameters to
+setup. On the other side, the models are usually less interpretable, because the
+good robustness is guaranteed only if a suﬃciently large number of trees (e.g.,
+100) are created.
+3.2
+Complete Search for Primitive Rules
+In [13], a method was proposed that uses a set of primitive fuzzy rules for music
+genre classiﬁcation. Here, a primitive fuzzy rule is deﬁned as If <feature X> is
+<linguistic term T > then <genre C>. A measure was established to estimate
+the relevance of a single primitive rule for a genre in an annotated training set:
+R(C, X, T ) = P (X is T | C) · (1 − P (X is T ))
+(1)
+Feature values were assigned to linguistic terms like low, moderate, or high.
+Firstly, the method generated every possible primitive rule for one genre. Sec-
+ondly, the relevance was calculated for every rule. Finally, the rules were sorted
+by relevance in descending order. This was done for every genre using a One-
+vs-All scheme, i.e. a binary classiﬁcation of music pieces as either exclusively
+belonging to a given genre or to other genres.38
+F. Heerde et al.
+To classify a piece of music, the m most relevant rules were estimated for
+every genre. Then, this piece is assigned to a genre with the highest average
+relevance of these rules.
+3.3
+Fuzzy Pattern Trees
+Fuzzy Pattern Trees (FPTs) were introduced in [6]. Essentially, a FPT is a fuzzy
+rule, whose premise is interpreted as a tree, in which fuzzy operators serve as
+inner nodes and fuzzy statements as leafs. A class can be represented by one
+FPT only.
+In [10], a top-down deterministic algorithm for constructing fuzzy pattern
+trees was introduced. They also presented other stopping criteria in [11], as
+well as a faster, yet nondeterministic version of the algorithm. Here, we use the
+deterministic method with the stopping criteria from [11].
+Basically, the algorithm keeps track of one rule M∗ that is extended incre-
+mentally. It initializes M∗ by selecting the fuzzy statement with the smallest
+error rate on a training set T . In each iteration, M∗ gets extended. A tree gets
+extended by replacing one leaf, i.e. a fuzzy statement, with a fuzzy operator that
+has a new statement and the old leaf as a child. From all possible extensions that
+do not result in a tree exceeding the maximum depth, the one with the smallest
+error is selected. The algorithm terminates if every branch of M∗ has reached
+the maximum depth or the error after the extension was higher than (1 + γ)
+times the error before the extension, where γ is a parameter that speciﬁes by
+how much the new M∗ is allowed to be worse than the last one.
+As the error rate, the root mean squared error was used, just like in [11].
+Consider a set T of tuples (x, y) that are constituted of a feature vector x and
+the membership y of this vector to a class, expressed as 0 or 1. For a fuzzy pattern
+tree M, the root mean squared error can be calculated as shown in Eq. 2. M(x)
+denotes the output of the model when given the feature vector x, also as 0 or 1.
+
+
+1 
+2
+(y − M(x))
+(2)
+mT (M) = 
+N
+(x,y)∈T
+3.4
+Evolutionary Approach
+In [8], an evolutionary algorithm was developed to ﬁnd a rule base for a fuzzy
+system. Its rules conclude the membership to another fuzzy set, e.g., “If feature1
+is high then feature2 is low ”. One individual represents a rule base.
+We adjusted this approach to ﬁt the purpose of music genre classiﬁcation.
+Now, rules for classiﬁcation will be used, like “If feature1 is high then class3 ”.
+First experiments have shown that it is beneﬁcial to train the rule base for one
+genre at a time. After the algorithm terminates for each genre separately, the
+best genre-speciﬁc rule bases are joined to form a rule base that covers every
+genre. Consequently, one individual represents a set of rules for one genre.Comparing Fuzzy Rule Based Approaches for Music Genre Classiﬁcation
+39
+To evaluate the quality of an individual M, the root mean squared error is
+calculated and subtracted from 1, as shown in Eq. 3. In this case, the individual
+M is a set of rules and the degree of truth of every of its rules M ∈ M can be
+calculated separately by inputting a feature vector x: M(x).
+
+
+2
+
+
+1 
+1 
+(3)
+fT (M) = 1 − 
+(M(x))
+y−
+N
+|M|
+(x,y)∈T
+M∈M
+Procedure. We consider four parameters for this algorithm: the population size
+#pop , the initial number of rules per individual #rule , the number of generations
+genmax , and the last parameter to control the complexity of random premises
+drule . This procedure starts for each genre separately.
+First, the population gets initialized with #pop random individuals. One indi-
+vidual consists of #rule rules with randomly generated premises for the current
+genre. In each generation, the algorithm iterates over every individual in the
+current population. The individual will be either recombined or mutated. Thus,
+only one probability is needed to decide between mutation and recombination.
+For recombination, the algorithm selects a second individual via the roulette
+method, where the probability for an individual to be picked is proportional to
+its ﬁtness. The new population will be selected from the old population and all
+newly generated individuals. Following [8], the last step in each generation is to
+linearly reduce the recombination probability in such a way that it equals 20%
+for the last generation. Consequently, the mutation probability reaches 80% at
+last.
+Generating Random Premises. The process of generating random premises
+from [8] interprets premises as trees just like the FPTs described in Subsect. 3.3.
+It constructs a random premise top-down. With a ﬁxed probability of drule , a
+random fuzzy operator is inserted into the root of the tree. Otherwise, a random
+fuzzy statement is composed and inserted. If a fuzzy operator was chosen, the
+same procedure begins for both children that are connected with the operator.
+Having a ﬁxed probability for every layer of the tree has the disadvantage of the
+tree’s depth being unbound. If drule is too low, most of the generated premises
+will be primitive. If it is too high, the emerged trees will be too huge and less
+interpretable.
+Since we wanted to bound the trees’ depth, we decided to change this aspect.
+Instead of having a ﬁxed probability for inserts in every layer, it is reduced by
+25% per layer. drule deﬁnes the probability on the top layer. Thus, the depths
+of the trees are limited since the probability reaches zero at some point. Other
+reduction schedules are also possible but were not part of our experiments, e.g.
+multiplying the probability with a number <1 per layer.
+For example, when using drule = 0.5, 50% of the generated premises are prim-
+itive on average while the other half contain at least one operator. In these cases,
+the children of the root will be operators with the reduced probability of 25%.40
+F. Heerde et al.
+Figure 1 shows an example for a randomly generated tree and the probabilities
+to select a fuzzy operator for each layer.
+Fig. 1. Example for a randomly generated premise with drule = 0.5.
+Mutation and Recombination. Both the mutation and recombination oper-
+ator are implemented after [8].
+Mutation consists of three diﬀerent actions that are applied to one individual:
+– Delete mutation: Deletes a random rule from the set.
+– Insert mutation: Inserts a new randomly generated rule into the set.
+– Rule mutation: Selects a rule from the set randomly and replaces a randomly
+selected subtree with a new randomly generated one.
+Recombination is used to mix two individuals. Firstly, a random matching
+of the rules from the ﬁrst individual to the rules of the second individual is
+calculated. For this purpose, the rules of each individual are permuted randomly.
+In the newly acquired order, pairs of rules are built by picking the rules from
+the individuals that share the same position. If one individual has more rules
+than the other, the remaining rules are matched with randomly chosen rules of
+the other individual. Thereby, every rule is part of at least one pair. Secondly,
+the rules of each pair are interpreted as a tree to perform a subtree crossover.
+Lastly, all mixed pairs are divided to form two set of rules again. These sets
+are the children of the recombination. Note that they have the same number of
+rules.
+4Experiments
+4.1Setup
+For the classiﬁcation of music pieces into genres, we use the publicly available
+1517-Artists dataset1 , from which we selected a subset of 543 pieces of music that
+were assigned to six genres with the labels Classical, Electronic and Dance, Hip-
+Hop, Jazz, Rock and Pop, and R and B and Soul. The selection of the genres
+is equivalent to the one from [13]. In this subset, each artist is represented by
+exactly one track, to reduce the danger of learning the peculiarities of artists
+instead of genres.
+1
+http://www.seyerlehner.info. Last accessed on 08.11.2019.Comparing Fuzzy Rule Based Approaches for Music Genre Classiﬁcation
+41
+In accordance with [12, pp. 138–142], we have extracted 245 semantically
+understandable features from the audio recordings. An overview of feature groups
+is provided in Fig. 2.
+Fig. 2. Overview of all extracted features.
+Then, we stored feature values for classiﬁcation time windows of 5 s with 2.5
+s overlap. In order to use the same fuzzy sets for every single feature, the feature
+values were normalized.
+The data set was divided into ﬁve partitions for a 5-fold cross-validation, so
+that 80% of tracks were used for training and 20% for validation in each of the
+5 repetitions.
+As a basis for our fuzzy approaches, we ﬁrst need to deﬁne the fuzzy sets
+that are used for the fuzziﬁcation of the feature values. Following [13], we used
+the same ﬁve linguistic terms and membership functions. They can be seen in
+Fig. 3.
+Fig. 3. Assignment of feature values to linguistic terms, originally from [13].
+As described before, we obtained multiple feature vectors from each piece
+of music which will be used to train and validate the diﬀerent approaches. By
+implication, the resulting models classify only an individual classiﬁcation window
+of 5 s length represented by its feature vector. To make a prediction for the42
+F. Heerde et al.
+whole piece, we output the genre which was predicted most often among all
+classiﬁcation windows of the same piece.
+As error rate, we use the balanced relative error, written down in Eq. 4, where
+mT P,c and mF N,c are the numbers of true positives and false negatives for a class
+c and |C| = 6 is the overall number of predicted genres.
+
+mF N,c
+1 
+mBRE =
+(4)
+|C|
+mT P,c + mF N,c
+c∈C
+The evolutionary algorithm and the random forest were trained 15 times for
+each fold because of the nondeterministic behaviour of these methods. The com-
+plete search and fuzzy pattern trees are deterministic in the way we implemented
+them and hence, do not need repetition.
+4.2
+Results
+Random Forest. We varied the number of trees between 100, 200, and 400.
+Figure 4 shows the results of the evaluation. The errors are averaged across 15
+statistical repetitions and 5 folds (15 · 5 = 75 values in total). Bold text indicates
+the smallest error. Note, that the expected error of a completely random classiﬁer
+would be equal to 0.83. As it can be observed, the error rates diﬀer only slightly,
+and using 400 trees yielded the best results. In succeeding graphics, we use these
+error rates as a baseline to compare with.
+Fig. 4. Evaluation of random forest with 100, 200, and 400 trees.
+Complete Search for Primitive Rules. Figure 5 plots the results of the
+complete search for primitive rules. Since the method is deterministic, it was
+executed only once for every fold. The error rate highly depends on m, the
+number of most relevant rules that are used for classiﬁcation. When m is set
+to a low value, too few rules are incorporated per genre to accurately represent
+it, apparently. However, when a very high m such as 300 is used, not only the
+interpretability of classiﬁcation models suﬀers, but also many less relevant rules
+contribute to the model. They are equally weighted as the most relevant rules
+and can therefore confuse the classiﬁer.Comparing Fuzzy Rule Based Approaches for Music Genre Classiﬁcation
+43
+0.6
+mBRE
+0.5
+0.4
+0.3
+1
+50
+100
+150
+200
+250
+300
+Fig. 5. Evaluation of the complete search for primitive rules when using the m most
+relevant rules for classiﬁcation. The step size for m was 5. The solid line represents the
+mean validation error while the dashed lines indicate the standard deviation added or
+subtracted from it. The horizontal dotted line shows the validation error of the best
+RF model for comparison.
+The algorithms were tuned on the training sets. We obtained the lowest
+training error and the lowest validation error of 39.77% for the same m = 30,
+meaning that this setting is robust enough for diﬀerent data.
+The 3 most relevant rules for the genre Jazz are shown in Fig. 6. Here, the
+feature “Level of Activation High” indicates how likely a music piece animates
+the listener. Please note that such semantic descriptors are often subjective by
+their deﬁnition, with regard to expert annotations and to music tracks selected
+to train a classiﬁer for the prediction of a descriptor. They even may be confusing
+for some classiﬁcation tasks like identiﬁcation of speciﬁc Jazz subgenres. Just like
+in this example, it was generally noticeable that most relevant rules referenced
+either “very low ” or “very high”. The fuzzy sets “low ”, “moderate”, and “high”
+appeared in more irrelevant rules.
+Fig. 6. The 3 most relevant rules for the training set of the genre Jazz.
+Fuzzy Pattern Trees. The approach for the FPTs featured only one param-
+eter dmax to determine the maximum depth of the trees. We tried out dmax ∈
+{1, 2, 3, 4, 5}, where dmax = 1 generates primitive FPTs, that consist of one fuzzy
+statement only. Higher values for dmax were omitted because of too long training
+time and inferior interpretability. Note, that the time was reduced drastically in44
+F. Heerde et al.
+[11] using various heuristics that rely on chance and thus, make the algorithm
+nondeterministic. We opted for the deterministic approach to ease the imple-
+mentation and evaluation. For future work, the nondeterministic version might
+be a better solution.
+The result of the FPT experiment can be seen in Fig. 7. We achieved the low-
+est validation error of 36.15% with dmax = 5. This was also the best conﬁguration
+when evaluated using the training sets, which is why this is the conﬁguration
+that will be used for comparison.
+mBRE
+0.6
+0.5
+0.4
+1
+2
+3
+dmax
+4
+5
+Fig. 7. Evaluation of the FPTs. The horizontal dotted line represents the validation
+error of the best RF model.
+In Fig. 8, a FPT is illustrated that was found for the genre Jazz and the
+conﬁguration dmax = 3. Both statements with the features about moods were
+found to be relevant by the complete search, too.
+Fig. 8. The FPT built for the genre Jazz and dmax = 3.Comparing Fuzzy Rule Based Approaches for Music Genre Classiﬁcation
+45
+Interestingly, none of the FPTs used any of the negated operators nand, nor,
+or navg. This might be explained by the way the FPTs are build. During a leaf
+extension, it becomes one of the children of the newly inserted fuzzy operator.
+Inserting a negated operator would reverse the positive impact the leaf holds in
+the ﬁrst place. Thus, the algorithm does not select a negated operator.
+Evolutionary Approach. For our evolutionary algorithm, there are parame-
+ters to control the depth of the randomly created rules (drule ), the number of
+generations (genmax ), the population size (#pop ), and the initial number of rules
+in a rule base (#rule ). We used the same #pop of 100 like in [8]. The parameter
+drule was set to 0.25, 0.5, and 0.75, to limit the rule depth to 2, 3, and 4. #rule
+was set to 5, 10, and 15. Lastly, genmax needed to be determined. [8] used 80
+generations. Since we modiﬁed their approach, this would be a good starting
+point, but we also wanted to try out, whether more or less generations would
+aﬀect the performance of the model. Therefore, we started the algorithm with
+genmax ∈ {50, 80, 110}. As it turned out, the approach performed better with
+more generations, and we started the last experiment with 140 generations. The
+algorithm was executed 15 times for each conﬁguration.
+The result of the last experiment can be seen in Fig. 9. Looking at the medi-
+ans, the lowest validation error of 38.15% was achieved when setting #rule = 5
+and drule = 0.5. The overall lowest validation error was 35.59%, using #rule = 10
+and drule = 0.75.
+When evaluating on the training sets, we obtained the best result with
+#rule = 5 and drule = 0.25. This is the conﬁguration used for comparison.
+When looking at the evolutionary generated rules like in Fig. 10, a few prob-
+lems become noticeable. Firstly, the algorithm does not pay attention to the
+complexity of the rules. Rules may be primitive like the ﬁrst one, or complex
+like the second one. From generation to generation, they tend to become more
+complex. Secondly, the structure of the second rule seems to be rather arbitrary.
+Note, that the fuzzy statement “51 is not H ” appears three times in the same
+rule. It is unlikely that this rule needed to be that long. Also, the part “217 is
+not VH nor 51 is not H ” can be simpliﬁed to “217 is VH and 51 is H ”.
+Altogether, the algorithm could beneﬁt from mechanisms to control the com-
+plexity and construction of the rules. For future work, this can be taken into
+account by modifying the approach to be multi-objective, where the error and
+the complexity of the rules should be minimized at the same time.
+Comparison of Four Approaches. For each classiﬁcation method, we deter-
+mined the conﬁguration with the lowest training error as described in the pre-
+vious sections. The chosen models were evaluated again on the validation sets,
+which resulted in the multi-class validation errors summarized in Fig. 11. Over-
+all, we obtained the lowest average validation error with random forest classiﬁer
+(32.85%) followed by the fuzzy pattern trees (36.15%). Interestingly, the random
+forest classiﬁer is not the best for every genre. The complete search method had46
+F. Heerde et al.
+0.42
+#rule
+mBRE
+0.4
+0.38
+0.36
+0.34
+0.25
+0.5
+drule
+0.75
+Fig. 9. Evaluation of the evolutionary approach. The whiskers indicate the maximum
+and minimum, the ends of the box mark the upper and lower quartile, and the middle
+line stands for the median. The horizontal dotted line shows the validation error of the
+best RF model.
+Fig. 10. Two rules that appeared in the same rule base in one of the experiments.
+The features referenced by their index to represent the rules shortened. 225: Mood
+Reﬂective; 45, 51, 54: Share of Guitar (recognized with diﬀerent classiﬁers); 61: Share
+of Piano; 217: Share of Strings
+the highest average error rate (39.77%). Still, it exceeded all other methods for
+the genre Jazz and the other fuzzy approaches for the genre Rock and Pop.
+We also compared the algorithm performance by means of the Wilcoxon
+signed test over categories and folds. The random forest classiﬁer performed
+signiﬁcantly better than all fuzzy approaches (p = 0.0020 compared with the
+complete search, p = 0.0324 with FPTs, and p = 0.0005 with EA). FPTs were
+signiﬁcantly better than EA (p = 0.0432). The remaining pairs of algorithms
+revealed no statistical diﬀerences.
+Note, that we used the m = 30 most relevant rules from the complete search
+to achieve this result. Since the examined rules were primitive, their premises
+contained 30 fuzzy statements in total. The best model from the fuzzy pattern
+trees used the parameter dmax = 5, which resulted in a complete tree containing
+only 16 fuzzy statements. Contrary, the number of fuzzy statements used by the
+evolutionary approach is not controlled in any way. Rules may be primitive or
+highly complex.Comparing Fuzzy Rule Based Approaches for Music Genre Classiﬁcation
+47
+Fig. 11. The best validation errors of each method.
+5
+Conclusion
+In this study, we tuned and compared three diﬀerent approaches for fuzzy rule
+based classiﬁcation, one of which uses primitive fuzzy rules while the other two
+use complex fuzzy rules. Our experiments on the classiﬁcation into six genres
+showed that fuzzy rule based approaches are interesting alternatives for clas-
+siﬁcation. However, their interpretability comes at the price of a higher error
+rate. Fuzzy pattern trees outperformed the other fuzzy methods, with a bal-
+anced validation error rate of 36.15% across all genres. Overall, we achieved the
+best results with the baseline random forest classiﬁer (32.85%). Using fuzzy rule
+based classiﬁers in combination with understandable features can make predic-
+tions clearer for end users by revealing the rules and indicating their degree of
+truth for a piece of music. In this scenario, they are more favorable to other
+classiﬁers, even if they have a slightly higher validation error.
+For future work, in particular the evolutionary approach has room for
+improvements, as the complexity of the rules was not bound and their construc-
+tion was uncontrolled. Incorporating these aspects would enforce well-structured
+rules that may represent the genres better as well. For a fuzzy pattern tree app-
+roach, the nondeterministic implementation can be investigated. Further, the
+deﬁnition of linguistic terms can be done in other way than in Fig. 3.
+References
+1. Berlanga, F.J., del Jesus, M.J., Gacto, M.J., Herrera, F.: A genetic-programming-
+based approach for the learning of compact fuzzy rule-based classiﬁcation systems.
+In: Rutkowski, L., Tadeusiewicz, R., Zadeh, L.A., Żurada, J.M. (eds.) ICAISC
+2006. LNCS (LNAI), vol. 4029, pp. 182–191. Springer, Heidelberg (2006). https://
+doi.org/10.1007/11785231 20
+2. Breiman, L.: Random forests. Mach. Learn. J. 45(1), 5–32 (2001)
+3. Fernández, F., Chávez, F.: Fuzzy rule based system ensemble for music genre clas-
+siﬁcation. In: Machado, P., Romero, J., Carballal, A. (eds.) EvoMUSART 2012.
+LNCS, vol. 7247, pp. 84–95. Springer, Heidelberg (2012). https://doi.org/10.1007/
+978-3-642-29142-5 848
+F. Heerde et al.
+4. Fernández, F., Chávez, F., Alcalá, R., Herrera, F.: Musical genre classiﬁcation by
+means of fuzzy rule-based systems: a preliminary approach. In: Proceedings of the
+IEEE Congress on Evolutionary Computation, pp. 2571–2577 (2011)
+5. Hoﬀmann, F.: Combining boosting and evolutionary algorithms for learning of
+fuzzy classiﬁcation rules. Fuzzy Sets Syst. 141, 47–58 (2004). https://doi.org/10.
+1016/S0165-0114(03)00113-1
+6. Huang, Z., Gedeon, T.D., Nikravesh, M.: Pattern trees induction: a new machine
+learning method. IEEE Trans. Fuzzy Syst. 16(4), 958–970 (2008). https://doi.org/
+10.1109/TFUZZ.2008.924348
+7. Kostek, B., Kaczmarek, A.: Music recommendation based on multidimensional
+description and similarity measures. Fundam. Inform. 127(1–4), 325–340 (2013)
+8. Linden, R., Bhaya, A.: Evolving fuzzy rules to model gene expression. Biosystems
+88(1), 76–91 (2007). https://doi.org/10.1016/j.biosystems.2006.04.006
+9. Salamon, J., Rocha, B., Gómez, E.: Musical genre classiﬁcation using melody fea-
+tures extracted from polyphonic music signals. In: 2012 IEEE International Con-
+ference on Acoustics, Speech and Signal Processing (ICASSP), pp. 81–84 (2012).
+https://doi.org/10.1109/ICASSP.2012.6287822
+10. Senge, R., Hüllermeier, E.: Top-down induction of fuzzy pattern trees. IEEE Trans.
+Fuzzy Syst. 19(2), 241–252 (2011). https://doi.org/10.1109/TFUZZ.2010.2093532
+11. Senge, R., Hüllermeier, E.: Fast fuzzy pattern tree learning for classiﬁcation. IEEE
+Trans. Fuzzy Syst. 23(6), 2024–2033 (2015). https://doi.org/10.1109/TFUZZ.
+2015.2396078
+12. Vatolkin, I.: Improving supervised music classiﬁcation by means of multi-objective
+evolutionary feature selection. Ph.D. thesis, Department of Computer Science, TU
+Dortmund (2013)
+13. Vatolkin, I., Rudolph, G.: Interpretable music categorisation based on fuzzy rules
+and high-level audio features. In: Lausen, B., Krolak-Schwerdt, S., Böhmer, M.
+(eds.) Data Science, Learning by Latent Structures, and Knowledge Discovery.
+SCDAKO, pp. 423–432. Springer, Heidelberg (2015). https://doi.org/10.1007/978-
+3-662-44983-7 37
+14. Yang, Y.H., Liu, C.C., Chen, H.H.: Music emotion classiﬁcation: a fuzzy approach.
+In: Proceedings of the 14th ACM International Conference on Multimedia, pp.
+81–84 (2006)
+15. Zadeh, L.A.: Fuzzy sets. Inf. Control 8(3), 338–353 (1965). https://doi.org/10.
+1016/S0019-9958(65)90241-X

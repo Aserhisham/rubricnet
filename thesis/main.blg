@@ -3,50 +3,51 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 A level-1 auxiliary file: chapters/1_introduction.aux
 A level-1 auxiliary file: chapters/2_related_work.aux
-A level-1 auxiliary file: chapters/3_methodology.aux
-A level-1 auxiliary file: chapters/4_results.aux
-A level-1 auxiliary file: chapters/5_discussion.aux
-A level-1 auxiliary file: chapters/6_conclusion.aux
+A level-1 auxiliary file: chapters/3_preliminaries.aux
+A level-1 auxiliary file: chapters/4_method.aux
+A level-1 auxiliary file: chapters/5_evaluation.aux
+A level-1 auxiliary file: chapters/6_discussion.aux
+A level-1 auxiliary file: chapters/7_conclusion.aux
 The style file: plain.bst
 Database file #1: references.bib
-You've used 6 entries,
+You've used 22 entries,
             2118 wiz_defined-function locations,
-            541 strings with 5536 characters,
-and the built_in function-call counts, 2443 in all, are:
-= -- 237
-> -- 121
-< -- 4
-+ -- 48
-- -- 42
-* -- 159
-:= -- 389
-add.period$ -- 19
-call.type$ -- 6
-change.case$ -- 40
+            641 strings with 8499 characters,
+and the built_in function-call counts, 8797 in all, are:
+= -- 886
+> -- 374
+< -- 11
++ -- 152
+- -- 126
+* -- 595
+:= -- 1364
+add.period$ -- 69
+call.type$ -- 22
+change.case$ -- 130
 chr.to.int$ -- 0
-cite$ -- 6
-duplicate$ -- 95
-empty$ -- 185
-format.name$ -- 42
-if$ -- 525
+cite$ -- 22
+duplicate$ -- 358
+empty$ -- 710
+format.name$ -- 126
+if$ -- 1904
 int.to.chr$ -- 0
-int.to.str$ -- 6
-missing$ -- 4
-newline$ -- 34
-num.names$ -- 12
-pop$ -- 49
+int.to.str$ -- 22
+missing$ -- 20
+newline$ -- 114
+num.names$ -- 44
+pop$ -- 145
 preamble$ -- 1
-purify$ -- 33
+purify$ -- 107
 quote$ -- 0
-skip$ -- 79
+skip$ -- 280
 stack$ -- 0
-substring$ -- 144
-swap$ -- 36
-text.length$ -- 4
+substring$ -- 632
+swap$ -- 121
+text.length$ -- 11
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 24
+type$ -- 88
 warning$ -- 0
-while$ -- 22
-width$ -- 7
-write$ -- 70
+while$ -- 91
+width$ -- 24
+write$ -- 248

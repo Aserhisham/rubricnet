@@ -17,6 +17,12 @@
 \usepackage{array}
 \usepackage{listings}
 \usepackage{color}
+\usepackage[htt]{hyphenat} % allow hyphenation inside \texttt
+
+% Long descriptor names (\texttt with underscores) otherwise overflow the
+% margin: permit a line break after each underscore and give TeX slack.
+\renewcommand{\_}{\textunderscore\allowbreak}
+\emergencystretch=1.5em
 
 % Table styling utilities
 \newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
@@ -100,14 +106,13 @@
 \pagenumbering{roman}
 
 \chapter*{Abstract}
-Select repertoire that matches a student's current technical level is a central task in music learning. In classical guitar, difficulty judgments influence lesson planning, sequencing of repertoire, practice efficiency, and student motivation, yet these judgments are often based on subjective teacher experience rather than transparent and reproducible criteria. This thesis presents a multi-dimensional, interpretable difficulty estimation framework for classical guitar pieces from symbolic notation (MusicXML and GuitarPro tokens). Grounded in the piano-oriented RubricNet model, our framework incorporates 32 hand-crafted descriptors organized across three technical dimensions: Left-Hand Technique, Right-Hand Technique, and Global Score Complexity.
+Matching repertoire to a student's technical level is a routine task in classical guitar teaching, yet the difficulty grades in repertoire databases are assigned manually and come with no explanation of why a piece earned its grade. Automatic difficulty estimation from symbolic scores has shown that interpretable prediction is possible, but existing work targets the piano, and its descriptors do not transfer to the guitar, where one staff encodes both hands and the same pitch can be played at several fretboard positions.
 
-To reconcile diverse score representations across a 716-piece classical guitar dataset, we implement a rhythm-alignment algorithm utilizing Needleman-Wunsch sequence matching that transplants MIDI timing information onto PDF-derived score structures. We extend the baseline descriptor definitions to include context-aware speed measures and windowed bottleneck features representing localized passages of extreme technical demand. Our RubricNet V3 model achieves 31.0\% exact 8-class classification accuracy (and 67.6\% coarse 3-class accuracy), outperforming a black-box Random Forest baseline on balanced accuracy, mean absolute error (MAE), mean squared error (MSE), and Kendall's $\tau$. Furthermore, the additive subnetwork design enables direct visualization of descriptor contributions, establishing that the model's predictions align with pedagogical intuition and offer a transparent, interpretable rubric for guitar education.
+This thesis adapts RubricNet, an interpretable additive neural model, from piano to classical guitar. The model scores 32 hand-crafted descriptors independently and sums them, so every prediction decomposes into per-descriptor contributions like a grading rubric. The descriptors span left-hand demands (stretches, shifts, barre chords), right-hand demands (string crossing, plucking patterns), and global score properties (length, polyphony, note density). We assemble a dataset of 716 pieces, pairing symbolic scores from three sources with 1--20 grades from the GuitarBurst database; because PDF-derived scores lack rhythm, a Needleman--Wunsch alignment transplants note timing from matched MIDI performances, giving 89\% of the dataset usable rhythm information and enabling speed- and passage-aware descriptors.
+
+On an 8-class ordinal task, the model reaches 31.0\% exact accuracy. A Random Forest baseline edges it on raw accuracy (33.1\%) and performs about the same on balanced accuracy ($\sim$0.29), but the interpretable model wins on the metrics that matter for ordinal prediction --- lower mean absolute error (1.069 vs.\ 1.122) and higher rank correlation (Kendall's $\tau$ 0.634 vs.\ 0.599) --- so when it errs, it errs by less. Accuracy rises to 67.6\% on a three-level easy/medium/hard scale. Per-descriptor contributions increase monotonically with difficulty and agree with Random Forest importances, supporting the trained model as a difficulty rubric grounded in guitar technique rather than an opaque predictor.
 
 \newpage
-
-\chapter*{Acknowledgments}
-I would like to express my gratitude to my advisor and mentors for their guidance throughout this project. I am also grateful to the creators of the GuitarBurst database, GAPS, and DADA-GP datasets for making their data publicly accessible, enabling this research.
 
 \tableofcontents
 \listoffigures
@@ -120,10 +125,11 @@ I would like to express my gratitude to my advisor and mentors for their guidanc
 
 \include{chapters/1_introduction}
 \include{chapters/2_related_work}
-\include{chapters/3_methodology}
-\include{chapters/4_results}
-\include{chapters/5_discussion}
-\include{chapters/6_conclusion}
+\include{chapters/3_preliminaries}
+\include{chapters/4_method}
+\include{chapters/5_evaluation}
+\include{chapters/6_discussion}
+\include{chapters/7_conclusion}
 
 % ==================== Bibliography ====================
 \bibliographystyle{plain}

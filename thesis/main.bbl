@@ -1,17 +1,70 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{10}
 
-\bibitem{cao2020rank}
-Wenzhi Cao, Vahid Mirjalili, and Sebastian Raschka.
-\newblock Rank consistent ordinal regression for neural networks with
-  application to age estimation.
-\newblock In {\em Pattern Recognition Letters}, volume 140, pages 325--331,
-  2020.
+\bibitem{akiba2019optuna}
+Takuya Akiba, Shotaro Sano, Toshihiko Yanase, Takeru Ohta, and Masanori Koyama.
+\newblock Optuna: A next-generation hyperparameter optimization framework.
+\newblock In {\em Proceedings of the 25th ACM SIGKDD International Conference
+  on Knowledge Discovery and Data Mining}, pages 2623--2631, 2019.
+
+\bibitem{breiman2001random}
+Leo Breiman.
+\newblock Random forests.
+\newblock {\em Machine Learning}, 45(1):5--32, 2001.
+
+\bibitem{caruana2013intelligible}
+Rich Caruana, Yin Lou, Johannes Gehrke, Paul Koch, Marc Sturm, and Noemie
+  Elhadad.
+\newblock Intelligible models for classification and regression.
+\newblock In {\em Proceedings of the 19th ACM SIGKDD International Conference
+  on Knowledge Discovery and Data Mining}, pages 150--158, 2013.
+
+\bibitem{cheng2008ordinal}
+Jianlin Cheng, Zheng Wang, and Gianluca Pollastri.
+\newblock A neural network approach to ordinal regression.
+\newblock In {\em Proceedings of the IEEE International Joint Conference on
+  Neural Networks (IJCNN)}, pages 1279--1284, 2008.
+
+\bibitem{cuthbert2010music21}
+Michael~Scott Cuthbert and Christopher Ariza.
+\newblock music21: A toolkit for computer-aided musicology and symbolic music
+  data.
+\newblock In {\em Proceedings of the 11th International Society for Music
+  Information Retrieval Conference (ISMIR)}, pages 637--642, 2010.
+
+\bibitem{good2001musicxml}
+Michael Good.
+\newblock {MusicXML}: An internet-friendly format for sheet music.
+\newblock In {\em Proceedings of the XML Conference and Expo}, pages 3--4,
+  2001.
 
 \bibitem{guitarburst}
 {GuitarBurst}.
 \newblock Guitarburst: Graded classical guitar repertoire database.
 \newblock \url{https://guitarburst.com}, 2021.
 \newblock Accessed: 2026-05-04.
+
+\bibitem{heerde2020comparing}
+Frederik Heerde, Igor Vatolkin, and G{\"u}nter Rudolph.
+\newblock Comparing fuzzy rule based approaches for music genre classification.
+\newblock In {\em Proceedings of the 9th International Conference on Artificial
+  Intelligence in Music, Sound, Art and Design (EvoMUSART)}, volume 12103 of
+  {\em LNCS}, pages 35--48. Springer, 2020.
+
+\bibitem{huang2008patterntrees}
+Zhiheng Huang, Tam~D. Gedeon, and Masoud Nikravesh.
+\newblock Pattern trees induction: A new machine learning method.
+\newblock {\em IEEE Transactions on Fuzzy Systems}, 16(4):958--970, 2008.
+
+\bibitem{kendall1938new}
+Maurice~G. Kendall.
+\newblock A new measure of rank correlation.
+\newblock {\em Biometrika}, 30(1/2):81--93, 1938.
+
+\bibitem{needleman1970general}
+Saul~B. Needleman and Christian~D. Wunsch.
+\newblock A general method applicable to the search for similarities in the
+  amino acid sequence of two proteins.
+\newblock {\em Journal of Molecular Biology}, 48(3):443--453, 1970.
 
 \bibitem{ramoneda2024rubricnet}
 Pere Ramoneda, Vsevolod Eremenko, Annelies D'Hooge, Emilia Parada-Cabaleiro,
@@ -28,6 +81,35 @@ Pere Ramoneda, Dasaem Jeong, Vsevolod Eremenko, Nazif~Can Tamer, Marius Miron,
   classification.
 \newblock {\em Expert Systems with Applications}, 238:121776, 2024.
 
+\bibitem{riley2024gaps}
+Xavier Riley, Zixun Guo, Drew Edwards, and Simon Dixon.
+\newblock Gaps: A large and diverse classical guitar dataset and benchmark
+  transcription model.
+\newblock In {\em Proceedings of the 25th International Society for Music
+  Information Retrieval Conference (ISMIR)}, 2024.
+
+\bibitem{sarmento2021dadagp}
+Pedro Sarmento, Adarsh Kumar, CJ~Carr, Zack Zukowski, Mathieu Barthet, and
+  Yi-Hsuan Yang.
+\newblock Dadagp: A dataset of tokenized guitarpro songs for sequence models.
+\newblock In {\em Proceedings of the 22nd International Society for Music
+  Information Retrieval Conference (ISMIR)}, pages 610--617, 2021.
+
+\bibitem{senge2011topdown}
+Robin Senge and Eyke H{\"u}llermeier.
+\newblock Top-down induction of fuzzy pattern trees.
+\newblock {\em IEEE Transactions on Fuzzy Systems}, 19(2):241--252, 2011.
+
+\bibitem{senge2015fast}
+Robin Senge and Eyke H{\"u}llermeier.
+\newblock Fast fuzzy pattern tree learning for classification.
+\newblock {\em IEEE Transactions on Fuzzy Systems}, 23(6):2024--2033, 2015.
+
+\bibitem{spearman1904proof}
+Charles Spearman.
+\newblock The proof and measurement of association between two things.
+\newblock {\em The American Journal of Psychology}, 15(1):72--101, 1904.
+
 \bibitem{vasquez2023quantifying}
 Miguel A. V.~V. V{\'a}squez, Max Baelemans, Jonathan Driedger, Willem~H.
   Zuidema, and John~Ashley Burgoyne.
@@ -35,10 +117,23 @@ Miguel A. V.~V. V{\'a}squez, Max Baelemans, Jonathan Driedger, Willem~H.
 \newblock In {\em Proceedings of the 24th International Society for Music
   Information Retrieval Conference (ISMIR)}, pages 725--732, 2023.
 
+\bibitem{vatolkin2015interpretable}
+Igor Vatolkin and G{\"u}nter Rudolph.
+\newblock Interpretable music categorisation based on fuzzy rules and
+  high-level audio features.
+\newblock In {\em Data Science, Learning by Latent Structures, and Knowledge
+  Discovery}, Studies in Classification, Data Analysis, and Knowledge
+  Organization, pages 423--432. Springer, 2015.
+
 \bibitem{yaroch2025measure}
 Edward~J. Yaroch.
 \newblock Measure by measure: Developing an artificial intelligence algorithm
   for music difficulty assessment.
 \newblock M.a. thesis, University of Miami, 2025.
+
+\bibitem{zadeh1965fuzzy}
+Lotfi~A. Zadeh.
+\newblock Fuzzy sets.
+\newblock {\em Information and Control}, 8(3):338--353, 1965.
 
 \end{thebibliography}

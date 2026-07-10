@@ -1,0 +1,3386 @@
+{
+  "complete_search_rules": {
+    "0": {
+      "0": [
+        {
+          "feature": "fret_entropy",
+          "term": "low",
+          "relevance": 0.46404292908329836,
+          "text": "IF fret_entropy IS low THEN class 0"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "very low",
+          "relevance": 0.4432819441789093,
+          "text": "IF p90_fret IS very low THEN class 0"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.4089222991710122,
+          "text": "IF high_position_ratio IS very low THEN class 0"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "low",
+          "relevance": 0.4009906619963626,
+          "text": "IF log_total_notes IS low THEN class 0"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "very low",
+          "relevance": 0.39635009411176886,
+          "text": "IF max_position_shift IS very low THEN class 0"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "very low",
+          "relevance": 0.38780189343500754,
+          "text": "IF avg_fret IS very low THEN class 0"
+        },
+        {
+          "feature": "tempo_bpm",
+          "term": "moderate",
+          "relevance": 0.36414783496529607,
+          "text": "IF tempo_bpm IS moderate THEN class 0"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "moderate",
+          "relevance": 0.3489441729131808,
+          "text": "IF open_string_ratio IS moderate THEN class 0"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "very low",
+          "relevance": 0.34551049149726726,
+          "text": "IF p95_position_shift_window IS very low THEN class 0"
+        },
+        {
+          "feature": "max_chord_stretch",
+          "term": "very low",
+          "relevance": 0.342680585673757,
+          "text": "IF max_chord_stretch IS very low THEN class 0"
+        }
+      ],
+      "1": [
+        {
+          "feature": "log_total_notes",
+          "term": "low",
+          "relevance": 0.38314089263604584,
+          "text": "IF log_total_notes IS low THEN class 1"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "very low",
+          "relevance": 0.3682537368658903,
+          "text": "IF p90_fret IS very low THEN class 1"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.36397388454047996,
+          "text": "IF high_position_ratio IS very low THEN class 1"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "very low",
+          "relevance": 0.33715081191300506,
+          "text": "IF avg_fret IS very low THEN class 1"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "moderate",
+          "relevance": 0.33431926008497576,
+          "text": "IF fret_entropy IS moderate THEN class 1"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "moderate",
+          "relevance": 0.33386419939755446,
+          "text": "IF open_string_ratio IS moderate THEN class 1"
+        },
+        {
+          "feature": "tempo_bpm",
+          "term": "moderate",
+          "relevance": 0.3213537061012686,
+          "text": "IF tempo_bpm IS moderate THEN class 1"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.31511064182760534,
+          "text": "IF total_notes IS very low THEN class 1"
+        },
+        {
+          "feature": "max_position_shift_speed_beats",
+          "term": "very low",
+          "relevance": 0.30165836701912585,
+          "text": "IF max_position_shift_speed_beats IS very low THEN class 1"
+        },
+        {
+          "feature": "max_chord_stretch",
+          "term": "very low",
+          "relevance": 0.297843280268219,
+          "text": "IF max_chord_stretch IS very low THEN class 1"
+        }
+      ],
+      "2": [
+        {
+          "feature": "fret_entropy",
+          "term": "moderate",
+          "relevance": 0.3240286648023436,
+          "text": "IF fret_entropy IS moderate THEN class 2"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "low",
+          "relevance": 0.31487040501032204,
+          "text": "IF max_position_shift IS low THEN class 2"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.2815202647441332,
+          "text": "IF high_position_ratio IS very low THEN class 2"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.2772016382165455,
+          "text": "IF total_notes IS very low THEN class 2"
+        },
+        {
+          "feature": "max_position_shift_speed_beats",
+          "term": "very low",
+          "relevance": 0.27638725183607954,
+          "text": "IF max_position_shift_speed_beats IS very low THEN class 2"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.27591890565821636,
+          "text": "IF log_total_notes IS moderate THEN class 2"
+        },
+        {
+          "feature": "repetition_ratio",
+          "term": "very low",
+          "relevance": 0.27495018379907177,
+          "text": "IF repetition_ratio IS very low THEN class 2"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "moderate",
+          "relevance": 0.27274612405389886,
+          "text": "IF open_string_ratio IS moderate THEN class 2"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.2683647039325706,
+          "text": "IF p90_fret IS low THEN class 2"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "high",
+          "relevance": 0.2677086556795362,
+          "text": "IF string_entropy IS high THEN class 2"
+        }
+      ],
+      "3": [
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.3463750294655795,
+          "text": "IF log_total_notes IS moderate THEN class 3"
+        },
+        {
+          "feature": "tempo_bpm",
+          "term": "low",
+          "relevance": 0.31047801793845436,
+          "text": "IF tempo_bpm IS low THEN class 3"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.3034430389555041,
+          "text": "IF p90_fret IS low THEN class 3"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.3034360212958817,
+          "text": "IF open_string_ratio IS low THEN class 3"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "low",
+          "relevance": 0.2964715101593505,
+          "text": "IF p95_position_shift_window IS low THEN class 3"
+        },
+        {
+          "feature": "avg_string_jump",
+          "term": "low",
+          "relevance": 0.29278040321877874,
+          "text": "IF avg_string_jump IS low THEN class 3"
+        },
+        {
+          "feature": "max_chord_stretch",
+          "term": "low",
+          "relevance": 0.2927408031929181,
+          "text": "IF max_chord_stretch IS low THEN class 3"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.2919951264790131,
+          "text": "IF fret_entropy IS high THEN class 3"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "low",
+          "relevance": 0.2908517655184319,
+          "text": "IF max_position_shift IS low THEN class 3"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.2849650309387561,
+          "text": "IF avg_fret IS low THEN class 3"
+        }
+      ],
+      "4": [
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.3291722635577134,
+          "text": "IF fret_entropy IS high THEN class 4"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.3256891792418119,
+          "text": "IF max_string_jump IS very high THEN class 4"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.3229689524051692,
+          "text": "IF total_notes IS low THEN class 4"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.3191593958841601,
+          "text": "IF log_total_notes IS moderate THEN class 4"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.3102667211779324,
+          "text": "IF p90_fret IS low THEN class 4"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.3008822744875356,
+          "text": "IF high_position_ratio IS low THEN class 4"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "low",
+          "relevance": 0.29552208598872426,
+          "text": "IF p95_position_shift_window IS low THEN class 4"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.2954507924994341,
+          "text": "IF avg_fret IS low THEN class 4"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.2901591173133713,
+          "text": "IF open_string_ratio IS low THEN class 4"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.289841954673492,
+          "text": "IF std_position_shift IS low THEN class 4"
+        }
+      ],
+      "5": [
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.38585081947083927,
+          "text": "IF fret_entropy IS high THEN class 5"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.35600961538461656,
+          "text": "IF max_string_jump IS very high THEN class 5"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.35411169369450496,
+          "text": "IF open_string_ratio IS low THEN class 5"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.35405293841876706,
+          "text": "IF total_notes IS low THEN class 5"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.31719688898359216,
+          "text": "IF p90_fret IS low THEN class 5"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.31479384395101406,
+          "text": "IF high_position_ratio IS low THEN class 5"
+        },
+        {
+          "feature": "max_position_shift_speed_beats",
+          "term": "low",
+          "relevance": 0.3109396770579605,
+          "text": "IF max_position_shift_speed_beats IS low THEN class 5"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.3092651932722349,
+          "text": "IF log_total_notes IS high THEN class 5"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "low",
+          "relevance": 0.3063248374487912,
+          "text": "IF p95_position_shift_window IS low THEN class 5"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.30162480969488226,
+          "text": "IF avg_fret IS low THEN class 5"
+        }
+      ],
+      "6": [
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.3560542017982832,
+          "text": "IF fret_entropy IS high THEN class 6"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "very high",
+          "relevance": 0.34688801087363097,
+          "text": "IF string_entropy IS very high THEN class 6"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.3400572238829634,
+          "text": "IF open_string_ratio IS low THEN class 6"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.33934322365443753,
+          "text": "IF high_position_ratio IS low THEN class 6"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.33104270729270824,
+          "text": "IF max_string_jump IS very high THEN class 6"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.3296929627059596,
+          "text": "IF log_total_notes IS high THEN class 6"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.3259499656918911,
+          "text": "IF std_position_shift IS low THEN class 6"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.3236739102746345,
+          "text": "IF avg_fret IS low THEN class 6"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.320621483779378,
+          "text": "IF p90_fret IS low THEN class 6"
+        },
+        {
+          "feature": "arpeggio_density",
+          "term": "moderate",
+          "relevance": 0.3097067105054695,
+          "text": "IF arpeggio_density IS moderate THEN class 6"
+        }
+      ],
+      "7": [
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.3570402896615078,
+          "text": "IF log_total_notes IS high THEN class 7"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "moderate",
+          "relevance": 0.35003220534255064,
+          "text": "IF max_position_shift IS moderate THEN class 7"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "very high",
+          "relevance": 0.34873651164168545,
+          "text": "IF string_entropy IS very high THEN class 7"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.3326232426232875,
+          "text": "IF total_notes IS low THEN class 7"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.33212683867856374,
+          "text": "IF max_string_jump IS very high THEN class 7"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.3306216929481548,
+          "text": "IF fret_entropy IS high THEN class 7"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.3289932135263133,
+          "text": "IF std_position_shift IS low THEN class 7"
+        },
+        {
+          "feature": "avg_position_shift_speed_beats",
+          "term": "low",
+          "relevance": 0.3236299734709937,
+          "text": "IF avg_position_shift_speed_beats IS low THEN class 7"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "moderate",
+          "relevance": 0.32121391360573703,
+          "text": "IF p90_fret IS moderate THEN class 7"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "moderate",
+          "relevance": 0.3095864322281573,
+          "text": "IF p95_position_shift_window IS moderate THEN class 7"
+        }
+      ]
+    },
+    "1": {
+      "0": [
+        {
+          "feature": "fret_entropy",
+          "term": "low",
+          "relevance": 0.49427290304068233,
+          "text": "IF fret_entropy IS low THEN class 0"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.41566026530280176,
+          "text": "IF high_position_ratio IS very low THEN class 0"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "low",
+          "relevance": 0.41233831234398727,
+          "text": "IF log_total_notes IS low THEN class 0"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "very low",
+          "relevance": 0.41144730252674694,
+          "text": "IF p90_fret IS very low THEN class 0"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "very low",
+          "relevance": 0.401994835654331,
+          "text": "IF max_position_shift IS very low THEN class 0"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "very low",
+          "relevance": 0.3942849753006955,
+          "text": "IF avg_fret IS very low THEN class 0"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "moderate",
+          "relevance": 0.36154335371768664,
+          "text": "IF open_string_ratio IS moderate THEN class 0"
+        },
+        {
+          "feature": "tempo_bpm",
+          "term": "moderate",
+          "relevance": 0.35625490047297564,
+          "text": "IF tempo_bpm IS moderate THEN class 0"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.35179631080834967,
+          "text": "IF total_notes IS very low THEN class 0"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "very low",
+          "relevance": 0.3483782274737725,
+          "text": "IF p95_position_shift_window IS very low THEN class 0"
+        }
+      ],
+      "1": [
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.3822167192930526,
+          "text": "IF high_position_ratio IS very low THEN class 1"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "very low",
+          "relevance": 0.3539870553886542,
+          "text": "IF avg_fret IS very low THEN class 1"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "very low",
+          "relevance": 0.35011768917528086,
+          "text": "IF p90_fret IS very low THEN class 1"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "moderate",
+          "relevance": 0.3402451243669569,
+          "text": "IF open_string_ratio IS moderate THEN class 1"
+        },
+        {
+          "feature": "tempo_bpm",
+          "term": "moderate",
+          "relevance": 0.3329320863352285,
+          "text": "IF tempo_bpm IS moderate THEN class 1"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "moderate",
+          "relevance": 0.33215430573334365,
+          "text": "IF fret_entropy IS moderate THEN class 1"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.3214195959931765,
+          "text": "IF total_notes IS very low THEN class 1"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.3105036679776617,
+          "text": "IF log_total_notes IS moderate THEN class 1"
+        },
+        {
+          "feature": "max_position_shift_speed_beats",
+          "term": "very low",
+          "relevance": 0.30838946394104205,
+          "text": "IF max_position_shift_speed_beats IS very low THEN class 1"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "very low",
+          "relevance": 0.30018473899594666,
+          "text": "IF std_position_shift IS very low THEN class 1"
+        }
+      ],
+      "2": [
+        {
+          "feature": "fret_entropy",
+          "term": "moderate",
+          "relevance": 0.32374573289076436,
+          "text": "IF fret_entropy IS moderate THEN class 2"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "low",
+          "relevance": 0.3167192267515504,
+          "text": "IF max_position_shift IS low THEN class 2"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.30795582850458514,
+          "text": "IF log_total_notes IS moderate THEN class 2"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.2863588837119938,
+          "text": "IF p90_fret IS low THEN class 2"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.2847548752925333,
+          "text": "IF total_notes IS very low THEN class 2"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "low",
+          "relevance": 0.27688823553571673,
+          "text": "IF p95_position_shift_window IS low THEN class 2"
+        },
+        {
+          "feature": "max_position_shift_speed_beats",
+          "term": "very low",
+          "relevance": 0.2746955727193161,
+          "text": "IF max_position_shift_speed_beats IS very low THEN class 2"
+        },
+        {
+          "feature": "repetition_ratio",
+          "term": "very low",
+          "relevance": 0.27309966208857583,
+          "text": "IF repetition_ratio IS very low THEN class 2"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "high",
+          "relevance": 0.2671384048002116,
+          "text": "IF string_entropy IS high THEN class 2"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.2641889560765574,
+          "text": "IF high_position_ratio IS very low THEN class 2"
+        }
+      ],
+      "3": [
+        {
+          "feature": "avg_string_jump",
+          "term": "low",
+          "relevance": 0.3016783700155369,
+          "text": "IF avg_string_jump IS low THEN class 3"
+        },
+        {
+          "feature": "max_chord_stretch",
+          "term": "low",
+          "relevance": 0.2999462949906724,
+          "text": "IF max_chord_stretch IS low THEN class 3"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.2991348587404017,
+          "text": "IF log_total_notes IS moderate THEN class 3"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.29865504064820986,
+          "text": "IF open_string_ratio IS low THEN class 3"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.293330951647675,
+          "text": "IF p90_fret IS low THEN class 3"
+        },
+        {
+          "feature": "arpeggio_density",
+          "term": "moderate",
+          "relevance": 0.28691476664544485,
+          "text": "IF arpeggio_density IS moderate THEN class 3"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.2832831046120751,
+          "text": "IF fret_entropy IS high THEN class 3"
+        },
+        {
+          "feature": "avg_chord_stretch",
+          "term": "low",
+          "relevance": 0.2809216493123065,
+          "text": "IF avg_chord_stretch IS low THEN class 3"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.28042175993933005,
+          "text": "IF avg_fret IS low THEN class 3"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "high",
+          "relevance": 0.2768000815133119,
+          "text": "IF string_entropy IS high THEN class 3"
+        }
+      ],
+      "4": [
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.35778593967481637,
+          "text": "IF fret_entropy IS high THEN class 4"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.339744681680181,
+          "text": "IF log_total_notes IS high THEN class 4"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.33839623714712946,
+          "text": "IF total_notes IS low THEN class 4"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.3380472122715173,
+          "text": "IF max_string_jump IS very high THEN class 4"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.3176351358782482,
+          "text": "IF high_position_ratio IS low THEN class 4"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.3142931873588696,
+          "text": "IF open_string_ratio IS low THEN class 4"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.3093934755408436,
+          "text": "IF avg_fret IS low THEN class 4"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "low",
+          "relevance": 0.29675084729543255,
+          "text": "IF p95_position_shift_window IS low THEN class 4"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "moderate",
+          "relevance": 0.2966259289182277,
+          "text": "IF max_position_shift IS moderate THEN class 4"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.2944728942775786,
+          "text": "IF p90_fret IS low THEN class 4"
+        }
+      ],
+      "5": [
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.37763492348405503,
+          "text": "IF fret_entropy IS high THEN class 5"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.3561082024432818,
+          "text": "IF max_string_jump IS very high THEN class 5"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.3482174702004889,
+          "text": "IF log_total_notes IS high THEN class 5"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.3419623489602669,
+          "text": "IF open_string_ratio IS low THEN class 5"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.33512158500902517,
+          "text": "IF total_notes IS low THEN class 5"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.3193604231185542,
+          "text": "IF std_position_shift IS low THEN class 5"
+        },
+        {
+          "feature": "arpeggio_density",
+          "term": "moderate",
+          "relevance": 0.3120489679729746,
+          "text": "IF arpeggio_density IS moderate THEN class 5"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.3117047039236944,
+          "text": "IF avg_fret IS low THEN class 5"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.30605458553227927,
+          "text": "IF high_position_ratio IS low THEN class 5"
+        },
+        {
+          "feature": "avg_chord_stretch",
+          "term": "low",
+          "relevance": 0.2970744220657894,
+          "text": "IF avg_chord_stretch IS low THEN class 5"
+        }
+      ],
+      "6": [
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.3462003341195152,
+          "text": "IF open_string_ratio IS low THEN class 6"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.33729926420532086,
+          "text": "IF log_total_notes IS high THEN class 6"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.3337503139813534,
+          "text": "IF fret_entropy IS high THEN class 6"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.3207074546342516,
+          "text": "IF high_position_ratio IS low THEN class 6"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.3177976210831403,
+          "text": "IF std_position_shift IS low THEN class 6"
+        },
+        {
+          "feature": "avg_position_shift_speed_beats",
+          "term": "low",
+          "relevance": 0.3148074917147294,
+          "text": "IF avg_position_shift_speed_beats IS low THEN class 6"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.31448516579406693,
+          "text": "IF max_string_jump IS very high THEN class 6"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "very high",
+          "relevance": 0.31312570617784163,
+          "text": "IF string_entropy IS very high THEN class 6"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.30643609702738855,
+          "text": "IF avg_fret IS low THEN class 6"
+        },
+        {
+          "feature": "arpeggio_density",
+          "term": "moderate",
+          "relevance": 0.3041678241893189,
+          "text": "IF arpeggio_density IS moderate THEN class 6"
+        }
+      ],
+      "7": [
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.39613355164363184,
+          "text": "IF log_total_notes IS high THEN class 7"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "moderate",
+          "relevance": 0.3616204157323922,
+          "text": "IF max_position_shift IS moderate THEN class 7"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.3487702152414201,
+          "text": "IF max_string_jump IS very high THEN class 7"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.3466268875008275,
+          "text": "IF fret_entropy IS high THEN class 7"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "very high",
+          "relevance": 0.3430481956143459,
+          "text": "IF string_entropy IS very high THEN class 7"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.3401630410561033,
+          "text": "IF std_position_shift IS low THEN class 7"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "moderate",
+          "relevance": 0.33578443213152204,
+          "text": "IF p95_position_shift_window IS moderate THEN class 7"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "moderate",
+          "relevance": 0.3318769051774287,
+          "text": "IF p90_fret IS moderate THEN class 7"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.3196297035797769,
+          "text": "IF total_notes IS low THEN class 7"
+        },
+        {
+          "feature": "avg_position_shift_speed_beats",
+          "term": "low",
+          "relevance": 0.312562490128201,
+          "text": "IF avg_position_shift_speed_beats IS low THEN class 7"
+        }
+      ]
+    },
+    "2": {
+      "0": [
+        {
+          "feature": "fret_entropy",
+          "term": "low",
+          "relevance": 0.44982047899528727,
+          "text": "IF fret_entropy IS low THEN class 0"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "low",
+          "relevance": 0.40806425696034215,
+          "text": "IF log_total_notes IS low THEN class 0"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.4027119087497472,
+          "text": "IF high_position_ratio IS very low THEN class 0"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "very low",
+          "relevance": 0.38250824913239395,
+          "text": "IF avg_fret IS very low THEN class 0"
+        },
+        {
+          "feature": "tempo_bpm",
+          "term": "moderate",
+          "relevance": 0.3774758945910028,
+          "text": "IF tempo_bpm IS moderate THEN class 0"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "very low",
+          "relevance": 0.3718006829046208,
+          "text": "IF p90_fret IS very low THEN class 0"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "very low",
+          "relevance": 0.36789760029365737,
+          "text": "IF max_position_shift IS very low THEN class 0"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "moderate",
+          "relevance": 0.36563201048796734,
+          "text": "IF open_string_ratio IS moderate THEN class 0"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.3565559668654397,
+          "text": "IF total_notes IS very low THEN class 0"
+        },
+        {
+          "feature": "avg_chord_stretch",
+          "term": "very low",
+          "relevance": 0.3558558774010003,
+          "text": "IF avg_chord_stretch IS very low THEN class 0"
+        }
+      ],
+      "1": [
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.39114855687294425,
+          "text": "IF high_position_ratio IS very low THEN class 1"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "very low",
+          "relevance": 0.36355161766680083,
+          "text": "IF p90_fret IS very low THEN class 1"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "very low",
+          "relevance": 0.34472129222157366,
+          "text": "IF avg_fret IS very low THEN class 1"
+        },
+        {
+          "feature": "tempo_bpm",
+          "term": "moderate",
+          "relevance": 0.33670931055457015,
+          "text": "IF tempo_bpm IS moderate THEN class 1"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.3319084905329541,
+          "text": "IF total_notes IS very low THEN class 1"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "low",
+          "relevance": 0.3262713490069029,
+          "text": "IF fret_entropy IS low THEN class 1"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "moderate",
+          "relevance": 0.321951929608847,
+          "text": "IF open_string_ratio IS moderate THEN class 1"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.3196281460242389,
+          "text": "IF log_total_notes IS moderate THEN class 1"
+        },
+        {
+          "feature": "max_position_shift_speed_beats",
+          "term": "very low",
+          "relevance": 0.31478488184913456,
+          "text": "IF max_position_shift_speed_beats IS very low THEN class 1"
+        },
+        {
+          "feature": "max_note_density_window",
+          "term": "very low",
+          "relevance": 0.3140328803254405,
+          "text": "IF max_note_density_window IS very low THEN class 1"
+        }
+      ],
+      "2": [
+        {
+          "feature": "max_position_shift",
+          "term": "low",
+          "relevance": 0.32071944094470384,
+          "text": "IF max_position_shift IS low THEN class 2"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "moderate",
+          "relevance": 0.3185457477346401,
+          "text": "IF fret_entropy IS moderate THEN class 2"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.3120680603187608,
+          "text": "IF log_total_notes IS moderate THEN class 2"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.2839785863003049,
+          "text": "IF total_notes IS very low THEN class 2"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "low",
+          "relevance": 0.2832377705860833,
+          "text": "IF p95_position_shift_window IS low THEN class 2"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.2802196839425526,
+          "text": "IF p90_fret IS low THEN class 2"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.27572987898902757,
+          "text": "IF high_position_ratio IS very low THEN class 2"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "high",
+          "relevance": 0.27383392311803506,
+          "text": "IF string_entropy IS high THEN class 2"
+        },
+        {
+          "feature": "max_position_shift_speed_beats",
+          "term": "very low",
+          "relevance": 0.2736987925375163,
+          "text": "IF max_position_shift_speed_beats IS very low THEN class 2"
+        },
+        {
+          "feature": "max_chord_stretch",
+          "term": "very low",
+          "relevance": 0.27192817749520654,
+          "text": "IF max_chord_stretch IS very low THEN class 2"
+        }
+      ],
+      "3": [
+        {
+          "feature": "arpeggio_density",
+          "term": "moderate",
+          "relevance": 0.3075605879982116,
+          "text": "IF arpeggio_density IS moderate THEN class 3"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.3008772469235359,
+          "text": "IF log_total_notes IS moderate THEN class 3"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.29500178626424417,
+          "text": "IF p90_fret IS low THEN class 3"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.2890757175649028,
+          "text": "IF fret_entropy IS high THEN class 3"
+        },
+        {
+          "feature": "max_note_density_window",
+          "term": "low",
+          "relevance": 0.2867714262537307,
+          "text": "IF max_note_density_window IS low THEN class 3"
+        },
+        {
+          "feature": "avg_string_jump",
+          "term": "low",
+          "relevance": 0.28530584514453694,
+          "text": "IF avg_string_jump IS low THEN class 3"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.28206050960592366,
+          "text": "IF open_string_ratio IS low THEN class 3"
+        },
+        {
+          "feature": "max_chord_stretch",
+          "term": "low",
+          "relevance": 0.2820272325969897,
+          "text": "IF max_chord_stretch IS low THEN class 3"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.2799869124807099,
+          "text": "IF high_position_ratio IS low THEN class 3"
+        },
+        {
+          "feature": "p90_chord_stretch",
+          "term": "low",
+          "relevance": 0.2795418848167534,
+          "text": "IF p90_chord_stretch IS low THEN class 3"
+        }
+      ],
+      "4": [
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.3396024897573358,
+          "text": "IF fret_entropy IS high THEN class 4"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.3247314297369442,
+          "text": "IF high_position_ratio IS low THEN class 4"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.313860475039655,
+          "text": "IF total_notes IS low THEN class 4"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.30992360337446095,
+          "text": "IF log_total_notes IS high THEN class 4"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.3087169705812032,
+          "text": "IF open_string_ratio IS low THEN class 4"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.3071305226416835,
+          "text": "IF max_string_jump IS very high THEN class 4"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "low",
+          "relevance": 0.30430459743924093,
+          "text": "IF p95_position_shift_window IS low THEN class 4"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "moderate",
+          "relevance": 0.3023203639333524,
+          "text": "IF max_position_shift IS moderate THEN class 4"
+        },
+        {
+          "feature": "max_note_density_window",
+          "term": "low",
+          "relevance": 0.30145533525323664,
+          "text": "IF max_note_density_window IS low THEN class 4"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.29330427114907687,
+          "text": "IF p90_fret IS low THEN class 4"
+        }
+      ],
+      "5": [
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.40571758804737307,
+          "text": "IF log_total_notes IS high THEN class 5"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.3869642183333235,
+          "text": "IF fret_entropy IS high THEN class 5"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.36932142598356915,
+          "text": "IF total_notes IS low THEN class 5"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.3614168848167549,
+          "text": "IF max_string_jump IS very high THEN class 5"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.3402434557287974,
+          "text": "IF open_string_ratio IS low THEN class 5"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.30869206316448,
+          "text": "IF high_position_ratio IS low THEN class 5"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.3026087740465312,
+          "text": "IF std_position_shift IS low THEN class 5"
+        },
+        {
+          "feature": "avg_chord_stretch",
+          "term": "low",
+          "relevance": 0.2943892002749263,
+          "text": "IF avg_chord_stretch IS low THEN class 5"
+        },
+        {
+          "feature": "max_chord_stretch",
+          "term": "low",
+          "relevance": 0.28961767845037745,
+          "text": "IF max_chord_stretch IS low THEN class 5"
+        },
+        {
+          "feature": "arpeggio_density",
+          "term": "moderate",
+          "relevance": 0.28557790701919666,
+          "text": "IF arpeggio_density IS moderate THEN class 5"
+        }
+      ],
+      "6": [
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.37249343498066106,
+          "text": "IF log_total_notes IS high THEN class 6"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.36300970254588116,
+          "text": "IF fret_entropy IS high THEN class 6"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "very high",
+          "relevance": 0.3516268071110323,
+          "text": "IF string_entropy IS very high THEN class 6"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.3413774619795571,
+          "text": "IF max_string_jump IS very high THEN class 6"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.34021281664684694,
+          "text": "IF std_position_shift IS low THEN class 6"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.3379671570565945,
+          "text": "IF open_string_ratio IS low THEN class 6"
+        },
+        {
+          "feature": "arpeggio_density",
+          "term": "moderate",
+          "relevance": 0.32432719540251176,
+          "text": "IF arpeggio_density IS moderate THEN class 6"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.32409436884091813,
+          "text": "IF high_position_ratio IS low THEN class 6"
+        },
+        {
+          "feature": "max_chord_stretch",
+          "term": "low",
+          "relevance": 0.31952162544737533,
+          "text": "IF max_chord_stretch IS low THEN class 6"
+        },
+        {
+          "feature": "avg_chord_stretch",
+          "term": "low",
+          "relevance": 0.3059399749973104,
+          "text": "IF avg_chord_stretch IS low THEN class 6"
+        }
+      ],
+      "7": [
+        {
+          "feature": "max_position_shift",
+          "term": "moderate",
+          "relevance": 0.4108397087593238,
+          "text": "IF max_position_shift IS moderate THEN class 7"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "very high",
+          "relevance": 0.3797152258513412,
+          "text": "IF string_entropy IS very high THEN class 7"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.3698828124013957,
+          "text": "IF log_total_notes IS high THEN class 7"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "moderate",
+          "relevance": 0.33540538498863404,
+          "text": "IF p95_position_shift_window IS moderate THEN class 7"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.33094124490983207,
+          "text": "IF max_string_jump IS very high THEN class 7"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.33043239907325894,
+          "text": "IF fret_entropy IS high THEN class 7"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.3244380024275065,
+          "text": "IF std_position_shift IS low THEN class 7"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.32320596330793033,
+          "text": "IF open_string_ratio IS low THEN class 7"
+        },
+        {
+          "feature": "avg_position_shift_speed_beats",
+          "term": "low",
+          "relevance": 0.3175293039311439,
+          "text": "IF avg_position_shift_speed_beats IS low THEN class 7"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.3165891276564524,
+          "text": "IF total_notes IS low THEN class 7"
+        }
+      ]
+    },
+    "3": {
+      "0": [
+        {
+          "feature": "fret_entropy",
+          "term": "low",
+          "relevance": 0.4941065795969796,
+          "text": "IF fret_entropy IS low THEN class 0"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "very low",
+          "relevance": 0.4263661279307987,
+          "text": "IF p90_fret IS very low THEN class 0"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.4143313363281375,
+          "text": "IF high_position_ratio IS very low THEN class 0"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "very low",
+          "relevance": 0.40130744168674537,
+          "text": "IF avg_fret IS very low THEN class 0"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "low",
+          "relevance": 0.38144515731281176,
+          "text": "IF log_total_notes IS low THEN class 0"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "very low",
+          "relevance": 0.3811165114297161,
+          "text": "IF max_position_shift IS very low THEN class 0"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.38004119698337413,
+          "text": "IF total_notes IS very low THEN class 0"
+        },
+        {
+          "feature": "tempo_bpm",
+          "term": "moderate",
+          "relevance": 0.3623589905002257,
+          "text": "IF tempo_bpm IS moderate THEN class 0"
+        },
+        {
+          "feature": "max_note_density_window",
+          "term": "very low",
+          "relevance": 0.3522022131923533,
+          "text": "IF max_note_density_window IS very low THEN class 0"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "moderate",
+          "relevance": 0.3445827006331539,
+          "text": "IF open_string_ratio IS moderate THEN class 0"
+        }
+      ],
+      "1": [
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.37503789983510416,
+          "text": "IF high_position_ratio IS very low THEN class 1"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "very low",
+          "relevance": 0.349720982134332,
+          "text": "IF avg_fret IS very low THEN class 1"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "moderate",
+          "relevance": 0.3493650396860772,
+          "text": "IF open_string_ratio IS moderate THEN class 1"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "very low",
+          "relevance": 0.3461812323801852,
+          "text": "IF p90_fret IS very low THEN class 1"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.34191099482256887,
+          "text": "IF total_notes IS very low THEN class 1"
+        },
+        {
+          "feature": "tempo_bpm",
+          "term": "moderate",
+          "relevance": 0.3307931078107541,
+          "text": "IF tempo_bpm IS moderate THEN class 1"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "moderate",
+          "relevance": 0.3256268269099791,
+          "text": "IF fret_entropy IS moderate THEN class 1"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "very low",
+          "relevance": 0.3077950581409304,
+          "text": "IF std_position_shift IS very low THEN class 1"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "low",
+          "relevance": 0.3059903624743795,
+          "text": "IF fret_entropy IS low THEN class 1"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.30581083457654934,
+          "text": "IF log_total_notes IS moderate THEN class 1"
+        }
+      ],
+      "2": [
+        {
+          "feature": "fret_entropy",
+          "term": "moderate",
+          "relevance": 0.32900014998152805,
+          "text": "IF fret_entropy IS moderate THEN class 2"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "low",
+          "relevance": 0.31645514483110404,
+          "text": "IF max_position_shift IS low THEN class 2"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.316322303308226,
+          "text": "IF log_total_notes IS moderate THEN class 2"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "low",
+          "relevance": 0.2952093863485104,
+          "text": "IF p95_position_shift_window IS low THEN class 2"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.29309473787592977,
+          "text": "IF total_notes IS very low THEN class 2"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.28000540531885937,
+          "text": "IF p90_fret IS low THEN class 2"
+        },
+        {
+          "feature": "max_position_shift_speed_beats",
+          "term": "very low",
+          "relevance": 0.2700073978694797,
+          "text": "IF max_position_shift_speed_beats IS very low THEN class 2"
+        },
+        {
+          "feature": "repetition_ratio",
+          "term": "very low",
+          "relevance": 0.2696256752651583,
+          "text": "IF repetition_ratio IS very low THEN class 2"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "moderate",
+          "relevance": 0.26601732993160376,
+          "text": "IF open_string_ratio IS moderate THEN class 2"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.2657150962953052,
+          "text": "IF high_position_ratio IS very low THEN class 2"
+        }
+      ],
+      "3": [
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.30717934602380664,
+          "text": "IF log_total_notes IS moderate THEN class 3"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.29241679499024764,
+          "text": "IF p90_fret IS low THEN class 3"
+        },
+        {
+          "feature": "arpeggio_density",
+          "term": "moderate",
+          "relevance": 0.2893529990713782,
+          "text": "IF arpeggio_density IS moderate THEN class 3"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.28686699232340707,
+          "text": "IF open_string_ratio IS low THEN class 3"
+        },
+        {
+          "feature": "max_chord_stretch",
+          "term": "low",
+          "relevance": 0.28640682567384057,
+          "text": "IF max_chord_stretch IS low THEN class 3"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.2864024393506591,
+          "text": "IF avg_fret IS low THEN class 3"
+        },
+        {
+          "feature": "avg_string_jump",
+          "term": "low",
+          "relevance": 0.2863552163022529,
+          "text": "IF avg_string_jump IS low THEN class 3"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.2860778850937541,
+          "text": "IF fret_entropy IS high THEN class 3"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "high",
+          "relevance": 0.2836927200886143,
+          "text": "IF string_entropy IS high THEN class 3"
+        },
+        {
+          "feature": "max_note_density_window",
+          "term": "low",
+          "relevance": 0.2826823007578972,
+          "text": "IF max_note_density_window IS low THEN class 3"
+        }
+      ],
+      "4": [
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.33228826055521116,
+          "text": "IF fret_entropy IS high THEN class 4"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.3305786900380433,
+          "text": "IF log_total_notes IS high THEN class 4"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.329086664513869,
+          "text": "IF total_notes IS low THEN class 4"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.3280977312390934,
+          "text": "IF max_string_jump IS very high THEN class 4"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.31903321472242985,
+          "text": "IF high_position_ratio IS low THEN class 4"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "moderate",
+          "relevance": 0.30754431574949376,
+          "text": "IF max_position_shift IS moderate THEN class 4"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.30173672645579935,
+          "text": "IF avg_fret IS low THEN class 4"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.2989068797648573,
+          "text": "IF p90_fret IS low THEN class 4"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.29858223783042487,
+          "text": "IF open_string_ratio IS low THEN class 4"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.29666412585257224,
+          "text": "IF std_position_shift IS low THEN class 4"
+        }
+      ],
+      "5": [
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.4060263115739721,
+          "text": "IF fret_entropy IS high THEN class 5"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.37685197914355595,
+          "text": "IF log_total_notes IS high THEN class 5"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.3623861493538518,
+          "text": "IF open_string_ratio IS low THEN class 5"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.34982547993019286,
+          "text": "IF max_string_jump IS very high THEN class 5"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.342034810485388,
+          "text": "IF total_notes IS low THEN class 5"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.31828689301504337,
+          "text": "IF high_position_ratio IS low THEN class 5"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.316499557731146,
+          "text": "IF avg_fret IS low THEN class 5"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.305610666771067,
+          "text": "IF std_position_shift IS low THEN class 5"
+        },
+        {
+          "feature": "avg_chord_stretch",
+          "term": "low",
+          "relevance": 0.28779216099772037,
+          "text": "IF avg_chord_stretch IS low THEN class 5"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.284020157068063,
+          "text": "IF p90_fret IS low THEN class 5"
+        }
+      ],
+      "6": [
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.3589310789836153,
+          "text": "IF log_total_notes IS high THEN class 6"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "very high",
+          "relevance": 0.35422151725055784,
+          "text": "IF string_entropy IS very high THEN class 6"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.34969541090253414,
+          "text": "IF open_string_ratio IS low THEN class 6"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.34474021729951776,
+          "text": "IF fret_entropy IS high THEN class 6"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.332245402721601,
+          "text": "IF std_position_shift IS low THEN class 6"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.3315881326352538,
+          "text": "IF max_string_jump IS very high THEN class 6"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "moderate",
+          "relevance": 0.3197341264690147,
+          "text": "IF max_position_shift IS moderate THEN class 6"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.31830144282450495,
+          "text": "IF avg_fret IS low THEN class 6"
+        },
+        {
+          "feature": "arpeggio_density",
+          "term": "moderate",
+          "relevance": 0.31713515995964875,
+          "text": "IF arpeggio_density IS moderate THEN class 6"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.3142666281964833,
+          "text": "IF high_position_ratio IS low THEN class 6"
+        }
+      ],
+      "7": [
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.40112134092227064,
+          "text": "IF log_total_notes IS high THEN class 7"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "moderate",
+          "relevance": 0.34415602959629626,
+          "text": "IF max_position_shift IS moderate THEN class 7"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.3430831878999425,
+          "text": "IF max_string_jump IS very high THEN class 7"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.3374455092386548,
+          "text": "IF fret_entropy IS high THEN class 7"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "very high",
+          "relevance": 0.3338368303049836,
+          "text": "IF string_entropy IS very high THEN class 7"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.33121665102977915,
+          "text": "IF std_position_shift IS low THEN class 7"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.318388122512333,
+          "text": "IF total_notes IS low THEN class 7"
+        },
+        {
+          "feature": "avg_position_shift_speed_beats",
+          "term": "low",
+          "relevance": 0.31704693745998935,
+          "text": "IF avg_position_shift_speed_beats IS low THEN class 7"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.313888803933827,
+          "text": "IF open_string_ratio IS low THEN class 7"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "moderate",
+          "relevance": 0.303047120418848,
+          "text": "IF p90_fret IS moderate THEN class 7"
+        }
+      ]
+    },
+    "4": {
+      "0": [
+        {
+          "feature": "fret_entropy",
+          "term": "low",
+          "relevance": 0.4208591579923097,
+          "text": "IF fret_entropy IS low THEN class 0"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.4015159148295093,
+          "text": "IF high_position_ratio IS very low THEN class 0"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "low",
+          "relevance": 0.40003889047446944,
+          "text": "IF log_total_notes IS low THEN class 0"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "very low",
+          "relevance": 0.38212914485165766,
+          "text": "IF p90_fret IS very low THEN class 0"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "very low",
+          "relevance": 0.37797001394870067,
+          "text": "IF avg_fret IS very low THEN class 0"
+        },
+        {
+          "feature": "tempo_bpm",
+          "term": "moderate",
+          "relevance": 0.36929791034933107,
+          "text": "IF tempo_bpm IS moderate THEN class 0"
+        },
+        {
+          "feature": "avg_stretch_velocity_beats",
+          "term": "very low",
+          "relevance": 0.36677730724373386,
+          "text": "IF avg_stretch_velocity_beats IS very low THEN class 0"
+        },
+        {
+          "feature": "max_note_density_window",
+          "term": "very low",
+          "relevance": 0.3542107756437507,
+          "text": "IF max_note_density_window IS very low THEN class 0"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "very low",
+          "relevance": 0.3511409530660813,
+          "text": "IF max_position_shift IS very low THEN class 0"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.3455313104235751,
+          "text": "IF total_notes IS very low THEN class 0"
+        }
+      ],
+      "1": [
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.37579196061854536,
+          "text": "IF high_position_ratio IS very low THEN class 1"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "low",
+          "relevance": 0.37338031247234765,
+          "text": "IF fret_entropy IS low THEN class 1"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "very low",
+          "relevance": 0.34181886779456677,
+          "text": "IF avg_fret IS very low THEN class 1"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "very low",
+          "relevance": 0.34030264872865434,
+          "text": "IF p90_fret IS very low THEN class 1"
+        },
+        {
+          "feature": "tempo_bpm",
+          "term": "moderate",
+          "relevance": 0.33270594472794784,
+          "text": "IF tempo_bpm IS moderate THEN class 1"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.31305572691893935,
+          "text": "IF total_notes IS very low THEN class 1"
+        },
+        {
+          "feature": "max_position_shift_speed_beats",
+          "term": "very low",
+          "relevance": 0.3073590362289917,
+          "text": "IF max_position_shift_speed_beats IS very low THEN class 1"
+        },
+        {
+          "feature": "avg_stretch_velocity_beats",
+          "term": "very low",
+          "relevance": 0.30484406670666525,
+          "text": "IF avg_stretch_velocity_beats IS very low THEN class 1"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "very low",
+          "relevance": 0.30354324642132474,
+          "text": "IF std_position_shift IS very low THEN class 1"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.30231234937847123,
+          "text": "IF log_total_notes IS moderate THEN class 1"
+        }
+      ],
+      "2": [
+        {
+          "feature": "max_position_shift",
+          "term": "low",
+          "relevance": 0.3406020620069405,
+          "text": "IF max_position_shift IS low THEN class 2"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.31257305492910564,
+          "text": "IF log_total_notes IS moderate THEN class 2"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "moderate",
+          "relevance": 0.2987658279924264,
+          "text": "IF fret_entropy IS moderate THEN class 2"
+        },
+        {
+          "feature": "total_notes",
+          "term": "very low",
+          "relevance": 0.29179037711727673,
+          "text": "IF total_notes IS very low THEN class 2"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "low",
+          "relevance": 0.2859319693766779,
+          "text": "IF p95_position_shift_window IS low THEN class 2"
+        },
+        {
+          "feature": "max_position_shift_speed_beats",
+          "term": "very low",
+          "relevance": 0.2846748229781942,
+          "text": "IF max_position_shift_speed_beats IS very low THEN class 2"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "low",
+          "relevance": 0.2811832140512674,
+          "text": "IF p90_fret IS low THEN class 2"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "moderate",
+          "relevance": 0.2802877035454833,
+          "text": "IF open_string_ratio IS moderate THEN class 2"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "very low",
+          "relevance": 0.2797718747439231,
+          "text": "IF high_position_ratio IS very low THEN class 2"
+        },
+        {
+          "feature": "repetition_ratio",
+          "term": "very low",
+          "relevance": 0.27430525623576657,
+          "text": "IF repetition_ratio IS very low THEN class 2"
+        }
+      ],
+      "3": [
+        {
+          "feature": "avg_string_jump",
+          "term": "low",
+          "relevance": 0.3152361201865694,
+          "text": "IF avg_string_jump IS low THEN class 3"
+        },
+        {
+          "feature": "avg_stretch_velocity_beats",
+          "term": "low",
+          "relevance": 0.3040527509760591,
+          "text": "IF avg_stretch_velocity_beats IS low THEN class 3"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "moderate",
+          "relevance": 0.30366984366346655,
+          "text": "IF log_total_notes IS moderate THEN class 3"
+        },
+        {
+          "feature": "avg_polyphony",
+          "term": "low",
+          "relevance": 0.29066544362460495,
+          "text": "IF avg_polyphony IS low THEN class 3"
+        },
+        {
+          "feature": "arpeggio_density",
+          "term": "moderate",
+          "relevance": 0.2862896562116383,
+          "text": "IF arpeggio_density IS moderate THEN class 3"
+        },
+        {
+          "feature": "max_note_density_window",
+          "term": "low",
+          "relevance": 0.28608795563652867,
+          "text": "IF max_note_density_window IS low THEN class 3"
+        },
+        {
+          "feature": "max_chord_stretch",
+          "term": "low",
+          "relevance": 0.28526310788258963,
+          "text": "IF max_chord_stretch IS low THEN class 3"
+        },
+        {
+          "feature": "avg_chord_stretch",
+          "term": "low",
+          "relevance": 0.2831628063886293,
+          "text": "IF avg_chord_stretch IS low THEN class 3"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "high",
+          "relevance": 0.2805974367273184,
+          "text": "IF string_entropy IS high THEN class 3"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "low",
+          "relevance": 0.2804003692448028,
+          "text": "IF p95_position_shift_window IS low THEN class 3"
+        }
+      ],
+      "4": [
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.32497579001346943,
+          "text": "IF total_notes IS low THEN class 4"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.32392214652202556,
+          "text": "IF log_total_notes IS high THEN class 4"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.3221811433758673,
+          "text": "IF high_position_ratio IS low THEN class 4"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.32128626616984135,
+          "text": "IF open_string_ratio IS low THEN class 4"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "moderate",
+          "relevance": 0.3201254503718065,
+          "text": "IF max_position_shift IS moderate THEN class 4"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.31546064113162586,
+          "text": "IF max_string_jump IS very high THEN class 4"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.3098756213235108,
+          "text": "IF fret_entropy IS high THEN class 4"
+        },
+        {
+          "feature": "avg_stretch_velocity_beats",
+          "term": "low",
+          "relevance": 0.30892529260870716,
+          "text": "IF avg_stretch_velocity_beats IS low THEN class 4"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.30430673086578197,
+          "text": "IF avg_fret IS low THEN class 4"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.3041029345758141,
+          "text": "IF std_position_shift IS low THEN class 4"
+        }
+      ],
+      "5": [
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.3561940789970917,
+          "text": "IF open_string_ratio IS low THEN class 5"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.35368208864756934,
+          "text": "IF fret_entropy IS high THEN class 5"
+        },
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.34229122064972095,
+          "text": "IF log_total_notes IS high THEN class 5"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.3347179836701561,
+          "text": "IF total_notes IS low THEN class 5"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.33119982547993115,
+          "text": "IF max_string_jump IS very high THEN class 5"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.3219129582522878,
+          "text": "IF high_position_ratio IS low THEN class 5"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.3126156994810404,
+          "text": "IF avg_fret IS low THEN class 5"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.30863101381953145,
+          "text": "IF std_position_shift IS low THEN class 5"
+        },
+        {
+          "feature": "avg_string_jump",
+          "term": "low",
+          "relevance": 0.30112721816411814,
+          "text": "IF avg_string_jump IS low THEN class 5"
+        },
+        {
+          "feature": "chord_ratio",
+          "term": "low",
+          "relevance": 0.2996768928934975,
+          "text": "IF chord_ratio IS low THEN class 5"
+        }
+      ],
+      "6": [
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.36614741667406,
+          "text": "IF log_total_notes IS high THEN class 6"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "very high",
+          "relevance": 0.3518569403074897,
+          "text": "IF string_entropy IS very high THEN class 6"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.34360259286960954,
+          "text": "IF max_string_jump IS very high THEN class 6"
+        },
+        {
+          "feature": "open_string_ratio",
+          "term": "low",
+          "relevance": 0.3378345745428338,
+          "text": "IF open_string_ratio IS low THEN class 6"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.3369061746390893,
+          "text": "IF fret_entropy IS high THEN class 6"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.31700264162844355,
+          "text": "IF std_position_shift IS low THEN class 6"
+        },
+        {
+          "feature": "high_position_ratio",
+          "term": "low",
+          "relevance": 0.3148633605934248,
+          "text": "IF high_position_ratio IS low THEN class 6"
+        },
+        {
+          "feature": "avg_fret",
+          "term": "low",
+          "relevance": 0.3074560386865442,
+          "text": "IF avg_fret IS low THEN class 6"
+        },
+        {
+          "feature": "arpeggio_density",
+          "term": "moderate",
+          "relevance": 0.30334988884962316,
+          "text": "IF arpeggio_density IS moderate THEN class 6"
+        },
+        {
+          "feature": "chord_ratio",
+          "term": "low",
+          "relevance": 0.29924138950025775,
+          "text": "IF chord_ratio IS low THEN class 6"
+        }
+      ],
+      "7": [
+        {
+          "feature": "log_total_notes",
+          "term": "high",
+          "relevance": 0.41138813223849285,
+          "text": "IF log_total_notes IS high THEN class 7"
+        },
+        {
+          "feature": "max_position_shift",
+          "term": "moderate",
+          "relevance": 0.3826639150263246,
+          "text": "IF max_position_shift IS moderate THEN class 7"
+        },
+        {
+          "feature": "p90_fret",
+          "term": "moderate",
+          "relevance": 0.3571402780285249,
+          "text": "IF p90_fret IS moderate THEN class 7"
+        },
+        {
+          "feature": "string_entropy",
+          "term": "very high",
+          "relevance": 0.3440071469891079,
+          "text": "IF string_entropy IS very high THEN class 7"
+        },
+        {
+          "feature": "std_position_shift",
+          "term": "low",
+          "relevance": 0.34071844021555114,
+          "text": "IF std_position_shift IS low THEN class 7"
+        },
+        {
+          "feature": "fret_entropy",
+          "term": "high",
+          "relevance": 0.3333428750234099,
+          "text": "IF fret_entropy IS high THEN class 7"
+        },
+        {
+          "feature": "total_notes",
+          "term": "low",
+          "relevance": 0.33205718664460143,
+          "text": "IF total_notes IS low THEN class 7"
+        },
+        {
+          "feature": "max_string_jump",
+          "term": "very high",
+          "relevance": 0.32288379370524245,
+          "text": "IF max_string_jump IS very high THEN class 7"
+        },
+        {
+          "feature": "p95_position_shift_window",
+          "term": "moderate",
+          "relevance": 0.31955066502429963,
+          "text": "IF p95_position_shift_window IS moderate THEN class 7"
+        },
+        {
+          "feature": "shift_rate",
+          "term": "moderate",
+          "relevance": 0.30560330821581416,
+          "text": "IF shift_rate IS moderate THEN class 7"
+        }
+      ]
+    }
+  },
+  "fuzzy_pattern_trees": {
+    "0": {
+      "0": {
+        "expression": "fret_entropy IS low",
+        "tree": {
+          "feature": "fret_entropy",
+          "term": "low",
+          "negated": false
+        }
+      },
+      "1": {
+        "expression": "log_total_notes IS low",
+        "tree": {
+          "feature": "log_total_notes",
+          "term": "low",
+          "negated": false
+        }
+      },
+      "2": {
+        "expression": "NOT (max_avg_chord_stretch_window IS low)",
+        "tree": {
+          "feature": "max_avg_chord_stretch_window",
+          "term": "low",
+          "negated": true
+        }
+      },
+      "3": {
+        "expression": "p90_chord_stretch IS low",
+        "tree": {
+          "feature": "p90_chord_stretch",
+          "term": "low",
+          "negated": false
+        }
+      },
+      "4": {
+        "expression": "total_notes IS low",
+        "tree": {
+          "feature": "total_notes",
+          "term": "low",
+          "negated": false
+        }
+      },
+      "5": {
+        "expression": "total_notes IS low",
+        "tree": {
+          "feature": "total_notes",
+          "term": "low",
+          "negated": false
+        }
+      },
+      "6": {
+        "expression": "NOT (total_notes IS very low)",
+        "tree": {
+          "feature": "total_notes",
+          "term": "very low",
+          "negated": true
+        }
+      },
+      "7": {
+        "expression": "NOT (total_notes IS very low)",
+        "tree": {
+          "feature": "total_notes",
+          "term": "very low",
+          "negated": true
+        }
+      }
+    },
+    "1": {
+      "0": {
+        "expression": "AVG(fret_entropy IS low, AND(total_notes IS very low, NOT (fret_entropy IS high)))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "fret_entropy",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "op": "and",
+              "children": [
+                {
+                  "feature": "total_notes",
+                  "term": "very low",
+                  "negated": false
+                },
+                {
+                  "feature": "fret_entropy",
+                  "term": "high",
+                  "negated": true
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "1": {
+        "expression": "AVG(AND(avg_fret IS very low, log_total_notes IS moderate), total_notes IS very low)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "op": "and",
+              "children": [
+                {
+                  "feature": "avg_fret",
+                  "term": "very low",
+                  "negated": false
+                },
+                {
+                  "feature": "log_total_notes",
+                  "term": "moderate",
+                  "negated": false
+                }
+              ]
+            },
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": false
+            }
+          ]
+        }
+      },
+      "2": {
+        "expression": "AVG(log_total_notes IS moderate, AVG(fret_entropy IS moderate, max_position_shift IS low))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "log_total_notes",
+              "term": "moderate",
+              "negated": false
+            },
+            {
+              "op": "avg",
+              "children": [
+                {
+                  "feature": "fret_entropy",
+                  "term": "moderate",
+                  "negated": false
+                },
+                {
+                  "feature": "max_position_shift",
+                  "term": "low",
+                  "negated": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "3": {
+        "expression": "AND(max_chord_stretch IS low, AVG(max_avg_chord_stretch_window IS very low, log_total_notes IS moderate))",
+        "tree": {
+          "op": "and",
+          "children": [
+            {
+              "feature": "max_chord_stretch",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "op": "avg",
+              "children": [
+                {
+                  "feature": "max_avg_chord_stretch_window",
+                  "term": "very low",
+                  "negated": false
+                },
+                {
+                  "feature": "log_total_notes",
+                  "term": "moderate",
+                  "negated": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "4": {
+        "expression": "AVG(total_notes IS low, AND(avg_fret IS low, NOT (max_position_shift IS high)))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "op": "and",
+              "children": [
+                {
+                  "feature": "avg_fret",
+                  "term": "low",
+                  "negated": false
+                },
+                {
+                  "feature": "max_position_shift",
+                  "term": "high",
+                  "negated": true
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "5": {
+        "expression": "AVG(total_notes IS low, AVG(fret_entropy IS high, max_string_jump IS very high))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "op": "avg",
+              "children": [
+                {
+                  "feature": "fret_entropy",
+                  "term": "high",
+                  "negated": false
+                },
+                {
+                  "feature": "max_string_jump",
+                  "term": "very high",
+                  "negated": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "6": {
+        "expression": "AVG(NOT (total_notes IS very low), AVG(open_string_ratio IS low, string_entropy IS very high))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": true
+            },
+            {
+              "op": "avg",
+              "children": [
+                {
+                  "feature": "open_string_ratio",
+                  "term": "low",
+                  "negated": false
+                },
+                {
+                  "feature": "string_entropy",
+                  "term": "very high",
+                  "negated": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "7": {
+        "expression": "AVG(NOT (total_notes IS very low), OR(string_entropy IS very high, p95_position_shift_window IS moderate))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": true
+            },
+            {
+              "op": "or",
+              "children": [
+                {
+                  "feature": "string_entropy",
+                  "term": "very high",
+                  "negated": false
+                },
+                {
+                  "feature": "p95_position_shift_window",
+                  "term": "moderate",
+                  "negated": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "0": {
+        "expression": "AVG(fret_entropy IS low, total_notes IS very low)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "fret_entropy",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": false
+            }
+          ]
+        }
+      },
+      "1": {
+        "expression": "AVG(total_notes IS very low, p90_fret IS very low)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": false
+            },
+            {
+              "feature": "p90_fret",
+              "term": "very low",
+              "negated": false
+            }
+          ]
+        }
+      },
+      "2": {
+        "expression": "AVG(log_total_notes IS moderate, max_position_shift IS low)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "log_total_notes",
+              "term": "moderate",
+              "negated": false
+            },
+            {
+              "feature": "max_position_shift",
+              "term": "low",
+              "negated": false
+            }
+          ]
+        }
+      },
+      "3": {
+        "expression": "AVG(p90_chord_stretch IS low, log_total_notes IS moderate)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "p90_chord_stretch",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "feature": "log_total_notes",
+              "term": "moderate",
+              "negated": false
+            }
+          ]
+        }
+      },
+      "4": {
+        "expression": "AVG(total_notes IS low, max_note_density_window IS low)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "feature": "max_note_density_window",
+              "term": "low",
+              "negated": false
+            }
+          ]
+        }
+      },
+      "5": {
+        "expression": "AVG(total_notes IS low, fret_entropy IS high)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "feature": "fret_entropy",
+              "term": "high",
+              "negated": false
+            }
+          ]
+        }
+      },
+      "6": {
+        "expression": "AVG(NOT (total_notes IS very low), string_entropy IS very high)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": true
+            },
+            {
+              "feature": "string_entropy",
+              "term": "very high",
+              "negated": false
+            }
+          ]
+        }
+      },
+      "7": {
+        "expression": "AVG(NOT (total_notes IS very low), string_entropy IS very high)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": true
+            },
+            {
+              "feature": "string_entropy",
+              "term": "very high",
+              "negated": false
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "0": {
+        "expression": "AVG(fret_entropy IS low, AND(total_notes IS very low, NOT (max_position_shift IS moderate)))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "fret_entropy",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "op": "and",
+              "children": [
+                {
+                  "feature": "total_notes",
+                  "term": "very low",
+                  "negated": false
+                },
+                {
+                  "feature": "max_position_shift",
+                  "term": "moderate",
+                  "negated": true
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "1": {
+        "expression": "AVG(AVG(avg_fret IS very low, string_entropy IS moderate), total_notes IS very low)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "op": "avg",
+              "children": [
+                {
+                  "feature": "avg_fret",
+                  "term": "very low",
+                  "negated": false
+                },
+                {
+                  "feature": "string_entropy",
+                  "term": "moderate",
+                  "negated": false
+                }
+              ]
+            },
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": false
+            }
+          ]
+        }
+      },
+      "2": {
+        "expression": "AVG(log_total_notes IS moderate, AVG(fret_entropy IS moderate, max_position_shift IS low))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "log_total_notes",
+              "term": "moderate",
+              "negated": false
+            },
+            {
+              "op": "avg",
+              "children": [
+                {
+                  "feature": "fret_entropy",
+                  "term": "moderate",
+                  "negated": false
+                },
+                {
+                  "feature": "max_position_shift",
+                  "term": "low",
+                  "negated": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "3": {
+        "expression": "AVG(p90_chord_stretch IS low, AVG(log_total_notes IS moderate, p90_fret IS low))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "p90_chord_stretch",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "op": "avg",
+              "children": [
+                {
+                  "feature": "log_total_notes",
+                  "term": "moderate",
+                  "negated": false
+                },
+                {
+                  "feature": "p90_fret",
+                  "term": "low",
+                  "negated": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "4": {
+        "expression": "AVG(total_notes IS low, AND(avg_fret IS low, NOT (repetition_ratio IS low)))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "op": "and",
+              "children": [
+                {
+                  "feature": "avg_fret",
+                  "term": "low",
+                  "negated": false
+                },
+                {
+                  "feature": "repetition_ratio",
+                  "term": "low",
+                  "negated": true
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "5": {
+        "expression": "AVG(OR(fret_entropy IS high, tempo_bpm IS very high), NOT (total_notes IS very low))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "op": "or",
+              "children": [
+                {
+                  "feature": "fret_entropy",
+                  "term": "high",
+                  "negated": false
+                },
+                {
+                  "feature": "tempo_bpm",
+                  "term": "very high",
+                  "negated": false
+                }
+              ]
+            },
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": true
+            }
+          ]
+        }
+      },
+      "6": {
+        "expression": "AVG(NOT (total_notes IS very low), AVG(string_entropy IS very high, open_string_ratio IS low))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": true
+            },
+            {
+              "op": "avg",
+              "children": [
+                {
+                  "feature": "string_entropy",
+                  "term": "very high",
+                  "negated": false
+                },
+                {
+                  "feature": "open_string_ratio",
+                  "term": "low",
+                  "negated": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "7": {
+        "expression": "AND(NOT (total_notes IS very low), OR(NOT (p90_stretch_velocity_beats IS low), max_position_shift IS moderate))",
+        "tree": {
+          "op": "and",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": true
+            },
+            {
+              "op": "or",
+              "children": [
+                {
+                  "feature": "p90_stretch_velocity_beats",
+                  "term": "low",
+                  "negated": true
+                },
+                {
+                  "feature": "max_position_shift",
+                  "term": "moderate",
+                  "negated": false
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "0": {
+        "expression": "AVG(AND(fret_entropy IS low, NOT (max_position_shift IS low)), total_notes IS very low)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "op": "and",
+              "children": [
+                {
+                  "feature": "fret_entropy",
+                  "term": "low",
+                  "negated": false
+                },
+                {
+                  "feature": "max_position_shift",
+                  "term": "low",
+                  "negated": true
+                }
+              ]
+            },
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": false
+            }
+          ]
+        }
+      },
+      "1": {
+        "expression": "AVG(AVG(avg_fret IS very low, string_entropy IS moderate), total_notes IS very low)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "op": "avg",
+              "children": [
+                {
+                  "feature": "avg_fret",
+                  "term": "very low",
+                  "negated": false
+                },
+                {
+                  "feature": "string_entropy",
+                  "term": "moderate",
+                  "negated": false
+                }
+              ]
+            },
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": false
+            }
+          ]
+        }
+      },
+      "2": {
+        "expression": "AVG(AND(total_notes IS very low, NOT (max_position_shift IS very low)), max_position_shift IS low)",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "op": "and",
+              "children": [
+                {
+                  "feature": "total_notes",
+                  "term": "very low",
+                  "negated": false
+                },
+                {
+                  "feature": "max_position_shift",
+                  "term": "very low",
+                  "negated": true
+                }
+              ]
+            },
+            {
+              "feature": "max_position_shift",
+              "term": "low",
+              "negated": false
+            }
+          ]
+        }
+      },
+      "3": {
+        "expression": "AVG(p90_chord_stretch IS low, AVG(max_note_density_window IS low, avg_string_jump IS low))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "p90_chord_stretch",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "op": "avg",
+              "children": [
+                {
+                  "feature": "max_note_density_window",
+                  "term": "low",
+                  "negated": false
+                },
+                {
+                  "feature": "avg_string_jump",
+                  "term": "low",
+                  "negated": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "4": {
+        "expression": "AVG(total_notes IS low, AND(avg_fret IS low, NOT (max_position_shift IS high)))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "op": "and",
+              "children": [
+                {
+                  "feature": "avg_fret",
+                  "term": "low",
+                  "negated": false
+                },
+                {
+                  "feature": "max_position_shift",
+                  "term": "high",
+                  "negated": true
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "5": {
+        "expression": "AVG(total_notes IS low, AND(avg_fret IS low, NOT (fret_entropy IS low)))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "low",
+              "negated": false
+            },
+            {
+              "op": "and",
+              "children": [
+                {
+                  "feature": "avg_fret",
+                  "term": "low",
+                  "negated": false
+                },
+                {
+                  "feature": "fret_entropy",
+                  "term": "low",
+                  "negated": true
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "6": {
+        "expression": "AVG(NOT (total_notes IS very low), AVG(string_entropy IS very high, open_string_ratio IS low))",
+        "tree": {
+          "op": "avg",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": true
+            },
+            {
+              "op": "avg",
+              "children": [
+                {
+                  "feature": "string_entropy",
+                  "term": "very high",
+                  "negated": false
+                },
+                {
+                  "feature": "open_string_ratio",
+                  "term": "low",
+                  "negated": false
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "7": {
+        "expression": "AND(NOT (total_notes IS very low), AVG(avg_position_shift IS low, NOT (avg_fret IS very low)))",
+        "tree": {
+          "op": "and",
+          "children": [
+            {
+              "feature": "total_notes",
+              "term": "very low",
+              "negated": true
+            },
+            {
+              "op": "avg",
+              "children": [
+                {
+                  "feature": "avg_position_shift",
+                  "term": "low",
+                  "negated": false
+                },
+                {
+                  "feature": "avg_fret",
+                  "term": "very low",
+                  "negated": true
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

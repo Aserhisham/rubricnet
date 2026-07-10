@@ -1,0 +1,76 @@
+\chapter{Preliminaries}
+\label{ch:preliminaries}
+
+This chapter introduces the concepts and notation used throughout the remainder of the thesis: the technical vocabulary of classical guitar playing on which the descriptors are built, the symbolic music representations from which scores are parsed, the sequence-alignment algorithm underlying the rhythm-recovery pipeline, the ordinal classification framework and its evaluation measures, and the baseline models used for comparison.
+
+\section{The Classical Guitar}
+\label{sec:prelim_guitar}
+The classical guitar has six strings, conventionally numbered 1 to 6 from the highest-pitched to the lowest-pitched string, stretched over a fretted neck. Pressing a string against fret $f$ raises its pitch by $f$ semitones relative to the unfretted (\emph{open}) string, which we denote as fret 0. A played note can therefore be identified with a pair $(s, f)$ of string $s \in \{1, \dots, 6\}$ and fret $f \geq 0$. Because the tuning intervals between adjacent strings are smaller than the pitch range of each string, the same pitch can typically be produced at several distinct $(s, f)$ combinations; the choice among them is a fingering decision with direct consequences for playability.
+
+In this thesis, a symbolic guitar score is represented as a sequence of \emph{chord events}: the notes of the piece grouped by onset time, so that each event contains one or more simultaneously attacked notes, each carrying its string and fret. The \emph{position} of an event refers to the mean fret of its notes, reflecting where along the neck the left hand is placed.
+
+The technical demands of a piece divide naturally between the two hands:
+\begin{itemize}
+    \item \textbf{Left hand.} The left hand stops the strings against the frets. Its principal difficulty factors are the \emph{stretch} of a chord (the fret span the fingers must cover simultaneously), \emph{position shifts} (movements of the entire hand along the neck between events), and \emph{barre} chords, in which one finger is laid flat across several strings at the same fret --- a fatiguing technique that is a well-known obstacle in intermediate repertoire. Open strings, by contrast, cost the left hand nothing, which is why beginner repertoire is written predominantly in the first position with heavy open-string use.
+    \item \textbf{Right hand.} The right hand plucks the strings. Its difficulty factors include \emph{string crossing} (successive notes on different strings), \emph{arpeggiation} patterns that cycle the fingers across strings, and the simultaneous maintenance of multiple voices --- classical guitar textures are frequently polyphonic, with a melody, bass line, and inner voices carried by one instrument.
+\end{itemize}
+This division, together with global properties of the score such as length, note density, and degree of polyphony, motivates the three descriptor dimensions used in Chapter~\ref{ch:method}.
+
+\section{Symbolic Music Representations}
+\label{sec:prelim_representations}
+Symbolic music representations encode a piece as discrete note events rather than as audio. Three families of representations are relevant to this thesis.
+
+\emph{Score-level formats} encode the notated music. MusicXML~\cite{good2001musicxml} is an XML-based interchange format that represents pitches, durations, time signatures, voices, and notational details, and is the common target format into which all sources in this thesis are consolidated. GuitarPro is a tablature-oriented format widespread among guitarists; the DadaGP corpus~\cite{sarmento2021dadagp} provides such transcriptions in a tokenized textual form. \emph{Tablature} itself is a guitar-specific notation that specifies, for every note, the string and fret at which it is to be played --- thereby fixing a fingering --- in contrast to standard staff notation, which specifies only pitch.
+
+\emph{Performance-level formats} encode note events in time. MIDI represents a performance as note-on and note-off messages with associated pitches and timestamps. From a MIDI file, each note $n_t$ has an onset time $\mathrm{Onset}(n_t)$, and the \emph{inter-onset interval}
+\begin{equation}
+    \mathrm{IOI}(n_t) = \mathrm{Onset}(n_{t+1}) - \mathrm{Onset}(n_t)
+    \label{eq:ioi}
+\end{equation}
+measures the time between successive note attacks. Inter-onset intervals are often a more reliable rhythmic signal than sounding durations: on the guitar in particular, bass strings ring far beyond their notated values, so the interval to the next attack reflects the notated rhythm more faithfully than the physically sounding length of a note.
+
+Finally, a large share of the classical guitar repertoire is available only as \emph{PDF scores} distributed by online tablature archives, chief among them ClassClef (described in Chapter~\ref{ch:method}, where the corpus is assembled). Vector-graphic PDFs can be parsed to recover the printed symbols; for tablature scores this yields pitch, string, and fret reliably, but the graphical encoding of note durations is not reliably recoverable, so the rhythmic dimension of such scores is lost. Recovering it is the purpose of the alignment pipeline described in Section~\ref{sec:rhythm_alignment}, which builds on the algorithm introduced next.
+
+\section{Global Sequence Alignment}
+\label{sec:prelim_alignment}
+Global sequence alignment addresses the problem of finding an optimal correspondence between two sequences that may differ through local insertions, deletions, and substitutions. The Needleman--Wunsch algorithm~\cite{needleman1970general}, originally developed for biological sequences, solves this problem by dynamic programming. Given two sequences $A = \langle a_1, \dots, a_n \rangle$ and $B = \langle b_1, \dots, b_m \rangle$, a similarity score $s(a_i, b_j)$ for matching element $a_i$ with $b_j$, and a gap penalty $d$ for leaving an element unmatched, the algorithm fills a matrix $F \in \mathbb{R}^{(n+1) \times (m+1)}$ with $F(i, 0) = i \cdot d$, $F(0, j) = j \cdot d$, and
+\begin{equation}
+    F(i, j) = \max
+    \begin{cases}
+        F(i-1, j-1) + s(a_i, b_j) & \text{(match or substitution)} \\
+        F(i-1, j) + d & \text{(gap in } B \text{)} \\
+        F(i, j-1) + d & \text{(gap in } A \text{)}.
+    \end{cases}
+    \label{eq:nw}
+\end{equation}
+Backtracking from $F(n, m)$ yields a globally optimal alignment. The tolerance for gaps is what makes the algorithm suitable for aligning two renditions of the same piece of music, where repeats, ornaments, and transcription discrepancies produce local insertions and deletions between otherwise corresponding note sequences.
+
+\section{Ordinal Classification}
+\label{sec:prelim_ordinal}
+Ordinal classification is supervised classification into a label set $\{0, 1, \dots, K-1\}$ that carries a total order. Difficulty grading is inherently ordinal: level 12 is harder than level 8, and predicting class 2 for a class-1 piece is a far smaller error than predicting class 7. Both the model and the evaluation should respect this structure rather than treat the classes as unrelated categories.
+
+A standard way to inject the ordering into a learning problem is the cumulative binary encoding of Cheng et al.~\cite{cheng2008ordinal}: a label $k \in \{0, \dots, K-1\}$ is represented as $K$ binary targets
+\begin{equation}
+    y_j = \begin{cases} 1 & \text{if } j \le k \\ 0 & \text{otherwise,} \end{cases} \qquad j = 0, \dots, K-1,
+    \label{eq:cumulative_encoding}
+\end{equation}
+that is, a vector of ones up to and including the true class, followed by zeros. Each of the $K$ outputs of a model trained against this encoding estimates the probability that the instance's label reaches at least class $j$, and the monotone structure of the targets encodes the class order.
+
+Evaluating ordinal predictions likewise requires measures that account for the magnitude of errors, not only their existence. Beyond exact accuracy and balanced accuracy (the mean of per-class recalls, which corrects for class imbalance), we use the mean absolute error (MAE) and mean squared error (MSE) between predicted and true class indices, and two rank correlation coefficients. Spearman's $\rho$~\cite{spearman1904proof} is the Pearson correlation between the ranks of two variables and is used in this thesis to audit individual descriptors against the difficulty labels. Kendall's $\tau$~\cite{kendall1938new} measures how consistently a model orders instances: for $n$ instances, it is the normalized difference between the number of concordant and discordant pairs,
+\begin{equation}
+    \tau = \frac{n_c - n_d}{\binom{n}{2}},
+    \label{eq:kendall}
+\end{equation}
+where a pair of instances is concordant if the predicted and true labels order it the same way and discordant otherwise; in the presence of ties, adjusted variants of the coefficient are employed.
+
+\section{Baseline Models}
+\label{sec:prelim_baselines}
+Five model families serve as baselines in this thesis.
+
+\emph{Ordinal regression} here denotes a linear model trained against the cumulative encoding of Equation~\ref{eq:cumulative_encoding}, providing a floor for what the descriptors support without any nonlinearity.
+
+\emph{Decision trees} recursively partition the feature space along axis-aligned thresholds and predict a class per leaf. They are interpretable in principle, but a single tree of useful depth is high-variance and typically weak.
+
+\emph{Random forests}~\cite{breiman2001random} aggregate many decision trees, each trained on a bootstrap sample of the data with random feature subsampling at every split. The ensemble is a strong general-purpose classifier on tabular data and, importantly for this thesis, can exploit arbitrary interactions between features --- precisely what an additive model cannot. It therefore serves as the black-box reference point throughout Chapter~\ref{ch:evaluation}. Random forests also provide feature importance scores, which we use in Section~\ref{sec:qualitative} as an independent check on the additive model's learned descriptor influences.
+
+The remaining two baselines are \emph{fuzzy rule-based classifiers}. Fuzzy sets~\cite{zadeh1965fuzzy} generalize classical sets by allowing partial membership: an element belongs to a set to a degree $\mu \in [0, 1]$ rather than strictly in or out. A \emph{fuzzy statement} such as ``fret entropy is high'' then carries a degree of truth instead of a binary value, and statements can be combined with fuzzy operators (e.g.\ minimum for \emph{and}, maximum for \emph{or}). A \emph{fuzzy rule} pairs a premise built from such statements with a class conclusion, e.g.\ ``if fret entropy is very high then class 7,'' and a rule base predicts the class whose rules attain the highest average degree of truth. Because both the premises and the decision rule are stated in natural language over named features, fuzzy rule bases are interpretable in the same sense RubricNet is: a listener or teacher can read the rule directly, without needing to trust an opaque model. Section~\ref{sec:fuzzy_method} adapts two rule-induction methods from Vatolkin and Rudolph's work on fuzzy music classification~\cite{heerde2020comparing, vatolkin2015interpretable} to the difficulty grading task: a complete search over primitive rules, and fuzzy pattern trees~\cite{senge2011topdown, senge2015fast, huang2008patterntrees}.
