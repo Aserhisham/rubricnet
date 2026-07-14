@@ -54,7 +54,7 @@ RubricNet V3 & 0.310 $\pm$ 0.027 & \textbf{0.291 $\pm$ 0.028} & \textbf{0.733 $\
 }
 \end{table}
 
-Three observations stand out from the table.
+Four observations stand out from the table.
 
 First, \textbf{descriptor quality, not model choice, drove the improvement}. RubricNet's architecture never changed between V1 and V3, yet its accuracy climbed from 0.243 to 0.310 purely through better inputs. On V1, RubricNet trailed the Random Forest by more than seven accuracy points --- unsurprising, since half of the V1 descriptors carried almost no signal, and an additive model must sum in every input it is given, noise included. A Random Forest can simply route around uninformative features; RubricNet cannot.
 
@@ -174,7 +174,7 @@ Every context-aware descriptor outperforms its context-free source, and the posi
 
 \subsection{Fuzzy Rules as Difficulty Descriptions}
 \label{sec:fuzzy_qualitative}
-Section~\ref{sec:fuzzy_method} noted that the fuzzy classifiers trail RubricNet primarily because they ignore the ordinal class structure, not because their induced rules are uninformative. Table~\ref{tab:fuzzy_rules} shows this directly: the five most relevant complete-search rules for the easiest class (0) and the hardest class (7), taken from fold 0.
+The quantitative comparison in Section~\ref{sec:quantitative} attributed the fuzzy classifiers' deficit to their nominal treatment of the ordinal class structure, not to uninformative rules. Table~\ref{tab:fuzzy_rules} shows this directly: the five most relevant complete-search rules for the easiest class (0) and the hardest class (7), taken from fold 0.
 
 \begin{table}[htbp]
 \centering

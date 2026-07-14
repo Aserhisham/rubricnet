@@ -4,7 +4,7 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Descriptor importance under three independent measures: RubricNet influence ranges, Random Forest feature importances, and absolute Spearman correlations with the raw difficulty labels (V3 descriptors, fold 0).}}{35}{figure.5.1}%
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Mean per-descriptor subnetwork output by true difficulty class (V3 model, fold 0). Contributions rise steadily with difficulty for the influential descriptors; \texttt {open\textunderscore \allowbreak string\textunderscore \allowbreak ratio} falls, consistent with open strings making music easier to play.}}{36}{figure.5.2}%
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Descriptor importance under three independent measures: RubricNet influence ranges, Random Forest feature importances, and absolute Spearman correlations with the raw difficulty labels (V3 descriptors, fold 0).}}{36}{figure.5.1}%
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Mean per-descriptor subnetwork output by true difficulty class (V3 model, fold 0). Contributions rise steadily with difficulty for the influential descriptors; \texttt {open\textunderscore \allowbreak string\textunderscore \allowbreak ratio} falls, consistent with open strings making music easier to play.}}{37}{figure.5.2}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

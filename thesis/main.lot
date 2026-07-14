@@ -3,13 +3,13 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces Dataset source distribution.}}{19}{table.4.1}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces Dataset source distribution.}}{20}{table.4.1}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {5.1}{\ignorespaces 8-class difficulty estimation across descriptor generations (mean $\pm $ std; RubricNet over 3 seeds $\times $ 5 folds, baselines over 5 folds). Bold marks the best value per generation.}}{31}{table.5.1}%
-\contentsline {table}{\numberline {5.2}{\ignorespaces Per-dimension ablation with Random Forest on V3 descriptors (mean $\pm $ std over 5 folds).}}{32}{table.5.2}%
-\contentsline {table}{\numberline {5.3}{\ignorespaces Coarse 3-class evaluation (Easy / Medium / Hard), obtained by mapping 8-class predictions.}}{33}{table.5.3}%
-\contentsline {table}{\numberline {5.4}{\ignorespaces Context-free descriptors vs.\ their rhythm-aware counterparts: Spearman $\rho $ against raw difficulty on the 639 pieces with rhythm data.}}{37}{table.5.4}%
-\contentsline {table}{\numberline {5.5}{\ignorespaces Top-5 complete-search rules by relevance (Equation~\ref {eq:fuzzy_relevance}) for the easiest and hardest difficulty classes, fold 0.}}{38}{table.5.5}%
-\contentsline {table}{\numberline {5.6}{\ignorespaces Effect of interaction descriptors: RubricNet, ordinal regression, and Random Forest all declined when interaction features were appended to the V3 base descriptors.}}{43}{table.5.6}%
+\contentsline {table}{\numberline {5.1}{\ignorespaces 8-class difficulty estimation across descriptor generations (mean $\pm $ std; RubricNet over 3 seeds $\times $ 5 folds, baselines over 5 folds). Bold marks the best value per generation.}}{32}{table.5.1}%
+\contentsline {table}{\numberline {5.2}{\ignorespaces Per-dimension ablation with Random Forest on V3 descriptors (mean $\pm $ std over 5 folds).}}{33}{table.5.2}%
+\contentsline {table}{\numberline {5.3}{\ignorespaces Coarse 3-class evaluation (Easy / Medium / Hard), obtained by mapping 8-class predictions.}}{34}{table.5.3}%
+\contentsline {table}{\numberline {5.4}{\ignorespaces Context-free descriptors vs.\ their rhythm-aware counterparts: Spearman $\rho $ against raw difficulty on the 639 pieces with rhythm data.}}{38}{table.5.4}%
+\contentsline {table}{\numberline {5.5}{\ignorespaces Top-5 complete-search rules by relevance (Equation~\ref {eq:fuzzy_relevance}) for the easiest and hardest difficulty classes, fold 0.}}{39}{table.5.5}%
+\contentsline {table}{\numberline {5.6}{\ignorespaces Effect of interaction descriptors: RubricNet, ordinal regression, and Random Forest all declined when interaction features were appended to the V3 base descriptors.}}{44}{table.5.6}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }

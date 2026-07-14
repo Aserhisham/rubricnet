@@ -1,64 +1,64 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Evaluation}{29}{chapter.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Evaluation}{30}{chapter.5}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\newlabel{ch:evaluation}{{5}{29}{Evaluation}{chapter.5}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.1}Evaluation Setup}{29}{section.5.1}\protected@file@percent }
-\newlabel{sec:eval_setup}{{5.1}{29}{Evaluation Setup}{section.5.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.2}Quantitative Analysis}{30}{section.5.2}\protected@file@percent }
-\newlabel{sec:quantitative}{{5.2}{30}{Quantitative Analysis}{section.5.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}8-Class Difficulty Estimation}{30}{subsection.5.2.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces 8-class difficulty estimation across descriptor generations (mean $\pm $ std; RubricNet over 3 seeds $\times $ 5 folds, baselines over 5 folds). Bold marks the best value per generation.}}{31}{table.5.1}\protected@file@percent }
-\newlabel{tab:8class_results}{{5.1}{31}{8-class difficulty estimation across descriptor generations (mean $\pm $ std; RubricNet over 3 seeds $\times $ 5 folds, baselines over 5 folds). Bold marks the best value per generation}{table.5.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}Per-Dimension Ablation}{32}{subsection.5.2.2}\protected@file@percent }
-\newlabel{sec:ablation}{{5.2.2}{32}{Per-Dimension Ablation}{subsection.5.2.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Per-dimension ablation with Random Forest on V3 descriptors (mean $\pm $ std over 5 folds).}}{32}{table.5.2}\protected@file@percent }
-\newlabel{tab:dimension_ablation}{{5.2}{32}{Per-dimension ablation with Random Forest on V3 descriptors (mean $\pm $ std over 5 folds)}{table.5.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.3}Coarse 3-Class Evaluation}{33}{subsection.5.2.3}\protected@file@percent }
-\newlabel{sec:coarse}{{5.2.3}{33}{Coarse 3-Class Evaluation}{subsection.5.2.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.3}{\ignorespaces Coarse 3-class evaluation (Easy / Medium / Hard), obtained by mapping 8-class predictions.}}{33}{table.5.3}\protected@file@percent }
-\newlabel{tab:3class_results}{{5.3}{33}{Coarse 3-class evaluation (Easy / Medium / Hard), obtained by mapping 8-class predictions}{table.5.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5.3}Qualitative Analysis}{33}{section.5.3}\protected@file@percent }
-\newlabel{sec:qualitative}{{5.3}{33}{Qualitative Analysis}{section.5.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}Descriptor Influence}{34}{subsection.5.3.1}\protected@file@percent }
-\newlabel{sec:influence}{{5.3.1}{34}{Descriptor Influence}{subsection.5.3.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Descriptor importance under three independent measures: RubricNet influence ranges, Random Forest feature importances, and absolute Spearman correlations with the raw difficulty labels (V3 descriptors, fold 0).}}{35}{figure.5.1}\protected@file@percent }
-\newlabel{fig:importance_comparison}{{5.1}{35}{Descriptor importance under three independent measures: RubricNet influence ranges, Random Forest feature importances, and absolute Spearman correlations with the raw difficulty labels (V3 descriptors, fold 0)}{figure.5.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}Monotonicity}{35}{subsection.5.3.2}\protected@file@percent }
-\newlabel{sec:monotonicity}{{5.3.2}{35}{Monotonicity}{subsection.5.3.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Mean per-descriptor subnetwork output by true difficulty class (V3 model, fold 0). Contributions rise steadily with difficulty for the influential descriptors; \texttt  {open\textunderscore \allowbreak  string\textunderscore \allowbreak  ratio} falls, consistent with open strings making music easier to play.}}{36}{figure.5.2}\protected@file@percent }
-\newlabel{fig:monotonicity}{{5.2}{36}{Mean per-descriptor subnetwork output by true difficulty class (V3 model, fold 0). Contributions rise steadily with difficulty for the influential descriptors; \texttt {open\_string\_ratio} falls, consistent with open strings making music easier to play}{figure.5.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.3}Context-Free vs.\ Context-Aware Descriptors}{37}{subsection.5.3.3}\protected@file@percent }
-\newlabel{sec:context_aware}{{5.3.3}{37}{Context-Free vs.\ Context-Aware Descriptors}{subsection.5.3.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.4}{\ignorespaces Context-free descriptors vs.\ their rhythm-aware counterparts: Spearman $\rho $ against raw difficulty on the 639 pieces with rhythm data.}}{37}{table.5.4}\protected@file@percent }
-\newlabel{tab:proxy_comparison}{{5.4}{37}{Context-free descriptors vs.\ their rhythm-aware counterparts: Spearman $\rho $ against raw difficulty on the 639 pieces with rhythm data}{table.5.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.4}Fuzzy Rules as Difficulty Descriptions}{38}{subsection.5.3.4}\protected@file@percent }
-\newlabel{sec:fuzzy_qualitative}{{5.3.4}{38}{Fuzzy Rules as Difficulty Descriptions}{subsection.5.3.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5.5}{\ignorespaces Top-5 complete-search rules by relevance (Equation~\ref {eq:fuzzy_relevance}) for the easiest and hardest difficulty classes, fold 0.}}{38}{table.5.5}\protected@file@percent }
-\newlabel{tab:fuzzy_rules}{{5.5}{38}{Top-5 complete-search rules by relevance (Equation~\ref {eq:fuzzy_relevance}) for the easiest and hardest difficulty classes, fold 0}{table.5.5}{}}
+\newlabel{ch:evaluation}{{5}{30}{Evaluation}{chapter.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Evaluation Setup}{30}{section.5.1}\protected@file@percent }
+\newlabel{sec:eval_setup}{{5.1}{30}{Evaluation Setup}{section.5.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Quantitative Analysis}{31}{section.5.2}\protected@file@percent }
+\newlabel{sec:quantitative}{{5.2}{31}{Quantitative Analysis}{section.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}8-Class Difficulty Estimation}{31}{subsection.5.2.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces 8-class difficulty estimation across descriptor generations (mean $\pm $ std; RubricNet over 3 seeds $\times $ 5 folds, baselines over 5 folds). Bold marks the best value per generation.}}{32}{table.5.1}\protected@file@percent }
+\newlabel{tab:8class_results}{{5.1}{32}{8-class difficulty estimation across descriptor generations (mean $\pm $ std; RubricNet over 3 seeds $\times $ 5 folds, baselines over 5 folds). Bold marks the best value per generation}{table.5.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.2}Per-Dimension Ablation}{33}{subsection.5.2.2}\protected@file@percent }
+\newlabel{sec:ablation}{{5.2.2}{33}{Per-Dimension Ablation}{subsection.5.2.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Per-dimension ablation with Random Forest on V3 descriptors (mean $\pm $ std over 5 folds).}}{33}{table.5.2}\protected@file@percent }
+\newlabel{tab:dimension_ablation}{{5.2}{33}{Per-dimension ablation with Random Forest on V3 descriptors (mean $\pm $ std over 5 folds)}{table.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.3}Coarse 3-Class Evaluation}{34}{subsection.5.2.3}\protected@file@percent }
+\newlabel{sec:coarse}{{5.2.3}{34}{Coarse 3-Class Evaluation}{subsection.5.2.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.3}{\ignorespaces Coarse 3-class evaluation (Easy / Medium / Hard), obtained by mapping 8-class predictions.}}{34}{table.5.3}\protected@file@percent }
+\newlabel{tab:3class_results}{{5.3}{34}{Coarse 3-class evaluation (Easy / Medium / Hard), obtained by mapping 8-class predictions}{table.5.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Qualitative Analysis}{34}{section.5.3}\protected@file@percent }
+\newlabel{sec:qualitative}{{5.3}{34}{Qualitative Analysis}{section.5.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}Descriptor Influence}{35}{subsection.5.3.1}\protected@file@percent }
+\newlabel{sec:influence}{{5.3.1}{35}{Descriptor Influence}{subsection.5.3.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Descriptor importance under three independent measures: RubricNet influence ranges, Random Forest feature importances, and absolute Spearman correlations with the raw difficulty labels (V3 descriptors, fold 0).}}{36}{figure.5.1}\protected@file@percent }
+\newlabel{fig:importance_comparison}{{5.1}{36}{Descriptor importance under three independent measures: RubricNet influence ranges, Random Forest feature importances, and absolute Spearman correlations with the raw difficulty labels (V3 descriptors, fold 0)}{figure.5.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}Monotonicity}{36}{subsection.5.3.2}\protected@file@percent }
+\newlabel{sec:monotonicity}{{5.3.2}{36}{Monotonicity}{subsection.5.3.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Mean per-descriptor subnetwork output by true difficulty class (V3 model, fold 0). Contributions rise steadily with difficulty for the influential descriptors; \texttt  {open\textunderscore \allowbreak  string\textunderscore \allowbreak  ratio} falls, consistent with open strings making music easier to play.}}{37}{figure.5.2}\protected@file@percent }
+\newlabel{fig:monotonicity}{{5.2}{37}{Mean per-descriptor subnetwork output by true difficulty class (V3 model, fold 0). Contributions rise steadily with difficulty for the influential descriptors; \texttt {open\_string\_ratio} falls, consistent with open strings making music easier to play}{figure.5.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.3}Context-Free vs.\ Context-Aware Descriptors}{38}{subsection.5.3.3}\protected@file@percent }
+\newlabel{sec:context_aware}{{5.3.3}{38}{Context-Free vs.\ Context-Aware Descriptors}{subsection.5.3.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.4}{\ignorespaces Context-free descriptors vs.\ their rhythm-aware counterparts: Spearman $\rho $ against raw difficulty on the 639 pieces with rhythm data.}}{38}{table.5.4}\protected@file@percent }
+\newlabel{tab:proxy_comparison}{{5.4}{38}{Context-free descriptors vs.\ their rhythm-aware counterparts: Spearman $\rho $ against raw difficulty on the 639 pieces with rhythm data}{table.5.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.4}Fuzzy Rules as Difficulty Descriptions}{39}{subsection.5.3.4}\protected@file@percent }
+\newlabel{sec:fuzzy_qualitative}{{5.3.4}{39}{Fuzzy Rules as Difficulty Descriptions}{subsection.5.3.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.5}{\ignorespaces Top-5 complete-search rules by relevance (Equation~\ref {eq:fuzzy_relevance}) for the easiest and hardest difficulty classes, fold 0.}}{39}{table.5.5}\protected@file@percent }
+\newlabel{tab:fuzzy_rules}{{5.5}{39}{Top-5 complete-search rules by relevance (Equation~\ref {eq:fuzzy_relevance}) for the easiest and hardest difficulty classes, fold 0}{table.5.5}{}}
 \citation{heerde2020comparing}
-\@writefile{toc}{\contentsline {section}{\numberline {5.4}Auxiliary Experiments}{39}{section.5.4}\protected@file@percent }
-\newlabel{sec:auxiliary}{{5.4}{39}{Auxiliary Experiments}{section.5.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}Direct 20-Level Classification}{40}{subsection.5.4.1}\protected@file@percent }
-\newlabel{sec:raw20}{{5.4.1}{40}{Direct 20-Level Classification}{subsection.5.4.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.2}Pruning Weak Descriptors}{40}{subsection.5.4.2}\protected@file@percent }
-\newlabel{sec:pruning}{{5.4.2}{40}{Pruning Weak Descriptors}{subsection.5.4.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.3}Ordinal Label Smoothing}{41}{subsection.5.4.3}\protected@file@percent }
-\newlabel{sec:smoothing}{{5.4.3}{41}{Ordinal Label Smoothing}{subsection.5.4.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.4}Multi-Task Coarse Auxiliary Head}{41}{subsection.5.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.5}Refined Left-Hand Descriptors (V4)}{41}{subsection.5.4.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.6}Rhythm Ablation and Interaction Descriptors}{41}{subsection.5.4.6}\protected@file@percent }
-\newlabel{sec:interaction_features}{{5.4.6}{41}{Rhythm Ablation and Interaction Descriptors}{subsection.5.4.6}{}}
-\@writefile{toc}{\contentsline {subsubsection}{Rhythm Ablation}{42}{section*.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{Hand-Crafted Interaction Descriptors}{42}{section*.6}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5.6}{\ignorespaces Effect of interaction descriptors: RubricNet, ordinal regression, and Random Forest all declined when interaction features were appended to the V3 base descriptors.}}{43}{table.5.6}\protected@file@percent }
-\newlabel{tab:interaction_results}{{5.6}{43}{Effect of interaction descriptors: RubricNet, ordinal regression, and Random Forest all declined when interaction features were appended to the V3 base descriptors}{table.5.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.4}Auxiliary Experiments}{40}{section.5.4}\protected@file@percent }
+\newlabel{sec:auxiliary}{{5.4}{40}{Auxiliary Experiments}{section.5.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}Direct 20-Level Classification}{41}{subsection.5.4.1}\protected@file@percent }
+\newlabel{sec:raw20}{{5.4.1}{41}{Direct 20-Level Classification}{subsection.5.4.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.2}Pruning Weak Descriptors}{41}{subsection.5.4.2}\protected@file@percent }
+\newlabel{sec:pruning}{{5.4.2}{41}{Pruning Weak Descriptors}{subsection.5.4.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.3}Ordinal Label Smoothing}{42}{subsection.5.4.3}\protected@file@percent }
+\newlabel{sec:smoothing}{{5.4.3}{42}{Ordinal Label Smoothing}{subsection.5.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.4}Multi-Task Coarse Auxiliary Head}{42}{subsection.5.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.5}Refined Left-Hand Descriptors (V4)}{42}{subsection.5.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.6}Rhythm Ablation and Interaction Descriptors}{42}{subsection.5.4.6}\protected@file@percent }
+\newlabel{sec:interaction_features}{{5.4.6}{42}{Rhythm Ablation and Interaction Descriptors}{subsection.5.4.6}{}}
+\@writefile{toc}{\contentsline {subsubsection}{Rhythm Ablation}{43}{section*.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{Hand-Crafted Interaction Descriptors}{43}{section*.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5.6}{\ignorespaces Effect of interaction descriptors: RubricNet, ordinal regression, and Random Forest all declined when interaction features were appended to the V3 base descriptors.}}{44}{table.5.6}\protected@file@percent }
+\newlabel{tab:interaction_results}{{5.6}{44}{Effect of interaction descriptors: RubricNet, ordinal regression, and Random Forest all declined when interaction features were appended to the V3 base descriptors}{table.5.6}{}}
 \citation{heerde2020comparing}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.7}Fuzzy Rule Ablations}{44}{subsection.5.4.7}\protected@file@percent }
-\newlabel{sec:fuzzy_ablation}{{5.4.7}{44}{Fuzzy Rule Ablations}{subsection.5.4.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.7}Fuzzy Rule Ablations}{45}{subsection.5.4.7}\protected@file@percent }
+\newlabel{sec:fuzzy_ablation}{{5.4.7}{45}{Fuzzy Rule Ablations}{subsection.5.4.7}{}}
 \@setckpt{chapters/5_evaluation}{
-\setcounter{page}{45}
+\setcounter{page}{46}
 \setcounter{equation}{1}
 \setcounter{enumi}{5}
 \setcounter{enumii}{0}
@@ -79,7 +79,7 @@
 \setcounter{section@level}{2}
 \setcounter{Item}{28}
 \setcounter{Hfootnote}{0}
-\setcounter{bookmark@seq@number}{58}
+\setcounter{bookmark@seq@number}{59}
 \setcounter{lstnumber}{1}
 \setcounter{lstlisting}{0}
 }

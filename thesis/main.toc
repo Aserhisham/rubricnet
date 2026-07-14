@@ -9,60 +9,61 @@
 \contentsline {section}{\numberline {2.1}Symbolic Difficulty Estimation}{7}{section.2.1}%
 \contentsline {section}{\numberline {2.2}Multi-Dimensional Difficulty Representation}{8}{section.2.2}%
 \contentsline {section}{\numberline {2.3}The RubricNet Model}{8}{section.2.3}%
-\contentsline {section}{\numberline {2.4}Guitar Playability Metrics}{9}{section.2.4}%
-\contentsline {section}{\numberline {2.5}Datasets}{9}{section.2.5}%
-\contentsline {chapter}{\numberline {3}Preliminaries}{11}{chapter.3}%
-\contentsline {section}{\numberline {3.1}The Classical Guitar}{11}{section.3.1}%
-\contentsline {section}{\numberline {3.2}Symbolic Music Representations}{12}{section.3.2}%
-\contentsline {section}{\numberline {3.3}Global Sequence Alignment}{13}{section.3.3}%
-\contentsline {section}{\numberline {3.4}Ordinal Classification}{14}{section.3.4}%
-\contentsline {section}{\numberline {3.5}Baseline Models}{15}{section.3.5}%
-\contentsline {chapter}{\numberline {4}Method}{17}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Dataset Construction}{17}{section.4.1}%
-\contentsline {subsection}{\numberline {4.1.1}Difficulty Labels}{17}{subsection.4.1.1}%
-\contentsline {subsection}{\numberline {4.1.2}Symbolic Score Sources}{18}{subsection.4.1.2}%
-\contentsline {subsection}{\numberline {4.1.3}Matching and Deduplication}{18}{subsection.4.1.3}%
-\contentsline {subsection}{\numberline {4.1.4}Difficulty Binning}{18}{subsection.4.1.4}%
-\contentsline {subsection}{\numberline {4.1.5}Cross-Validation Splits}{19}{subsection.4.1.5}%
-\contentsline {section}{\numberline {4.2}Rhythm Alignment}{19}{section.4.2}%
-\contentsline {section}{\numberline {4.3}Descriptor Engineering}{21}{section.4.3}%
-\contentsline {subsection}{\numberline {4.3.1}V1: Initial Descriptor Set}{21}{subsection.4.3.1}%
-\contentsline {subsection}{\numberline {4.3.2}V2: Audited and Expanded Set}{22}{subsection.4.3.2}%
-\contentsline {subsection}{\numberline {4.3.3}V3: Rhythm-Aware Descriptors}{23}{subsection.4.3.3}%
-\contentsline {section}{\numberline {4.4}Model Architecture and Training}{24}{section.4.4}%
-\contentsline {subsection}{\numberline {4.4.1}Additive Subnetworks}{25}{subsection.4.4.1}%
-\contentsline {subsection}{\numberline {4.4.2}Ordinal Prediction Head}{25}{subsection.4.4.2}%
-\contentsline {subsection}{\numberline {4.4.3}Ordinal Label Smoothing}{26}{subsection.4.4.3}%
-\contentsline {subsection}{\numberline {4.4.4}Training Procedure and Hyperparameter Search}{26}{subsection.4.4.4}%
-\contentsline {section}{\numberline {4.5}Fuzzy Rule-Based Comparison Methods}{26}{section.4.5}%
-\contentsline {subsection}{\numberline {4.5.1}Fuzzification}{27}{subsection.4.5.1}%
-\contentsline {subsection}{\numberline {4.5.2}Complete Search of Primitive Rules}{27}{subsection.4.5.2}%
-\contentsline {subsection}{\numberline {4.5.3}Fuzzy Pattern Trees}{28}{subsection.4.5.3}%
-\contentsline {chapter}{\numberline {5}Evaluation}{29}{chapter.5}%
-\contentsline {section}{\numberline {5.1}Evaluation Setup}{29}{section.5.1}%
-\contentsline {section}{\numberline {5.2}Quantitative Analysis}{30}{section.5.2}%
-\contentsline {subsection}{\numberline {5.2.1}8-Class Difficulty Estimation}{30}{subsection.5.2.1}%
-\contentsline {subsection}{\numberline {5.2.2}Per-Dimension Ablation}{32}{subsection.5.2.2}%
-\contentsline {subsection}{\numberline {5.2.3}Coarse 3-Class Evaluation}{33}{subsection.5.2.3}%
-\contentsline {section}{\numberline {5.3}Qualitative Analysis}{33}{section.5.3}%
-\contentsline {subsection}{\numberline {5.3.1}Descriptor Influence}{34}{subsection.5.3.1}%
-\contentsline {subsection}{\numberline {5.3.2}Monotonicity}{35}{subsection.5.3.2}%
-\contentsline {subsection}{\numberline {5.3.3}Context-Free vs.\ Context-Aware Descriptors}{37}{subsection.5.3.3}%
-\contentsline {subsection}{\numberline {5.3.4}Fuzzy Rules as Difficulty Descriptions}{38}{subsection.5.3.4}%
-\contentsline {section}{\numberline {5.4}Auxiliary Experiments}{39}{section.5.4}%
-\contentsline {subsection}{\numberline {5.4.1}Direct 20-Level Classification}{40}{subsection.5.4.1}%
-\contentsline {subsection}{\numberline {5.4.2}Pruning Weak Descriptors}{40}{subsection.5.4.2}%
-\contentsline {subsection}{\numberline {5.4.3}Ordinal Label Smoothing}{41}{subsection.5.4.3}%
-\contentsline {subsection}{\numberline {5.4.4}Multi-Task Coarse Auxiliary Head}{41}{subsection.5.4.4}%
-\contentsline {subsection}{\numberline {5.4.5}Refined Left-Hand Descriptors (V4)}{41}{subsection.5.4.5}%
-\contentsline {subsection}{\numberline {5.4.6}Rhythm Ablation and Interaction Descriptors}{41}{subsection.5.4.6}%
-\contentsline {subsubsection}{Rhythm Ablation}{42}{section*.5}%
-\contentsline {subsubsection}{Hand-Crafted Interaction Descriptors}{42}{section*.6}%
-\contentsline {subsection}{\numberline {5.4.7}Fuzzy Rule Ablations}{44}{subsection.5.4.7}%
-\contentsline {chapter}{\numberline {6}Discussion}{45}{chapter.6}%
-\contentsline {section}{\numberline {6.1}Descriptor Design}{45}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Predictive Performance}{46}{section.6.2}%
-\contentsline {section}{\numberline {6.3}The Multi-Dimensional Nature of Guitar Difficulty}{47}{section.6.3}%
-\contentsline {section}{\numberline {6.4}Interpretability}{48}{section.6.4}%
-\contentsline {chapter}{\numberline {7}Conclusion}{50}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Future Work}{51}{section.7.1}%
+\contentsline {section}{\numberline {2.4}Fuzzy Rule-Based Music Classification}{9}{section.2.4}%
+\contentsline {section}{\numberline {2.5}Guitar Playability Metrics}{10}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Datasets}{10}{section.2.6}%
+\contentsline {chapter}{\numberline {3}Preliminaries}{12}{chapter.3}%
+\contentsline {section}{\numberline {3.1}The Classical Guitar}{12}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Symbolic Music Representations}{13}{section.3.2}%
+\contentsline {section}{\numberline {3.3}Global Sequence Alignment}{14}{section.3.3}%
+\contentsline {section}{\numberline {3.4}Ordinal Classification}{15}{section.3.4}%
+\contentsline {section}{\numberline {3.5}Baseline Models}{16}{section.3.5}%
+\contentsline {chapter}{\numberline {4}Method}{18}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Dataset Construction}{18}{section.4.1}%
+\contentsline {subsection}{\numberline {4.1.1}Difficulty Labels}{18}{subsection.4.1.1}%
+\contentsline {subsection}{\numberline {4.1.2}Symbolic Score Sources}{19}{subsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.1.3}Matching and Deduplication}{19}{subsection.4.1.3}%
+\contentsline {subsection}{\numberline {4.1.4}Difficulty Binning}{19}{subsection.4.1.4}%
+\contentsline {subsection}{\numberline {4.1.5}Cross-Validation Splits}{20}{subsection.4.1.5}%
+\contentsline {section}{\numberline {4.2}Rhythm Alignment}{20}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Descriptor Engineering}{22}{section.4.3}%
+\contentsline {subsection}{\numberline {4.3.1}V1: Initial Descriptor Set}{22}{subsection.4.3.1}%
+\contentsline {subsection}{\numberline {4.3.2}V2: Audited and Expanded Set}{23}{subsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3.3}V3: Rhythm-Aware Descriptors}{24}{subsection.4.3.3}%
+\contentsline {section}{\numberline {4.4}Model Architecture and Training}{25}{section.4.4}%
+\contentsline {subsection}{\numberline {4.4.1}Additive Subnetworks}{26}{subsection.4.4.1}%
+\contentsline {subsection}{\numberline {4.4.2}Ordinal Prediction Head}{26}{subsection.4.4.2}%
+\contentsline {subsection}{\numberline {4.4.3}Ordinal Label Smoothing}{27}{subsection.4.4.3}%
+\contentsline {subsection}{\numberline {4.4.4}Training Procedure and Hyperparameter Search}{27}{subsection.4.4.4}%
+\contentsline {section}{\numberline {4.5}Fuzzy Rule-Based Comparison Methods}{27}{section.4.5}%
+\contentsline {subsection}{\numberline {4.5.1}Fuzzification}{28}{subsection.4.5.1}%
+\contentsline {subsection}{\numberline {4.5.2}Complete Search of Primitive Rules}{28}{subsection.4.5.2}%
+\contentsline {subsection}{\numberline {4.5.3}Fuzzy Pattern Trees}{29}{subsection.4.5.3}%
+\contentsline {chapter}{\numberline {5}Evaluation}{30}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Evaluation Setup}{30}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Quantitative Analysis}{31}{section.5.2}%
+\contentsline {subsection}{\numberline {5.2.1}8-Class Difficulty Estimation}{31}{subsection.5.2.1}%
+\contentsline {subsection}{\numberline {5.2.2}Per-Dimension Ablation}{33}{subsection.5.2.2}%
+\contentsline {subsection}{\numberline {5.2.3}Coarse 3-Class Evaluation}{34}{subsection.5.2.3}%
+\contentsline {section}{\numberline {5.3}Qualitative Analysis}{34}{section.5.3}%
+\contentsline {subsection}{\numberline {5.3.1}Descriptor Influence}{35}{subsection.5.3.1}%
+\contentsline {subsection}{\numberline {5.3.2}Monotonicity}{36}{subsection.5.3.2}%
+\contentsline {subsection}{\numberline {5.3.3}Context-Free vs.\ Context-Aware Descriptors}{38}{subsection.5.3.3}%
+\contentsline {subsection}{\numberline {5.3.4}Fuzzy Rules as Difficulty Descriptions}{39}{subsection.5.3.4}%
+\contentsline {section}{\numberline {5.4}Auxiliary Experiments}{40}{section.5.4}%
+\contentsline {subsection}{\numberline {5.4.1}Direct 20-Level Classification}{41}{subsection.5.4.1}%
+\contentsline {subsection}{\numberline {5.4.2}Pruning Weak Descriptors}{41}{subsection.5.4.2}%
+\contentsline {subsection}{\numberline {5.4.3}Ordinal Label Smoothing}{42}{subsection.5.4.3}%
+\contentsline {subsection}{\numberline {5.4.4}Multi-Task Coarse Auxiliary Head}{42}{subsection.5.4.4}%
+\contentsline {subsection}{\numberline {5.4.5}Refined Left-Hand Descriptors (V4)}{42}{subsection.5.4.5}%
+\contentsline {subsection}{\numberline {5.4.6}Rhythm Ablation and Interaction Descriptors}{42}{subsection.5.4.6}%
+\contentsline {subsubsection}{Rhythm Ablation}{43}{section*.5}%
+\contentsline {subsubsection}{Hand-Crafted Interaction Descriptors}{43}{section*.6}%
+\contentsline {subsection}{\numberline {5.4.7}Fuzzy Rule Ablations}{45}{subsection.5.4.7}%
+\contentsline {chapter}{\numberline {6}Discussion}{46}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Descriptor Design}{46}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Predictive Performance}{47}{section.6.2}%
+\contentsline {section}{\numberline {6.3}The Multi-Dimensional Nature of Guitar Difficulty}{49}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Interpretability}{49}{section.6.4}%
+\contentsline {chapter}{\numberline {7}Conclusion}{51}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Future Work}{53}{section.7.1}%
