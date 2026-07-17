@@ -16,36 +16,46 @@
 \newlabel{sec:binning}{{4.1.4}{19}{Difficulty Binning}{subsection.4.1.4}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {4.1}{\ignorespaces Dataset source distribution.}}{20}{table.4.1}\protected@file@percent }
 \newlabel{tab:dataset_sources}{{4.1}{20}{Dataset source distribution}{table.4.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.5}Cross-Validation Splits}{20}{subsection.4.1.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Rhythm Alignment}{20}{section.4.2}\protected@file@percent }
-\newlabel{sec:rhythm_alignment}{{4.2}{20}{Rhythm Alignment}{section.4.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.3}Descriptor Engineering}{22}{section.4.3}\protected@file@percent }
-\newlabel{sec:descriptors}{{4.3}{22}{Descriptor Engineering}{section.4.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}V1: Initial Descriptor Set}{22}{subsection.4.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}V2: Audited and Expanded Set}{23}{subsection.4.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}V3: Rhythm-Aware Descriptors}{24}{subsection.4.3.3}\protected@file@percent }
-\newlabel{sec:v3_features}{{4.3.3}{24}{V3: Rhythm-Aware Descriptors}{subsection.4.3.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.1}{\ignorespaces Distribution of the raw GuitarBurst difficulty levels over the 716-piece dataset. Dashed lines mark the boundaries of the 8 ordinal classes produced by equal-frequency binning; alternating shades indicate bin membership. The sparsity of the highest levels (levels 17--20 hold 7, 8, 5, and 3 pieces) is what makes direct 20-level classification untenable (Section~\ref {sec:raw20}).}}{20}{figure.4.1}\protected@file@percent }
+\newlabel{fig:label_distribution}{{4.1}{20}{Distribution of the raw GuitarBurst difficulty levels over the 716-piece dataset. Dashed lines mark the boundaries of the 8 ordinal classes produced by equal-frequency binning; alternating shades indicate bin membership. The sparsity of the highest levels (levels 17--20 hold 7, 8, 5, and 3 pieces) is what makes direct 20-level classification untenable (Section~\ref {sec:raw20})}{figure.4.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1.5}Cross-Validation Splits}{21}{subsection.4.1.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.2}Rhythm Alignment}{21}{section.4.2}\protected@file@percent }
+\newlabel{sec:rhythm_alignment}{{4.2}{21}{Rhythm Alignment}{section.4.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.2}{\ignorespaces Rhythm alignment, schematically. The PDF-derived score contributes the pitch sequence but no timing (top); the matched MIDI performance contributes onset times (bottom). Needleman--Wunsch alignment pairs the two note sequences, absorbing local insertions such as the ornamental F\#4 as gaps, and each PDF note receives the inter-onset interval of its MIDI counterpart as its duration.}}{22}{figure.4.2}\protected@file@percent }
+\newlabel{fig:alignment}{{4.2}{22}{Rhythm alignment, schematically. The PDF-derived score contributes the pitch sequence but no timing (top); the matched MIDI performance contributes onset times (bottom). Needleman--Wunsch alignment pairs the two note sequences, absorbing local insertions such as the ornamental F\#4 as gaps, and each PDF note receives the inter-onset interval of its MIDI counterpart as its duration}{figure.4.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.3}Descriptor Engineering}{23}{section.4.3}\protected@file@percent }
+\newlabel{sec:descriptors}{{4.3}{23}{Descriptor Engineering}{section.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.1}V1: Initial Descriptor Set}{23}{subsection.4.3.1}\protected@file@percent }
+\citation{shannon1948mathematical}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.2}V2: Audited and Expanded Set}{24}{subsection.4.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3.3}V3: Rhythm-Aware Descriptors}{25}{subsection.4.3.3}\protected@file@percent }
+\newlabel{sec:v3_features}{{4.3.3}{25}{V3: Rhythm-Aware Descriptors}{subsection.4.3.3}{}}
 \citation{ramoneda2024rubricnet}
-\@writefile{toc}{\contentsline {section}{\numberline {4.4}Model Architecture and Training}{25}{section.4.4}\protected@file@percent }
-\newlabel{sec:model}{{4.4}{25}{Model Architecture and Training}{section.4.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Additive Subnetworks}{26}{subsection.4.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Ordinal Prediction Head}{26}{subsection.4.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4.4}Model Architecture and Training}{26}{section.4.4}\protected@file@percent }
+\newlabel{sec:model}{{4.4}{26}{Model Architecture and Training}{section.4.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4.3}{\ignorespaces The RubricNet architecture. Each descriptor $x_i$ is scored independently by a two-parameter subnetwork $g_i$; the bounded scores are summed into the aggregated difficulty score $S(x)$, and an ordinal head maps $S(x)$ to $K$ cumulative class probabilities. No descriptor interacts with any other before the summation, so $g_i(x_i)$ is exactly descriptor $i$'s contribution to the prediction.}}{27}{figure.4.3}\protected@file@percent }
+\newlabel{fig:architecture}{{4.3}{27}{The RubricNet architecture. Each descriptor $x_i$ is scored independently by a two-parameter subnetwork $g_i$; the bounded scores are summed into the aggregated difficulty score $S(x)$, and an ordinal head maps $S(x)$ to $K$ cumulative class probabilities. No descriptor interacts with any other before the summation, so $g_i(x_i)$ is exactly descriptor $i$'s contribution to the prediction}{figure.4.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.1}Additive Subnetworks}{27}{subsection.4.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.2}Ordinal Prediction Head}{27}{subsection.4.4.2}\protected@file@percent }
 \citation{akiba2019optuna}
+\citation{srivastava2014dropout}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.3}Ordinal Label Smoothing}{28}{subsection.4.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.4}Training Procedure and Hyperparameter Search}{28}{subsection.4.4.4}\protected@file@percent }
 \citation{heerde2020comparing}
 \citation{vatolkin2015interpretable}
 \citation{senge2011topdown,senge2015fast,huang2008patterntrees}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.3}Ordinal Label Smoothing}{27}{subsection.4.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4.4}Training Procedure and Hyperparameter Search}{27}{subsection.4.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4.5}Fuzzy Rule-Based Comparison Methods}{27}{section.4.5}\protected@file@percent }
-\newlabel{sec:fuzzy_method}{{4.5}{27}{Fuzzy Rule-Based Comparison Methods}{section.4.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4.5}Fuzzy Rule-Based Comparison Methods}{29}{section.4.5}\protected@file@percent }
+\newlabel{sec:fuzzy_method}{{4.5}{29}{Fuzzy Rule-Based Comparison Methods}{section.4.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Fuzzification}{29}{subsection.4.5.1}\protected@file@percent }
 \citation{vatolkin2015interpretable}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.1}Fuzzification}{28}{subsection.4.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.2}Complete Search of Primitive Rules}{28}{subsection.4.5.2}\protected@file@percent }
-\newlabel{eq:fuzzy_relevance}{{4.6}{28}{Complete Search of Primitive Rules}{equation.4.5.6}{}}
 \citation{senge2011topdown}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.3}Fuzzy Pattern Trees}{29}{subsection.4.5.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4.4}{\ignorespaces The five triangular membership functions over the normalized descriptor range. Each normalized value belongs to at most two adjacent linguistic terms, with memberships summing to 1.}}{30}{figure.4.4}\protected@file@percent }
+\newlabel{fig:membership}{{4.4}{30}{The five triangular membership functions over the normalized descriptor range. Each normalized value belongs to at most two adjacent linguistic terms, with memberships summing to 1}{figure.4.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.2}Complete Search of Primitive Rules}{30}{subsection.4.5.2}\protected@file@percent }
+\newlabel{eq:fuzzy_relevance}{{4.6}{30}{Complete Search of Primitive Rules}{equation.4.5.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5.3}Fuzzy Pattern Trees}{31}{subsection.4.5.3}\protected@file@percent }
 \@setckpt{chapters/4_method}{
-\setcounter{page}{30}
+\setcounter{page}{32}
 \setcounter{equation}{6}
 \setcounter{enumi}{2}
 \setcounter{enumii}{0}
@@ -60,7 +70,7 @@
 \setcounter{subsubsection}{0}
 \setcounter{paragraph}{0}
 \setcounter{subparagraph}{0}
-\setcounter{figure}{0}
+\setcounter{figure}{4}
 \setcounter{table}{1}
 \setcounter{parentequation}{0}
 \setcounter{section@level}{2}

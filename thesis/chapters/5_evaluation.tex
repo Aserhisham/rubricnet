@@ -26,7 +26,7 @@ Table~\ref{tab:8class_results} shows the full comparison across the three descri
 
 \begin{table}[htbp]
 \centering
-\caption{8-class difficulty estimation across descriptor generations (mean $\pm$ std; RubricNet over 3 seeds $\times$ 5 folds, baselines over 5 folds). Bold marks the best value per generation.}
+\caption{8-class difficulty estimation across descriptor generations (mean $\pm$ std; RubricNet V2/V3 over 3 seeds $\times$ 5 folds, RubricNet V1 over a single seed, baselines over 5 folds). Bold marks the best value per generation.}
 \label{tab:8class_results}
 \resizebox{\textwidth}{!}{
 \begin{tabular}{lcccccc}
@@ -39,13 +39,13 @@ Random Forest V1 & \textbf{0.316 $\pm$ 0.041} & \textbf{0.278 $\pm$ 0.026} & ---
 RubricNet V1 & 0.243 $\pm$ 0.042 & 0.231 $\pm$ 0.031 & --- & \textbf{1.258 $\pm$ 0.092} & \textbf{2.820 $\pm$ 0.380} & --- \\
 \midrule
 Ordinal Regression V2 & 0.218 $\pm$ 0.056 & 0.214 $\pm$ 0.056 & --- & 1.316 $\pm$ 0.339 & 2.906 $\pm$ 1.172 & --- \\
-Decision Tree V2 & 0.286 $\pm$ 0.036 & 0.248 $\pm$ 0.031 & --- & 1.295 $\pm$ 0.118 & 3.128 $\pm$ 0.550 & 0.510 $\pm$ 0.058 \\
+Decision Tree V2 & 0.286 $\pm$ 0.036 & 0.248 $\pm$ 0.031 & --- & 1.295 $\pm$ 0.118 & 3.127 $\pm$ 0.550 & 0.510 $\pm$ 0.058 \\
 Random Forest V2 & \textbf{0.320 $\pm$ 0.029} & 0.275 $\pm$ 0.025 & --- & 1.116 $\pm$ 0.047 & 2.487 $\pm$ 0.202 & 0.609 $\pm$ 0.022 \\
 RubricNet V2 & 0.300 $\pm$ 0.032 & \textbf{0.283 $\pm$ 0.033} & 0.730 $\pm$ 0.052 & \textbf{1.115 $\pm$ 0.102} & \textbf{2.372 $\pm$ 0.445} & \textbf{0.623 $\pm$ 0.038} \\
 \midrule
 Ordinal Regression V3 & 0.309 $\pm$ 0.033 & 0.288 $\pm$ 0.033 & --- & 1.109 $\pm$ 0.143 & 2.467 $\pm$ 0.762 & --- \\
-Decision Tree V3 & 0.279 $\pm$ 0.036 & 0.242 $\pm$ 0.034 & --- & 1.286 $\pm$ 0.059 & 3.130 $\pm$ 0.491 & 0.518 $\pm$ 0.041 \\
-Random Forest V3 & \textbf{0.331 $\pm$ 0.022} & 0.289 $\pm$ 0.019 & --- & 1.122 $\pm$ 0.071 & 2.527 $\pm$ 0.312 & 0.599 $\pm$ 0.042 \\
+Decision Tree V3 & 0.279 $\pm$ 0.036 & 0.242 $\pm$ 0.034 & --- & 1.286 $\pm$ 0.059 & 3.130 $\pm$ 0.491 & 0.518 $\pm$ 0.040 \\
+Random Forest V3 & \textbf{0.331 $\pm$ 0.022} & 0.289 $\pm$ 0.018 & --- & 1.122 $\pm$ 0.071 & 2.527 $\pm$ 0.312 & 0.599 $\pm$ 0.042 \\
 Fuzzy Rules (CS) V3 & 0.264 $\pm$ 0.044 & 0.236 $\pm$ 0.044 & 0.617 $\pm$ 0.068 & 1.433 $\pm$ 0.168 & 3.803 $\pm$ 0.597 & 0.464 $\pm$ 0.075 \\
 Fuzzy Pattern Tree V3 & 0.268 $\pm$ 0.047 & 0.252 $\pm$ 0.041 & 0.623 $\pm$ 0.062 & 1.469 $\pm$ 0.207 & 4.233 $\pm$ 0.951 & 0.484 $\pm$ 0.063 \\
 RubricNet V3 & 0.310 $\pm$ 0.027 & \textbf{0.291 $\pm$ 0.028} & \textbf{0.733 $\pm$ 0.032} & \textbf{1.069 $\pm$ 0.063} & \textbf{2.147 $\pm$ 0.255} & \textbf{0.634 $\pm$ 0.026} \\
@@ -62,6 +62,15 @@ Second, \textbf{on the metrics that matter for ordinal classification, the inter
 
 Third, \textbf{the V3 rhythm descriptors help RubricNet more than they help the baselines}. The Random Forest gains almost nothing from V2 to V3 (accuracy 0.320 to 0.331 with worse MAE and MSE), while RubricNet improves on every metric. This is consistent with the design intent: the context-aware descriptors hand-encode exactly the demand-versus-time interactions that the additive model cannot learn on its own, whereas the forest could already approximate such interactions from the raw V2 inputs.
 
+The error structure behind these numbers is visible in Figure~\ref{fig:confusion}, which pools the RubricNet V3 test predictions of one seed across all five folds. The mass concentrates on the diagonal and its immediate neighbors --- 73\% of predictions fall within one bin of the truth --- and predictions far from the diagonal are rare, which is precisely the behavior the MAE and Kendall's $\tau$ figures summarize. The matrix also shows where the model still struggles: the easiest pieces (class 0) are most often placed one bin too high, and the middle classes blur into their neighbors, consistent with equal-frequency bins drawing hard boundaries through a continuum.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.72\textwidth]{figures/confusion_matrix_v3.pdf}
+    \caption{Confusion matrix of RubricNet V3 test predictions (seed 0, pooled over the five test folds; cell counts annotated, rows normalized by true-class size). Errors concentrate within one bin of the diagonal.}
+    \label{fig:confusion}
+\end{figure}
+
 Fourth, \textbf{both fuzzy rule-based classifiers trail every other baseline, and the gap is explained by their nominal treatment of an ordinal task rather than by weak rule quality}. Complete search and fuzzy pattern trees land close to each other (accuracy 0.264 and 0.268) and comfortably above the 0.125 random floor, but well below the decision tree (0.279) and Random Forest (0.331). The qualitative rules in Section~\ref{sec:qualitative} show the induced premises are sensible --- low fretboard position and stretch for the easiest class, their opposites for the hardest --- so the shortfall is not that the rules fail to capture difficulty-relevant structure. Rather, both methods predict each class independently via one-vs-all argmax, with no mechanism preventing a confident but wrong prediction from landing far from the true class; this shows up most clearly in Kendall's $\tau$ (0.464 and 0.484), which trails RubricNet V3's 0.634 by a wide margin despite the fuzzy methods using the same descriptors. RubricNet, in contrast, is both interpretable and ordinal by construction, and the comparison isolates the value of that combination: interpretability alone, without an ordinal decision rule, leaves accuracy and ranking quality on the table.
 
 \subsection{Per-Dimension Ablation}
@@ -77,10 +86,10 @@ The third research question asks whether combining left-hand, right-hand, and gl
 \toprule
 \textbf{Feature set} & \textbf{\#} & \textbf{Accuracy} & \textbf{Balanced Acc.} & \textbf{MAE} & \textbf{MSE} \\
 \midrule
-Left hand only & 20 & 0.307 $\pm$ 0.049 & 0.262 $\pm$ 0.049 & 1.272 $\pm$ 0.066 & 3.158 $\pm$ 0.309 \\
+Left hand only & 20 & 0.307 $\pm$ 0.049 & 0.261 $\pm$ 0.049 & 1.272 $\pm$ 0.066 & 3.158 $\pm$ 0.309 \\
 Right hand only & 6 & 0.229 $\pm$ 0.033 & 0.203 $\pm$ 0.031 & 1.697 $\pm$ 0.061 & 5.171 $\pm$ 0.422 \\
-Global only & 6 & 0.284 $\pm$ 0.021 & 0.261 $\pm$ 0.016 & 1.375 $\pm$ 0.081 & 3.579 $\pm$ 0.371 \\
-All dimensions & 32 & \textbf{0.331 $\pm$ 0.022} & \textbf{0.289 $\pm$ 0.019} & \textbf{1.122 $\pm$ 0.071} & \textbf{2.527 $\pm$ 0.312} \\
+Global only & 6 & 0.283 $\pm$ 0.021 & 0.261 $\pm$ 0.016 & 1.374 $\pm$ 0.081 & 3.579 $\pm$ 0.371 \\
+All dimensions & 32 & \textbf{0.331 $\pm$ 0.022} & \textbf{0.289 $\pm$ 0.018} & \textbf{1.122 $\pm$ 0.071} & \textbf{2.527 $\pm$ 0.312} \\
 \bottomrule
 \end{tabular}
 }
@@ -145,6 +154,15 @@ For the rubric reading to be trustworthy, descriptor contributions should behave
 \end{figure}
 
 Figure~\ref{fig:monotonicity} plots the mean subnetwork output per true difficulty class. The influential descriptors show steady trends from class 0 through class 7 --- rising for the difficulty-increasing descriptors, falling for \texttt{open\_string\_ratio} --- while the low-influence descriptors stay flat or fluctuate within a narrow band, consistent with their small learned ranges: they vary, but they barely move the sum. This is the property that makes the model's explanations usable in practice: if a piece is graded class 5 rather than class 3, the difference decomposes into specific descriptor contributions --- more frequent shifts, higher positions, denser texture --- each of which moves in a direction a teacher can verify against the score.
+
+Figure~\ref{fig:rubric_example} makes this concrete with two test pieces from fold 0 at opposite ends of the scale: Sor's Andantino Op.\ 35 no.\ 2, a canonical beginner study (GuitarBurst level 1), and Bach's Chaconne from the second violin partita (level 19), a summit of the concert repertoire. The model places the Andantino in class 0 (correct) and the Chaconne in class 6 (true class 7), and the score sheets behind the two predictions read exactly as a teacher would expect: the Chaconne is pushed upward by its sheer length, sustained position-shift activity, and dense multi-voice texture, while the Andantino is pulled downward by its heavy open-string use, low fretboard positions, and narrow fretboard coverage. Notably, both pieces receive similar \emph{negative} contributions from the stretch descriptors --- wide chord stretches are simply not what distinguishes these two works --- illustrating that the rubric does not inflate every descriptor for a hard piece, but attributes the difficulty to the specific demands the score actually makes.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{figures/rubric_example.pdf}
+    \caption{Per-descriptor contributions $g_i(x_i)$ for an easy and a hard test piece (V3 model, fold 0), sorted by the Chaconne's contributions. The summed scores $S(x) = -3.06$ and $+5.66$ place the pieces in classes 0 and 6, respectively; every bar is one line of the rubric behind those predictions.}
+    \label{fig:rubric_example}
+\end{figure}
 
 \subsection{Context-Free vs.\ Context-Aware Descriptors}
 \label{sec:context_aware}
@@ -222,7 +240,7 @@ The most natural objection to the 8-class formulation is that GuitarBurst's nati
 
 \subsection{Pruning Weak Descriptors}
 \label{sec:pruning}
-The V2 audit had flagged six surviving descriptors as weak ($|\rho| \le 0.16$): \texttt{tempo\_bpm}, \texttt{arpeggio\_density}, \texttt{fret\_change\_rate}, \texttt{avg\_string\_jump}, \texttt{chord\_ratio}, and \texttt{avg\_polyphony}. Since an additive model sums in every input, removing them appeared to be an obvious improvement. It was not: training RubricNet on the pruned 26-descriptor set \emph{reduced} accuracy from 0.310 to 0.302, roughly doubled the fold-to-fold variance, and collapsed one fold to 0.196 accuracy. A plausible explanation is that the tuned regularization (dropout 0.20, weight decay 0.064) already suppresses uninformative subnetworks effectively, while the additional inputs act as mild stabilizers; it may also matter that the hyperparameters were tuned for 32 inputs and reused unchanged for 26. In either case, the full descriptor set was retained.
+The V2 audit had flagged six of the surviving descriptors as the weakest (each $|\rho| \le 0.16$): \texttt{tempo\_bpm}, \texttt{arpeggio\_density}, \texttt{fret\_change\_rate}, \texttt{avg\_string\_jump}, \texttt{chord\_ratio}, and \texttt{avg\_polyphony}. Since an additive model sums in every input, removing them appeared to be an obvious improvement. It was not: training RubricNet on the pruned 26-descriptor set \emph{reduced} accuracy from 0.310 to 0.302, roughly doubled the fold-to-fold variance, and collapsed one fold to 0.196 accuracy. A plausible explanation is that the tuned regularization (dropout 0.20, weight decay 0.064) already suppresses uninformative subnetworks effectively, while the additional inputs act as mild stabilizers; it may also matter that the hyperparameters were tuned for 32 inputs and reused unchanged for 26. In either case, the full descriptor set was retained.
 
 \subsection{Ordinal Label Smoothing}
 \label{sec:smoothing}
@@ -239,7 +257,7 @@ A fourth descriptor iteration refined the left-hand feature definitions and barr
 After the main V3 results were established, the question arose whether further improvements were possible within the additive architecture. Two complementary hypotheses were tested: first, that the V3 rhythm-aware features might be adding noise rather than signal; second, that hand-crafted interaction descriptors (products or composites of existing features) could encode multi-factor difficulty that a single descriptor cannot capture.
 
 \subsubsection{Rhythm Ablation}
-To isolate rhythm's contribution, V3 base descriptors were extracted without the six rhythm-aware features (\texttt{max\_avg\_chord\_stretch\_window}, \texttt{p95\_position\_shift\_window}, \texttt{max\_note\_density\_window}, \texttt{avg\_stretch\_velocity\_beats}, \texttt{avg\_position\_shift\_speed\_beats}, \texttt{polyphonic\_arpeggio\_intensity\_beats}), leaving 20 non-rhythm descriptors. The Random Forest reached 0.325 accuracy on this reduced set (essentially unchanged from V3's 0.331, within the margin of imputation variance), while RubricNet dropped to 0.301 from 0.310. This indicates that the rhythm features, while not decisive for the ensemble model, provide a modest but genuine signal contribution to RubricNet that the more flexible model can substitute for from other inputs.
+To isolate rhythm's contribution, a reduced descriptor set was formed by removing all eight rhythm-aware V3 features (Section~\ref{sec:v3_features}), leaving the 24 non-rhythm descriptors of the V2 set. The Random Forest reached 0.325 accuracy on this reduced set (essentially unchanged from V3's 0.331, within the margin of imputation variance), while RubricNet dropped to 0.301 from 0.310. This indicates that the rhythm features, while not decisive for the ensemble model, provide a modest but genuine signal contribution to RubricNet that the more flexible model can substitute for from other inputs.
 
 \subsubsection{Hand-Crafted Interaction Descriptors}
 Five composite descriptors were designed to capture multi-factor difficulty:

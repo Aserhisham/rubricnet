@@ -5,7 +5,30 @@ This chapter introduces the concepts and notation used throughout the remainder 
 
 \section{The Classical Guitar}
 \label{sec:prelim_guitar}
-The classical guitar has six strings, conventionally numbered 1 to 6 from the highest-pitched to the lowest-pitched string, stretched over a fretted neck. Pressing a string against fret $f$ raises its pitch by $f$ semitones relative to the unfretted (\emph{open}) string, which we denote as fret 0. A played note can therefore be identified with a pair $(s, f)$ of string $s \in \{1, \dots, 6\}$ and fret $f \geq 0$. Because the tuning intervals between adjacent strings are smaller than the pitch range of each string, the same pitch can typically be produced at several distinct $(s, f)$ combinations; the choice among them is a fingering decision with direct consequences for playability.
+The classical guitar has six strings, conventionally numbered 1 to 6 from the highest-pitched to the lowest-pitched string, stretched over a fretted neck. Pressing a string against fret $f$ raises its pitch by $f$ semitones relative to the unfretted (\emph{open}) string, which we denote as fret 0. A played note can therefore be identified with a pair $(s, f)$ of string $s \in \{1, \dots, 6\}$ and fret $f \geq 0$. Because the tuning intervals between adjacent strings are smaller than the pitch range of each string, the same pitch can typically be produced at several distinct $(s, f)$ combinations; the choice among them is a fingering decision with direct consequences for playability. Figure~\ref{fig:fretboard} illustrates the coordinate system and this pitch ambiguity.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[x=0.72cm, y=0.5cm]
+        % strings (string 1 on top)
+        \foreach \s/\t in {1/E4, 2/B3, 3/G3, 4/D3, 5/A2, 6/E2} {
+            \draw[gray!80, line width=0.5pt] (0, 7-\s) -- (14, 7-\s);
+            \node[right, font=\scriptsize] at (14.15, 7-\s) {$s=\s$ (\t)};
+        }
+        % nut and frets
+        \draw[line width=2pt] (0, 0.75) -- (0, 6.25);
+        \foreach \f in {1,...,14} \draw[line width=0.5pt] (\f, 0.75) -- (\f, 6.25);
+        % fret numbers
+        \foreach \f in {1,3,5,7,9,12,14} \node[below, font=\scriptsize] at (\f-0.5, 0.7) {\f};
+        \node[below, font=\scriptsize] at (-0.45, 0.7) {0};
+        % E4 positions: (1,0) (2,5) (3,9) (4,14)
+        \node[circle, draw=black, fill=white, inner sep=2.1pt, line width=0.9pt] at (-0.45, 6) {};
+        \foreach \f/\s in {5/2, 9/3, 14/4}
+            \node[circle, fill=black!75, inner sep=2.4pt] at (\f-0.5, 7-\s) {};
+    \end{tikzpicture}
+    \caption{The fretboard coordinate system: strings $s$ (with their open-string pitches in standard tuning) and frets $f$, with fret 0 denoting the open string. The four marked positions --- $(1, 0)$ open, and $(2, 5)$, $(3, 9)$, $(4, 14)$ fretted --- all produce the same pitch E4; choosing among them is a fingering decision with direct consequences for playability.}
+    \label{fig:fretboard}
+\end{figure}
 
 In this thesis, a symbolic guitar score is represented as a sequence of \emph{chord events}: the notes of the piece grouped by onset time, so that each event contains one or more simultaneously attacked notes, each carrying its string and fret. The \emph{position} of an event refers to the mean fret of its notes, reflecting where along the neck the left hand is placed.
 
@@ -56,12 +79,12 @@ A standard way to inject the ordering into a learning problem is the cumulative 
 \end{equation}
 that is, a vector of ones up to and including the true class, followed by zeros. Each of the $K$ outputs of a model trained against this encoding estimates the probability that the instance's label reaches at least class $j$, and the monotone structure of the targets encodes the class order.
 
-Evaluating ordinal predictions likewise requires measures that account for the magnitude of errors, not only their existence. Beyond exact accuracy and balanced accuracy (the mean of per-class recalls, which corrects for class imbalance), we use the mean absolute error (MAE) and mean squared error (MSE) between predicted and true class indices, and two rank correlation coefficients. Spearman's $\rho$~\cite{spearman1904proof} is the Pearson correlation between the ranks of two variables and is used in this thesis to audit individual descriptors against the difficulty labels. Kendall's $\tau$~\cite{kendall1938new} measures how consistently a model orders instances: for $n$ instances, it is the normalized difference between the number of concordant and discordant pairs,
+Evaluating ordinal predictions likewise requires measures that account for the magnitude of errors, not only their existence. Beyond exact accuracy and balanced accuracy~\cite{brodersen2010balanced} (the mean of per-class recalls, which corrects for class imbalance), we use the mean absolute error (MAE) and mean squared error (MSE) between predicted and true class indices, and two rank correlation coefficients. Spearman's $\rho$~\cite{spearman1904proof} is the Pearson correlation between the ranks of two variables and is used in this thesis to audit individual descriptors against the difficulty labels. Kendall's $\tau$~\cite{kendall1938new} measures how consistently a model orders instances: for $n$ instances, it is the normalized difference between the number of concordant and discordant pairs,
 \begin{equation}
     \tau = \frac{n_c - n_d}{\binom{n}{2}},
     \label{eq:kendall}
 \end{equation}
-where a pair of instances is concordant if the predicted and true labels order it the same way and discordant otherwise; in the presence of ties, adjusted variants of the coefficient are employed.
+where a pair of instances is concordant if the predicted and true labels order it the same way and discordant otherwise; in the presence of ties, adjusted variants of the coefficient are employed~\cite{kendall1945ties}.
 
 \section{Baseline Models}
 \label{sec:prelim_baselines}
@@ -69,7 +92,7 @@ Five model families serve as baselines in this thesis.
 
 \emph{Ordinal regression} here denotes a linear model trained against the cumulative encoding of Equation~\ref{eq:cumulative_encoding}, providing a floor for what the descriptors support without any nonlinearity.
 
-\emph{Decision trees} recursively partition the feature space along axis-aligned thresholds and predict a class per leaf. They are interpretable in principle, but a single tree of useful depth is high-variance and typically weak.
+\emph{Decision trees}~\cite{breiman1984classification} recursively partition the feature space along axis-aligned thresholds and predict a class per leaf. They are interpretable in principle, but a single tree of useful depth is high-variance and typically weak.
 
 \emph{Random forests}~\cite{breiman2001random} aggregate many decision trees, each trained on a bootstrap sample of the data with random feature subsampling at every split. The ensemble is a strong general-purpose classifier on tabular data and, importantly for this thesis, can exploit arbitrary interactions between features --- precisely what an additive model cannot. It therefore serves as the black-box reference point throughout Chapter~\ref{ch:evaluation}. Random forests also provide feature importance scores, which we use in Section~\ref{sec:qualitative} as an independent check on the additive model's learned descriptor influences.
 

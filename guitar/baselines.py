@@ -170,9 +170,18 @@ def main():
     parser.add_argument("--v3-pruned", action="store_true", help="Use version 3 features minus near-zero-signal descriptors")
     parser.add_argument("--v3-base", action="store_true", help="Use V3 base features (unified provenance, no rhythm-aware features)")
     parser.add_argument("--v3-base-new", action="store_true", help="Use V3 base + hand-crafted interaction features")
+    parser.add_argument("--v5", action="store_true", help="Use V5 dataset (V3 features, 76 pdf/no-rhythm dummy pieces dropped)")
     args = parser.parse_args()
 
-    if args.v3_base_new:
+    splits_path = "guitar/guitar_splits.json"
+    if args.v5:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V3
+        alias = "guitar_baseline_ordinal_v5"
+        out_path = "guitar/baseline_results_v5.json"
+        print("Running baselines on V5 dataset (V3 features, no-rhythm pdf pieces dropped)...")
+    elif args.v3_base_new:
         csv_path = "features/guitar_descriptors_v3_base.csv"
         columns = ALL_FEATURES_V3_BASE_NEW
         alias = "guitar_baseline_ordinal_v3_base_new"
@@ -209,7 +218,7 @@ def main():
         out_path = "guitar/baseline_results.json"
         print("Running baselines on V1 features...")
 
-    features, splits = load_data(csv_path=csv_path, columns=columns)
+    features, splits = load_data(csv_path=csv_path, splits_path=splits_path, columns=columns)
 
     results = {
         "ordinal_regression": run_ordinal_regression(features, splits, columns, alias),

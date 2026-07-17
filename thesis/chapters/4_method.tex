@@ -40,11 +40,18 @@ GAPS (MusicXML) & 12 \\
 
 \subsection{Difficulty Binning}
 \label{sec:binning}
-The raw 1--20 labels are heavily imbalanced: the middle of the scale is well populated (85 pieces at level 8), whereas the rarest levels contain very few pieces (levels 17--20 have 7, 8, 5, and 3 pieces, respectively). Training directly on 20 classes was attempted and failed for precisely this reason (Section~\ref{sec:raw20}). The labels are therefore grouped into 8 ordinal classes by equal-frequency binning over contiguous level ranges:
+The raw 1--20 labels are heavily imbalanced: the middle of the scale is well populated (85 pieces at level 8), whereas the rarest levels contain very few pieces (levels 17--20 have 7, 8, 5, and 3 pieces, respectively); Figure~\ref{fig:label_distribution} shows the full distribution. Training directly on 20 classes was attempted and failed for precisely this reason (Section~\ref{sec:raw20}). The labels are therefore grouped into 8 ordinal classes by equal-frequency binning over contiguous level ranges:
 \begin{equation*}
     \mathcal{C} = \{ [1\text{--}3],\ [4\text{--}5],\ [6\text{--}7],\ [8],\ [9\text{--}10],\ [11\text{--}12],\ [13\text{--}15],\ [16\text{--}20] \}
 \end{equation*}
 yielding class sizes between 37 and 136. The bin edges were fixed once, before any model development, and never changed thereafter.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/label_distribution.pdf}
+    \caption{Distribution of the raw GuitarBurst difficulty levels over the 716-piece dataset. Dashed lines mark the boundaries of the 8 ordinal classes produced by equal-frequency binning; alternating shades indicate bin membership. The sparsity of the highest levels (levels 17--20 hold 7, 8, 5, and 3 pieces) is what makes direct 20-level classification untenable (Section~\ref{sec:raw20}).}
+    \label{fig:label_distribution}
+\end{figure}
 
 \subsection{Cross-Validation Splits}
 All experiments use a single stratified 5-fold split over the binned labels, generated once and stored alongside the dataset. Every model in this thesis --- every baseline, every descriptor generation, every auxiliary experiment --- is trained and evaluated on these identical folds. Freezing the splits early was a deliberate safeguard against inadvertently tuning on test data over the many experimental iterations the project went through.
@@ -61,7 +68,44 @@ ClassClef also provides a separate collection of roughly 6{,}000 MIDI performanc
     \item \textbf{Serialization.} The aligned pitches with corrected timing are written back out as MusicXML.
 \end{enumerate}
 
-The procedure aligned 512 PDF pieces; 136 were rejected for low alignment coverage and 3 had no matching MIDI file. Combined with the sources that natively carry rhythm, 639 of the 716 pieces (89.2\%) end up with complete note durations, flagged per piece with a rhythm-availability indicator. After alignment, all sources were consolidated into a single MusicXML corpus so that one parser handles every piece identically, regardless of provenance.
+Figure~\ref{fig:alignment} illustrates the procedure on a short excerpt. The procedure aligned 579 of the 655 PDF pieces; the remaining 76 could not be used --- nearly all rejected for low alignment coverage, three because no matching MIDI file existed. Together with the sources that natively carry rhythm (all 12 GAPS scores and 48 of the 49 DadaGP transcriptions), 639 of the 716 pieces (89.2\%) end up with complete note durations, flagged per piece with a rhythm-availability indicator. After alignment, all sources were consolidated into a single MusicXML corpus so that one parser handles every piece identically, regardless of provenance.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        font=\scriptsize,
+        ev/.style={draw, rounded corners=1.5pt, minimum width=0.78cm, minimum height=0.5cm, inner sep=1pt, fill=white},
+        midiev/.style={ev, fill=black!8},
+        match/.style={gray!60, line width=0.8pt}
+    ]
+        % PDF row: uniform spacing, no rhythm
+        \node[left, font=\scriptsize\itshape] at (-0.75, 3) {PDF (pitch only):};
+        \foreach \i/\p in {0/E4, 1/G4, 2/B4, 3/E5, 4/B4, 5/G4}
+            \node[ev] (p\i) at (\i*1.55, 3) {\p};
+        % MIDI row: uneven onsets, one extra ornament note
+        \node[left, font=\scriptsize\itshape] at (-0.75, 1) {MIDI (timed):};
+        \node[midiev] (m0) at (0.0, 1) {E4};
+        \node[midiev] (m1) at (1.3, 1) {G4};
+        \node[midiev] (m2) at (2.25, 1) {F\#4};
+        \node[midiev] (m3) at (3.2, 1) {B4};
+        \node[midiev] (m4) at (5.5, 1) {E5};
+        \node[midiev] (m5) at (6.6, 1) {B4};
+        \node[midiev] (m6) at (7.7, 1) {G4};
+        % match lines
+        \draw[match] (p0) -- (m0);
+        \draw[match] (p1) -- (m1);
+        \draw[match] (p2) -- (m3);
+        \draw[match] (p3) -- (m4);
+        \draw[match] (p4) -- (m5);
+        \draw[match] (p5) -- (m6);
+        \node[below=1.5pt of m2, gray, font=\tiny] {gap};
+        % time axis under MIDI
+        \draw[-{Stealth[length=1.6mm]}, gray] (-0.1, 0.2) -- (8.6, 0.2) node[below=2pt, xshift=-6mm, font=\scriptsize, black!70] {onset time};
+        \foreach \x in {0.0, 1.3, 2.25, 3.2, 5.5, 6.6, 7.7} \draw[gray] (\x, 0.18) -- (\x, 0.32);
+    \end{tikzpicture}
+    \caption{Rhythm alignment, schematically. The PDF-derived score contributes the pitch sequence but no timing (top); the matched MIDI performance contributes onset times (bottom). Needleman--Wunsch alignment pairs the two note sequences, absorbing local insertions such as the ornamental F\#4 as gaps, and each PDF note receives the inter-onset interval of its MIDI counterpart as its duration.}
+    \label{fig:alignment}
+\end{figure}
 
 One limitation is accepted deliberately: the aligned output collapses the score into a single voice. Classical guitar notation typically separates a treble melody from a bass line, and in the single-voice output a bass note's duration ends at the next onset in \emph{any} voice rather than at its notated value. For descriptor extraction this is acceptable --- pitch content and attack positions, which the descriptors actually consume, are correct --- but it is a genuine constraint, discussed further in Section~\ref{sec:disc_descriptors}.
 
@@ -88,7 +132,7 @@ The second generation addressed the problem from both ends: repairing extraction
     \item \textbf{Fretboard position}: \texttt{avg\_fret}; \texttt{p90\_fret} (90th percentile of frets used); \texttt{high\_position\_ratio}, the fraction of notes at fret 7 or above; and \texttt{open\_string\_ratio}, the fraction of open-string notes --- expected to correlate \emph{negatively} with difficulty, since open strings cost the left hand nothing.
     \item \textbf{Stretch and shape distribution}: \texttt{p90\_chord\_stretch}; \texttt{chord\_ratio}, the fraction of events with two or more notes; \texttt{avg\_string\_span}, the mean string span of chords; and \texttt{unique\_shape\_rate}, the fraction of distinct chord shapes among all chords played.
     \item \textbf{Movement}: \texttt{shift\_rate}, the fraction of successive-event transitions that move the position by more than 2 frets; \texttt{max\_position\_shift}; and \texttt{std\_position\_shift}.
-    \item \textbf{Variety}: \texttt{fret\_entropy} and \texttt{string\_entropy}, the Shannon entropies of the fret and string usage distributions, capturing how much of the fretboard a piece actually visits; and \texttt{repetition\_ratio}, the fraction of events that exactly repeat the previous chord shape.
+    \item \textbf{Variety}: \texttt{fret\_entropy} and \texttt{string\_entropy}, the Shannon entropies~\cite{shannon1948mathematical} of the fret and string usage distributions, capturing how much of the fretboard a piece actually visits; and \texttt{repetition\_ratio}, the fraction of events that exactly repeat the previous chord shape.
 \end{itemize}
 
 Every candidate was audited in the same manner as V1. The position and variety descriptors proved to supply exactly the missing signal: \texttt{fret\_entropy} reached $\rho = +0.65$, \texttt{high\_position\_ratio} $+0.56$, \texttt{avg\_fret} $+0.55$, and \texttt{open\_string\_ratio} $-0.48$ with the expected negative sign. Two candidates fell below the $|\rho| < 0.05$ cutoff (\texttt{avg\_string\_span}, \texttt{unique\_shape\_rate}) and were dropped alongside \texttt{special\_technique\_ratio}. The surviving V2 set contains \textbf{24 descriptors}: 14 left-hand, 5 right-hand, 5 global. The remaining weak-but-nonzero V1 descriptors were deliberately retained; whether removing them helps is tested empirically in Section~\ref{sec:pruning}.
@@ -120,7 +164,40 @@ The final V3 set contains \textbf{32 descriptors}: 20 left-hand, 6 right-hand, 6
 
 \section{Model Architecture and Training}
 \label{sec:model}
-RubricNet~\cite{ramoneda2024rubricnet} is an additive ordinal neural network. Let $x \in \mathbb{R}^{M}$ be the vector of $M$ standardized descriptors for a piece ($M = 32$ for V3).
+RubricNet~\cite{ramoneda2024rubricnet} is an additive ordinal neural network. Let $x \in \mathbb{R}^{M}$ be the vector of $M$ standardized descriptors for a piece ($M = 32$ for V3). Figure~\ref{fig:architecture} shows the complete architecture.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        font=\small,
+        box/.style={draw, rounded corners=2pt, minimum width=3.6cm, minimum height=0.68cm, align=center},
+        arr/.style={-{Stealth[length=1.8mm]}}
+    ]
+        % inputs
+        \node (x1) at (0, 2.2)  {$x_1$};
+        \node (x2) at (0, 1.1)  {$x_2$};
+        \node (xd) at (0, 0.25) {$\vdots$};
+        \node (xM) at (0, -0.8) {$x_M$};
+        % subnetworks
+        \node[box] (g1) at (3.1, 2.2)  {$g_1(x_1) = \tanh(w_1 x_1 + b_1)$};
+        \node[box] (g2) at (3.1, 1.1)  {$g_2(x_2) = \tanh(w_2 x_2 + b_2)$};
+        \node      (gd) at (3.1, 0.25) {$\vdots$};
+        \node[box] (gM) at (3.1, -0.8) {$g_M(x_M) = \tanh(w_M x_M + b_M)$};
+        % sum
+        \node[draw, circle, inner sep=2pt] (sum) at (6.4, 0.7) {$\Sigma$};
+        % ordinal head
+        \node[box, minimum width=3.1cm] (head) at (9.3, 0.7) {$p_j = \sigma(a_j S(x) + c_j)$\\[-1pt] {\scriptsize $j = 0, \dots, K-1$}};
+        % arrows
+        \foreach \i in {1, 2, M} { \draw[arr] (x\i) -- (g\i); \draw[arr] (g\i.east) -- (sum); }
+        \draw[arr] (sum) -- node[above, font=\scriptsize] {$S(x)$} (head);
+        % annotations
+        \node[below=0.55cm of xM, font=\scriptsize, align=center] at (0, -1.2) {descriptors};
+        \node[font=\scriptsize, align=center] at (3.1, -1.75) {per-descriptor subnetworks\\(2 parameters each)};
+        \node[font=\scriptsize, align=center] at (9.3, -1.75) {ordinal head\\(cumulative probabilities)};
+    \end{tikzpicture}
+    \caption{The RubricNet architecture. Each descriptor $x_i$ is scored independently by a two-parameter subnetwork $g_i$; the bounded scores are summed into the aggregated difficulty score $S(x)$, and an ordinal head maps $S(x)$ to $K$ cumulative class probabilities. No descriptor interacts with any other before the summation, so $g_i(x_i)$ is exactly descriptor $i$'s contribution to the prediction.}
+    \label{fig:architecture}
+\end{figure}
 
 \subsection{Additive Subnetworks}
 Each descriptor $x_i$ is scored by its own subnetwork $g_i:\mathbb{R} \to (-1, 1)$, consisting of a single affine transformation followed by a tanh nonlinearity:
@@ -154,7 +231,7 @@ Equal-frequency bins draw hard boundaries through what is in reality a continuum
 with temperature $T$; as $T \to 0$ this recovers the hard encoding exactly. The effect of $T$ is evaluated in Section~\ref{sec:smoothing}; the headline results use the hard targets.
 
 \subsection{Training Procedure and Hyperparameter Search}
-Descriptors are standardized with a scaler fit on the training fold only. The model is trained with early stopping on validation accuracy (patience of 20 epochs). Hyperparameters were tuned per descriptor generation with Optuna~\cite{akiba2019optuna}, searching the learning rate ($5 \times 10^{-3}$--$10^{-1}$, log scale), batch size (16--64), dropout on the input descriptors (0.1--0.5), weight decay ($10^{-4}$--$10^{-1}$, log scale), and learning-rate decay (0.3--0.9), with validation balanced accuracy as the objective. The selected V3 configuration uses batch size 64, learning rate 0.047, dropout 0.20, weight decay 0.064, and learning-rate decay 0.42. Notably, the architecture itself was never part of the search space: the one-scalar-per-descriptor structure is the point of the model, not a tunable capacity parameter.
+Descriptors are standardized with a scaler fit on the training fold only. The model is trained with early stopping on validation accuracy (patience of 20 epochs). Hyperparameters were tuned per descriptor generation with Optuna~\cite{akiba2019optuna}, searching the learning rate ($5 \times 10^{-3}$--$10^{-1}$, log scale), batch size (16--64), dropout~\cite{srivastava2014dropout} on the input descriptors (0.1--0.5), weight decay ($10^{-4}$--$10^{-1}$, log scale), and learning-rate decay (0.3--0.9), with validation balanced accuracy as the objective. The selected V3 configuration uses batch size 64, learning rate 0.047, dropout 0.20, weight decay 0.064, and learning-rate decay 0.42. Notably, the architecture itself was never part of the search space: the one-scalar-per-descriptor structure is the point of the model, not a tunable capacity parameter.
 
 Final results are averaged over 3 random seeds $\times$ 5 folds (15 runs) for RubricNet; the deterministic baselines are averaged over the 5 folds.
 
@@ -163,7 +240,14 @@ Final results are averaged over 3 random seeds $\times$ 5 folds (15 runs) for Ru
 Two additional interpretable baselines are adapted from the fuzzy rule-based classifiers compared by Heerde, Vatolkin, and Rudolph for music genre recognition~\cite{heerde2020comparing}: a complete search over primitive rules~\cite{vatolkin2015interpretable} and fuzzy pattern trees~\cite{senge2011topdown, senge2015fast, huang2008patterntrees}. Both operate on the V3 descriptor set, are fully deterministic given the training data, and are therefore evaluated once per fold rather than over multiple seeds. Following the source paper, both treat the eight difficulty classes as nominal and predict by one-vs-all argmax; the ordinal structure of the task is not injected into either method, which lets the comparison in Chapter~\ref{ch:evaluation} isolate what is gained by RubricNet's ordinal design specifically.
 
 \subsection{Fuzzification}
-Both methods require every descriptor to be expressed as degrees of truth for five linguistic terms: very low, low, moderate, high, and very high. Raw descriptor values are first mapped to $[0, 1]$ and then assigned to five evenly spaced triangular membership functions centered at $0, 0.25, 0.5, 0.75, 1$, so that adjacent terms always sum to a membership of exactly 1. Because several V3 descriptors are heavy-tailed (e.g.\ total note count, window maxima), a plain min-max normalization would compress most pieces into the lowest term. Instead, each descriptor is normalized by its empirical cumulative distribution function (CDF) on the training fold: a value is mapped to the fraction of training pieces at or below it, so that ``moderate'' corresponds to the corpus median regardless of the descriptor's raw scale. Values in the validation and test folds are clipped to $[0, 1]$ before fuzzification. A plain min-max variant is evaluated as an ablation in Section~\ref{sec:auxiliary}.
+Both methods require every descriptor to be expressed as degrees of truth for five linguistic terms: very low, low, moderate, high, and very high. Raw descriptor values are first mapped to $[0, 1]$ and then assigned to five evenly spaced triangular membership functions centered at $0, 0.25, 0.5, 0.75, 1$ (Figure~\ref{fig:membership}), so that adjacent terms always sum to a membership of exactly 1.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.85\textwidth]{figures/membership_functions.pdf}
+    \caption{The five triangular membership functions over the normalized descriptor range. Each normalized value belongs to at most two adjacent linguistic terms, with memberships summing to 1.}
+    \label{fig:membership}
+\end{figure} Because several V3 descriptors are heavy-tailed (e.g.\ total note count, window maxima), a plain min-max normalization would compress most pieces into the lowest term. Instead, each descriptor is normalized by its empirical cumulative distribution function (CDF) on the training fold: a value is mapped to the fraction of training pieces at or below it, so that ``moderate'' corresponds to the corpus median regardless of the descriptor's raw scale. Values in the validation and test folds are clipped to $[0, 1]$ before fuzzification. A plain min-max variant is evaluated as an ablation in Section~\ref{sec:auxiliary}.
 
 \subsection{Complete Search of Primitive Rules}
 A primitive rule has the form ``if descriptor $X$ is term $T$ then class $C$.'' For every descriptor--term pair and class, the relevance of the corresponding rule is estimated on the training fold as

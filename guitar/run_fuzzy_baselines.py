@@ -120,6 +120,7 @@ def main():
     parser.add_argument("--gamma", type=float, default=0.05)
     parser.add_argument("--plain-rmse", action="store_true", help="Use unweighted RMSE for FPT instead of class-balanced RMSE")
     parser.add_argument("--no-negation", action="store_true", help="Disable negated leaf statements in FPT")
+    parser.add_argument("--v5", action="store_true", help="Use V5 dataset (V3 features, 76 pdf/no-rhythm dummy pieces dropped)")
     parser.add_argument("--out", default="guitar/fuzzy_results_v3.json")
     parser.add_argument("--dump", default="guitar/fuzzy_rules_dump_v3.json")
     args = parser.parse_args()
@@ -127,10 +128,22 @@ def main():
     balanced_rmse = not args.plain_rmse
     use_negation = not args.no_negation
 
-    df = pd.read_csv("features/guitar_descriptors_v3.csv")
+    if args.v5:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        if args.out == "guitar/fuzzy_results_v3.json":
+            args.out = "guitar/fuzzy_results_v5.json"
+        if args.dump == "guitar/fuzzy_rules_dump_v3.json":
+            args.dump = "guitar/fuzzy_rules_dump_v5.json"
+        print("Running fuzzy baselines on V5 dataset (V3 features, no-rhythm pdf pieces dropped)...")
+    else:
+        csv_path = "features/guitar_descriptors_v3.csv"
+        splits_path = "guitar/guitar_splits.json"
+
+    df = pd.read_csv(csv_path)
     df["piece_id"] = df.apply(make_piece_id, axis=1)
     features = df.set_index("piece_id")[ALL_FEATURES_V3]
-    with open("guitar/guitar_splits.json") as f:
+    with open(splits_path) as f:
         splits = json.load(f)
 
     cs_per_fold, fpt_per_fold = [], []

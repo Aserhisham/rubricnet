@@ -11,12 +11,16 @@ Leo Breiman.
 \newblock Random forests.
 \newblock {\em Machine Learning}, 45(1):5--32, 2001.
 
-\bibitem{caruana2013intelligible}
-Rich Caruana, Yin Lou, Johannes Gehrke, Paul Koch, Marc Sturm, and Noemie
-  Elhadad.
-\newblock Intelligible models for classification and regression.
-\newblock In {\em Proceedings of the 19th ACM SIGKDD International Conference
-  on Knowledge Discovery and Data Mining}, pages 150--158, 2013.
+\bibitem{breiman1984classification}
+Leo Breiman, Jerome~H. Friedman, Richard~A. Olshen, and Charles~J. Stone.
+\newblock {\em Classification and Regression Trees}.
+\newblock Wadsworth, Belmont, CA, 1984.
+
+\bibitem{brodersen2010balanced}
+Kay~H. Brodersen, Cheng~Soon Ong, Klaas~E. Stephan, and Joachim~M. Buhmann.
+\newblock The balanced accuracy and its posterior distribution.
+\newblock In {\em Proceedings of the 20th International Conference on Pattern
+  Recognition (ICPR)}, pages 3121--3124. IEEE, 2010.
 
 \bibitem{cheng2008ordinal}
 Jianlin Cheng, Zheng Wang, and Gianluca Pollastri.
@@ -60,6 +64,17 @@ Maurice~G. Kendall.
 \newblock A new measure of rank correlation.
 \newblock {\em Biometrika}, 30(1/2):81--93, 1938.
 
+\bibitem{kendall1945ties}
+Maurice~G. Kendall.
+\newblock The treatment of ties in ranking problems.
+\newblock {\em Biometrika}, 33(3):239--251, 1945.
+
+\bibitem{caruana2013intelligible}
+Yin Lou, Rich Caruana, Johannes Gehrke, and Giles Hooker.
+\newblock Accurate intelligible models with pairwise interactions.
+\newblock In {\em Proceedings of the 19th ACM SIGKDD International Conference
+  on Knowledge Discovery and Data Mining}, pages 623--631, 2013.
+
 \bibitem{needleman1970general}
 Saul~B. Needleman and Christian~D. Wunsch.
 \newblock A general method applicable to the search for similarities in the
@@ -67,7 +82,7 @@ Saul~B. Needleman and Christian~D. Wunsch.
 \newblock {\em Journal of Molecular Biology}, 48(3):443--453, 1970.
 
 \bibitem{ramoneda2024rubricnet}
-Pere Ramoneda, Vsevolod Eremenko, Annelies D'Hooge, Emilia Parada-Cabaleiro,
+Pedro Ramoneda, Vsevolod Eremenko, Alexandre D'Hooge, Emilia Parada-Cabaleiro,
   and Xavier Serra.
 \newblock Towards explainable and interpretable musical difficulty estimation:
   A parameter-efficient approach.
@@ -75,7 +90,7 @@ Pere Ramoneda, Vsevolod Eremenko, Annelies D'Hooge, Emilia Parada-Cabaleiro,
   Information Retrieval Conference (ISMIR)}, pages 520--528, 2024.
 
 \bibitem{ramoneda2024combining}
-Pere Ramoneda, Dasaem Jeong, Vsevolod Eremenko, Nazif~Can Tamer, Marius Miron,
+Pedro Ramoneda, Dasaem Jeong, Vsevolod Eremenko, Nazif~Can Tamer, Marius Miron,
   and Xavier Serra.
 \newblock Combining piano performance dimensions for score difficulty
   classification.
@@ -105,17 +120,21 @@ Robin Senge and Eyke H{\"u}llermeier.
 \newblock Fast fuzzy pattern tree learning for classification.
 \newblock {\em IEEE Transactions on Fuzzy Systems}, 23(6):2024--2033, 2015.
 
+\bibitem{shannon1948mathematical}
+Claude~E. Shannon.
+\newblock A mathematical theory of communication.
+\newblock {\em Bell System Technical Journal}, 27(3):379--423, 1948.
+
 \bibitem{spearman1904proof}
 Charles Spearman.
 \newblock The proof and measurement of association between two things.
 \newblock {\em The American Journal of Psychology}, 15(1):72--101, 1904.
 
-\bibitem{vasquez2023quantifying}
-Miguel A. V.~V. V{\'a}squez, Max Baelemans, Jonathan Driedger, Willem~H.
-  Zuidema, and John~Ashley Burgoyne.
-\newblock Quantifying the ease of playing song chords on the guitar.
-\newblock In {\em Proceedings of the 24th International Society for Music
-  Information Retrieval Conference (ISMIR)}, pages 725--732, 2023.
+\bibitem{srivastava2014dropout}
+Nitish Srivastava, Geoffrey Hinton, Alex Krizhevsky, Ilya Sutskever, and Ruslan
+  Salakhutdinov.
+\newblock Dropout: A simple way to prevent neural networks from overfitting.
+\newblock {\em Journal of Machine Learning Research}, 15(56):1929--1958, 2014.
 
 \bibitem{vatolkin2015interpretable}
 Igor Vatolkin and G{\"u}nter Rudolph.
@@ -125,11 +144,18 @@ Igor Vatolkin and G{\"u}nter Rudolph.
   Discovery}, Studies in Classification, Data Analysis, and Knowledge
   Organization, pages 423--432. Springer, 2015.
 
+\bibitem{vasquez2023quantifying}
+Marcel~A. V{\'e}lez~V{\'a}squez, Mari{\"e}lle Baelemans, Jonathan Driedger,
+  Willem Zuidema, and John~Ashley Burgoyne.
+\newblock Quantifying the ease of playing song chords on the guitar.
+\newblock In {\em Proceedings of the 24th International Society for Music
+  Information Retrieval Conference (ISMIR)}, pages 725--732, 2023.
+
 \bibitem{yaroch2025measure}
-Edward~J. Yaroch.
+Eli~J. Yaroch.
 \newblock Measure by measure: Developing an artificial intelligence algorithm
   for music difficulty assessment.
-\newblock M.a. thesis, University of Miami, 2025.
+\newblock Master's research project, University of Miami, 2025.
 
 \bibitem{zadeh1965fuzzy}
 Lotfi~A. Zadeh.

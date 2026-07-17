@@ -45,6 +45,7 @@ FEATURE_SETS = {
     "guitar_all_v3_base": ALL_FEATURES_V3_BASE,
     "guitar_all_v3_base_new": ALL_FEATURES_V3_BASE_NEW,
     "guitar_all_v4": ALL_FEATURES_V3,
+    "guitar_all_v5": ALL_FEATURES_V3,
     "lh_only": FEATURE_GROUPS["lh"],
     "rh_only": FEATURE_GROUPS["rh"],
     "global_only": FEATURE_GROUPS["global"],
@@ -169,8 +170,12 @@ def main():
     if RAW_LEVELS:
         study_name = f"{study_name}_raw"
     
-    # Load correct CSV path dynamically
-    if cli_args.v4 or "v4" in FEATURES:
+    # Load correct CSV/splits path dynamically
+    splits_path = "guitar/guitar_splits.json"
+    if "_v5" in FEATURES:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+    elif cli_args.v4 or "v4" in FEATURES:
         csv_path = "features/guitar_descriptors_v4.csv"
     elif "v3_base_new" in FEATURES:
         csv_path = "features/guitar_descriptors_v3_base.csv"
@@ -180,8 +185,8 @@ def main():
         csv_path = "features/guitar_descriptors_v2.csv"
     else:
         csv_path = "features/guitar_descriptors.csv"
-        
-    FEATURES_DATA, SPLITS_DATA = load_data(csv_path=csv_path, columns=FEATURE_SETS[FEATURES])
+
+    FEATURES_DATA, SPLITS_DATA = load_data(csv_path=csv_path, splits_path=splits_path, columns=FEATURE_SETS[FEATURES])
 
     if RAW_LEVELS:
         df_raw = pd.read_csv(csv_path)

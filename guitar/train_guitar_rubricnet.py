@@ -294,6 +294,7 @@ def main():
     parser.add_argument("--v3-pruned", action="store_true", help="Use version 3 features minus near-zero-signal descriptors")
     parser.add_argument("--v3-base", action="store_true", help="Use V3 base features (unified provenance, no rhythm-aware features)")
     parser.add_argument("--v3-base-new", action="store_true", help="Use V3 base + hand-crafted interaction features")
+    parser.add_argument("--v5", action="store_true", help="Use V5 dataset (V3 features, 76 pdf/no-rhythm dummy pieces dropped)")
     parser.add_argument("--raw-levels", action="store_true", help="Train on raw 1-20 difficulty levels")
     parser.add_argument("--label-smoothing-temp", type=float, default=None,
                         help="Ordinal label smoothing temperature (0 = hard step, e.g. 0.3 = mild smoothing). Only applies to --v3/--v4 runs.")
@@ -301,10 +302,19 @@ def main():
                         help="Enable the auxiliary coarse 3-class head with this loss weight (e.g. 0.3). Only applies to --v3/--v4 runs.")
     args = parser.parse_args()
 
-    is_experimental = bool(args.v3_pruned or args.v3_base or args.v3_base_new or args.label_smoothing_temp or args.coarse_loss_weight)
+    is_experimental = bool(args.v3_pruned or args.v3_base or args.v3_base_new or args.v5 or args.label_smoothing_temp or args.coarse_loss_weight)
     coarse_aux_enabled = bool(args.coarse_loss_weight)
 
-    if args.v3_base_new:
+    splits_path = "guitar/guitar_splits.json"
+    if args.v5:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V3
+        alias_experiment = "guitar_rubricnet_final_v5"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        out_path = "guitar/rubricnet_results_v5.json"
+        print("Training RubricNet on V5 dataset (V3 features, no-rhythm pdf pieces dropped)...")
+    elif args.v3_base_new:
         csv_path = "features/guitar_descriptors_v3_base.csv"
         columns = ALL_FEATURES_V3_BASE_NEW
         alias_experiment = "guitar_rubricnet_final_v3_base_new"
@@ -369,6 +379,7 @@ def main():
 
     features, splits = load_data(
         csv_path=csv_path,
+        splits_path=splits_path,
         columns=columns
     )
     hyperparams = load_hyperparams(best_hyperparams_path)
