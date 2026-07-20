@@ -85,6 +85,21 @@ def map_8_to_3(classes):
     return np.array(mapped)
 
 
+def map_9_to_3(classes):
+    """Coarse mapping for the 9-class v6 labeling (paper-comparison run)."""
+    mapped = []
+    for c in classes:
+        if c in (0, 1, 2):
+            mapped.append(0)  # Easy
+        elif c in (3, 4, 5):
+            mapped.append(1)  # Medium
+        elif c in (6, 7, 8):
+            mapped.append(2)  # Hard
+        else:
+            raise ValueError(f"Unknown class {c}")
+    return np.array(mapped)
+
+
 def compute_metrics(y_true, y_pred):
     res = kendalltau(y_true, y_pred)
     tau = res.correlation if hasattr(res, 'correlation') else res[0]
@@ -295,6 +310,7 @@ def main():
     parser.add_argument("--v3-base", action="store_true", help="Use V3 base features (unified provenance, no rhythm-aware features)")
     parser.add_argument("--v3-base-new", action="store_true", help="Use V3 base + hand-crafted interaction features")
     parser.add_argument("--v5", action="store_true", help="Use V5 dataset (V3 features, 76 pdf/no-rhythm dummy pieces dropped)")
+    parser.add_argument("--v6", action="store_true", help="Paper-comparison run: V5 pieces, 9 equal-width classes, 60/20/20 splits (see prepare_splits_v6.py)")
     parser.add_argument("--raw-levels", action="store_true", help="Train on raw 1-20 difficulty levels")
     parser.add_argument("--label-smoothing-temp", type=float, default=None,
                         help="Ordinal label smoothing temperature (0 = hard step, e.g. 0.3 = mild smoothing). Only applies to --v3/--v4 runs.")
@@ -302,11 +318,25 @@ def main():
                         help="Enable the auxiliary coarse 3-class head with this loss weight (e.g. 0.3). Only applies to --v3/--v4 runs.")
     args = parser.parse_args()
 
-    is_experimental = bool(args.v3_pruned or args.v3_base or args.v3_base_new or args.v5 or args.label_smoothing_temp or args.coarse_loss_weight)
+    is_experimental = bool(args.v3_pruned or args.v3_base or args.v3_base_new or args.v5 or args.v6 or args.label_smoothing_temp or args.coarse_loss_weight)
     coarse_aux_enabled = bool(args.coarse_loss_weight)
+    # v6 uses the 9-class paper-comparison labeling; everything else keeps the
+    # frozen 8-class binning. Note num_classes=9 activates the num_classes>8
+    # code paths in rubricnet.py (final-layer init, sum-decode, softened class
+    # weights) -- i.e. exactly the configuration the original paper ran on CIPI.
+    num_classes = 9 if args.v6 else NUM_CLASSES
+    coarse_map = map_9_to_3 if args.v6 else map_8_to_3
 
     splits_path = "guitar/guitar_splits.json"
-    if args.v5:
+    if args.v6:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v6.json"
+        columns = ALL_FEATURES_V3
+        alias_experiment = "guitar_rubricnet_final_v6"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        out_path = "guitar/rubricnet_results_v6.json"
+        print("Training RubricNet on V6 (paper-comparison: 9 equal-width classes, 60/20/20 splits)...")
+    elif args.v5:
         csv_path = "features/guitar_descriptors_v5.csv"
         splits_path = "guitar/guitar_splits_v5.json"
         columns = ALL_FEATURES_V3
@@ -449,7 +479,7 @@ def main():
             
             clf = RubricnetSklearn(
                 input_dim=len(columns),
-                num_classes=20 if args.raw_levels else NUM_CLASSES,
+                num_classes=20 if args.raw_levels else num_classes,
                 split=split_idx,
                 args=args_cls,
                 logging=False
@@ -486,7 +516,7 @@ def main():
             # Guard against ordinal-decode underflow on collapsing folds: a
             # prediction below the lowest class is the lowest class. No-op for
             # runs that never underflow (e.g. v3), so prior results are unchanged.
-            y_pred = np.clip(y_pred, 0, NUM_CLASSES - 1)
+            y_pred = np.clip(y_pred, 0, num_classes - 1)
 
             # Compute 8-class metrics
             fold_m = compute_metrics(y_test, y_pred)
@@ -502,8 +532,8 @@ def main():
                 collapsed_folds.append(f"seed_{seed}_split_{split_idx} (acc={fold_m['accuracy']:.4f})")
 
             # Coarse 3-class evaluation (Phase 7)
-            y_test_coarse = map_8_to_3(y_test)
-            y_pred_coarse = map_8_to_3(y_pred)
+            y_test_coarse = coarse_map(y_test)
+            y_pred_coarse = coarse_map(y_pred)
             c_acc = float(accuracy_score(y_test_coarse, y_pred_coarse))
             c_bacc = float(balanced_accuracy_score(y_test_coarse, y_pred_coarse))
             seed_c_acc.append(c_acc)

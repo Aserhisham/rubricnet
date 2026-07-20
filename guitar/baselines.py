@@ -90,7 +90,7 @@ def summarize(name, fold_scores):
     return metrics
 
 
-def run_ordinal_regression(features, splits, columns, alias_experiment):
+def run_ordinal_regression(features, splits, columns, alias_experiment, num_classes=NUM_CLASSES):
     fold_scores = []
     for split_idx in range(N_SPLITS):
         X_train, y_train = get_fold_xy(features, splits, split_idx, "train")
@@ -113,7 +113,7 @@ def run_ordinal_regression(features, splits, columns, alias_experiment):
         args = Args(**opt_args)
         
         clf = RubricnetSklearn(
-            input_dim=len(columns), num_classes=NUM_CLASSES, split=split_idx, args=args, logging=False
+            input_dim=len(columns), num_classes=num_classes, split=split_idx, args=args, logging=False
         )
         clf.fit(X_train_s, y_train, X_val_s, y_val, X_test_s, y_test)
         clf.load_model(f"checkpoints/{args.alias_experiment}/split_{split_idx}.ckpt")
@@ -171,10 +171,19 @@ def main():
     parser.add_argument("--v3-base", action="store_true", help="Use V3 base features (unified provenance, no rhythm-aware features)")
     parser.add_argument("--v3-base-new", action="store_true", help="Use V3 base + hand-crafted interaction features")
     parser.add_argument("--v5", action="store_true", help="Use V5 dataset (V3 features, 76 pdf/no-rhythm dummy pieces dropped)")
+    parser.add_argument("--v6", action="store_true", help="Paper-comparison run: V5 pieces, 9 equal-width classes, 60/20/20 splits (see prepare_splits_v6.py)")
     args = parser.parse_args()
 
+    num_classes = 9 if args.v6 else NUM_CLASSES
     splits_path = "guitar/guitar_splits.json"
-    if args.v5:
+    if args.v6:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v6.json"
+        columns = ALL_FEATURES_V3
+        alias = "guitar_baseline_ordinal_v6"
+        out_path = "guitar/baseline_results_v6.json"
+        print("Running baselines on V6 (paper-comparison: 9 equal-width classes, 60/20/20 splits)...")
+    elif args.v5:
         csv_path = "features/guitar_descriptors_v5.csv"
         splits_path = "guitar/guitar_splits_v5.json"
         columns = ALL_FEATURES_V3
@@ -221,7 +230,7 @@ def main():
     features, splits = load_data(csv_path=csv_path, splits_path=splits_path, columns=columns)
 
     results = {
-        "ordinal_regression": run_ordinal_regression(features, splits, columns, alias),
+        "ordinal_regression": run_ordinal_regression(features, splits, columns, alias, num_classes=num_classes),
         "random_forest": run_tree_baseline(features, splits, columns, RandomForestClassifier, "Random Forest", n_estimators=200),
         "decision_tree": run_tree_baseline(features, splits, columns, DecisionTreeClassifier, "Decision Tree", max_depth=6),
     }
