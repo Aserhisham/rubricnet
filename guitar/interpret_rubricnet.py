@@ -24,7 +24,11 @@ if __package__ in (None, ""):
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from guitar.baselines import get_fold_xy, load_data
-from guitar.prepare_splits import ALL_FEATURES_V2, ALL_FEATURES_V3, FEATURE_GROUPS_V2, FEATURE_GROUPS_V3, NUM_CLASSES, make_piece_id
+from guitar.prepare_splits import (
+    ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V5_PRUNED_COLLINEAR2,
+    FEATURE_GROUPS_V2, FEATURE_GROUPS_V3, FEATURE_GROUPS_V5_PRUNED_COLLINEAR2,
+    NUM_CLASSES, make_piece_id,
+)
 from rubricnet.rubricnet import RubricnetSklearn
 
 
@@ -39,16 +43,33 @@ def main():
     parser.add_argument("--v3", action="store_true", help="Use version 3 features")
     parser.add_argument("--v4", action="store_true", help="Use version 4 features")
     parser.add_argument("--v4-raw", action="store_true", help="Use version 4 raw difficulty features")
+    parser.add_argument("--v5-pruned-collinear2", action="store_true", help="Use the adopted 25-feature V5-pruned-collinear2 set")
     args_cli = parser.parse_args()
 
     v3 = args_cli.v3
     v4 = args_cli.v4
     v4_raw = args_cli.v4_raw
+    v5pc2 = args_cli.v5_pruned_collinear2
     raw_levels = False
     fig_suffix = ""
-    
+    splits_path = "guitar/guitar_splits.json"
+
     # 1. Load correct features and splits
-    if v4_raw:
+    if v5pc2:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR2
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        alias_experiment = "guitar_rubricnet_final_v5_pruned_collinear2_seed_0"
+        ckpt_path = "checkpoints/guitar_rubricnet_final_v5_pruned_collinear2_seed_0/split_0.ckpt"
+        scores_out_path = "guitar/descriptor_scores_fold0_v5_pruned_collinear2.csv"
+        mono_plot_path = "guitar/figures/monotonicity_v5_pruned_collinear2.png"
+        imp_plot_path = "guitar/figures/importance_comparison_v5_pruned_collinear2.png"
+        baseline_results_path = "guitar/baseline_results_v5_pruned_collinear2.json"
+        feature_groups = FEATURE_GROUPS_V5_PRUNED_COLLINEAR2
+        version_name = "V5-pruned-collinear2"
+        fig_suffix = "_v5_pruned_collinear2"
+    elif v4_raw:
         csv_path = "features/guitar_descriptors_v4.csv"
         columns = ALL_FEATURES_V3
         best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v4_raw.json"
@@ -105,6 +126,7 @@ def main():
 
     features, splits = load_data(
         csv_path=csv_path,
+        splits_path=splits_path,
         columns=columns
     )
     
@@ -161,6 +183,20 @@ def main():
         y_test_fit = pd.Series([raw_difficulty_map[i] for i in X_test.index], index=X_test.index)
     else:
         y_test_fit = y_test
+
+    # S(x) = sum_i g_i(x_i)'s overall sign is not fixed by the training
+    # objective -- flipping every w_i together with the ordinal head's
+    # weights leaves every prediction unchanged, so different training runs
+    # can converge to either "S(x) increases with difficulty" or the
+    # opposite. Detect the sign this checkpoint landed on and normalize to
+    # the "increases with difficulty" convention purely for exposition (plots
+    # and the exported CSV), so every generation's figures read the same way
+    # regardless of which symmetry the optimizer happened to break.
+    S = scores_np.sum(axis=1)
+    sign = np.sign(np.corrcoef(S, y_test_fit.values)[0, 1]) or 1.0
+    if sign < 0:
+        print("Detected inverted S(x) sign convention for this checkpoint -- flipping all descriptor scores for exposition.")
+        scores_np = -scores_np
 
     # Save scores to CSV
     df_scores = pd.DataFrame(scores_np, index=X_test.index, columns=columns)

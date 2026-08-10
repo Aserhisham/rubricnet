@@ -1,0 +1,159 @@
+{
+  "complete_search": {
+    "per_fold": [
+      {
+        "accuracy": 0.265625,
+        "balanced_accuracy": 0.23895463089542035,
+        "acc_plus_minus_1": 0.703125,
+        "mae": 1.234375,
+        "mse": 2.890625,
+        "kendall_tau": 0.5497779657118668,
+        "selected_m": 10
+      },
+      {
+        "accuracy": 0.3125,
+        "balanced_accuracy": 0.2979050609478241,
+        "acc_plus_minus_1": 0.671875,
+        "mae": 1.1875,
+        "mse": 2.640625,
+        "kendall_tau": 0.6166725928967874,
+        "selected_m": 33
+      },
+      {
+        "accuracy": 0.25,
+        "balanced_accuracy": 0.23179539758487128,
+        "acc_plus_minus_1": 0.6953125,
+        "mae": 1.3671875,
+        "mse": 3.5859375,
+        "kendall_tau": 0.5104465123056456,
+        "selected_m": 37
+      },
+      {
+        "accuracy": 0.2734375,
+        "balanced_accuracy": 0.26015286796536796,
+        "acc_plus_minus_1": 0.609375,
+        "mae": 1.484375,
+        "mse": 4.328125,
+        "kendall_tau": 0.4089947486016839,
+        "selected_m": 116
+      },
+      {
+        "accuracy": 0.3671875,
+        "balanced_accuracy": 0.3378629813169287,
+        "acc_plus_minus_1": 0.71875,
+        "mae": 1.1875,
+        "mse": 3.265625,
+        "kendall_tau": 0.5565213607678718,
+        "selected_m": 72
+      }
+    ],
+    "summary": {
+      "accuracy": {
+        "mean": 0.29375,
+        "std": 0.04706990728560021
+      },
+      "balanced_accuracy": {
+        "mean": 0.27333418774208246,
+        "std": 0.044296910778494056
+      },
+      "acc_plus_minus_1": {
+        "mean": 0.6796875,
+        "std": 0.0427908248050911
+      },
+      "mae": {
+        "mean": 1.2921875,
+        "std": 0.13021354156250417
+      },
+      "mse": {
+        "mean": 3.3421875,
+        "std": 0.6583022226958147
+      },
+      "kendall_tau": {
+        "mean": 0.5284826360567711,
+        "std": 0.07684365075338614
+      }
+    }
+  },
+  "fuzzy_pattern_tree": {
+    "per_fold": [
+      {
+        "accuracy": 0.3203125,
+        "balanced_accuracy": 0.29615921907040327,
+        "acc_plus_minus_1": 0.6328125,
+        "mae": 1.5703125,
+        "mse": 5.4296875,
+        "kendall_tau": 0.48758575175645075,
+        "selected_dmax": 2
+      },
+      {
+        "accuracy": 0.234375,
+        "balanced_accuracy": 0.23871810207336522,
+        "acc_plus_minus_1": 0.6484375,
+        "mae": 1.4296875,
+        "mse": 3.6953125,
+        "kendall_tau": 0.5168025050423581,
+        "selected_dmax": 4
+      },
+      {
+        "accuracy": 0.234375,
+        "balanced_accuracy": 0.18957963089542038,
+        "acc_plus_minus_1": 0.6015625,
+        "mae": 1.546875,
+        "mse": 4.3125,
+        "kendall_tau": 0.351842690049679,
+        "selected_dmax": 1
+      },
+      {
+        "accuracy": 0.234375,
+        "balanced_accuracy": 0.21755275974025973,
+        "acc_plus_minus_1": 0.65625,
+        "mae": 1.4140625,
+        "mse": 3.7578125,
+        "kendall_tau": 0.48506235848818213,
+        "selected_dmax": 4
+      },
+      {
+        "accuracy": 0.2578125,
+        "balanced_accuracy": 0.2658625256322625,
+        "acc_plus_minus_1": 0.6796875,
+        "mae": 1.28125,
+        "mse": 2.96875,
+        "kendall_tau": 0.559332423820922,
+        "selected_dmax": 4
+      }
+    ],
+    "summary": {
+      "accuracy": {
+        "mean": 0.25625,
+        "std": 0.037222278904911234
+      },
+      "balanced_accuracy": {
+        "mean": 0.24157444748234222,
+        "std": 0.04140673004632995
+      },
+      "acc_plus_minus_1": {
+        "mean": 0.64375,
+        "std": 0.029022149407822984
+      },
+      "mae": {
+        "mean": 1.4484375,
+        "std": 0.11621996419774444
+      },
+      "mse": {
+        "mean": 4.0328125,
+        "std": 0.915320315133929
+      },
+      "kendall_tau": {
+        "mean": 0.4801251458315184,
+        "std": 0.07771011313879209
+      }
+    }
+  },
+  "config": {
+    "norm": "cdf",
+    "gamma": 0.05,
+    "balanced_rmse": true,
+    "negation": true,
+    "any_negation_used": true
+  }
+}

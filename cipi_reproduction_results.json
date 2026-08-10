@@ -1,0 +1,77 @@
+{
+  "paper": {
+    "acc9_mean": 0.414,
+    "acc9_std": 0.031,
+    "mse_mean": 1.7,
+    "mse_std": 0.5,
+    "source": "Ramoneda et al. 2024, Table 3/4, 'RubricNet proposed' / 'Ours', CIPI, basic+LZ descriptors"
+  },
+  "official_checkpoints": {
+    "description": "Pure inference on the original authors' own released checkpoints + scalers (github.com/PRamoneda/rubricnet, checkpoints/rubricnet_cameraready/), no training performed",
+    "per_fold_acc9": [0.4073, 0.4052, 0.3967, 0.4670, 0.3912],
+    "per_fold_mse": [1.5848, 2.5884, 1.7198, 1.1196, 1.5658],
+    "acc9_mean": 0.413,
+    "acc9_std": 0.031,
+    "mse_mean": 1.7,
+    "mse_std": 0.5
+  },
+  "retrain_original_hparams": {
+    "description": "From-scratch 5-fold retrain, interpretability.py default hyperparameters (batch=40, lr=0.1, dropout=0.1, decay_lr=0.9), guitar-adapted rubricnet.py code (num_classes>8 branch active), no seed pinned",
+    "per_fold_acc9": [0.3444, 0.3793, 0.3500, 0.4260, 0.3232],
+    "per_fold_mse": [1.5618, 2.3464, 1.6110, 1.1496, 1.6731],
+    "acc9_mean": 0.365,
+    "acc9_std": 0.040,
+    "mse_mean": 1.7,
+    "mse_std": 0.4
+  },
+  "retrain_pristine_code": {
+    "description": "Same hyperparameters as above, but using rubricnet_original/ (pristine pre-guitar-edit code pulled from this repo's initial commit) instead of the guitar-adapted rubricnet.py, to rule out the num_classes>8 code divergence as the cause of the gap",
+    "per_fold_acc9": [0.3632, 0.4641, 0.2792, 0.3876, 0.3474],
+    "per_fold_mse": [1.7215, 2.0183, 1.5771, 1.1316, 1.5928],
+    "acc9_mean": 0.368,
+    "acc9_std": 0.067,
+    "mse_mean": 1.6,
+    "mse_std": 0.3
+  },
+  "retuned_hparams": {
+    "description": "30-trial Optuna search (paper's own stated search space: batch 16-128, dropout 0.1-0.5, decay_lr 0.1-0.9, lr 1e-5-1e-1 log-scale) picking the best-validation trial, retrained with full patience=400",
+    "chosen_params": {"batch_size": 21, "dropout": 0.4734, "decay_lr": 0.1047, "lr": 0.0795},
+    "acc9_mean": 0.359,
+    "acc9_std": 0.028,
+    "mse_mean": 1.8,
+    "mse_std": 0.2
+  },
+  "code_divergence_finding": {
+    "description": "rubricnet/rubricnet.py (shared with the guitar project) was modified in commit 'flopping v4' (2026-07-09) to special-case num_classes>8 for the guitar V4/V6 experiments (custom final-layer init, sum-decode instead of cumprod-decode, softened class-weight smoothing). CIPI's paper task also uses 9 classes, so early reproduction runs silently used this guitar-specific code path. Fixing it (retrain_pristine_code above) did not meaningfully change the outcome, ruling it out as the cause of the accuracy gap.",
+    "pristine_code_location": "rubricnet_original/ (extracted via `git show <initial-commit>:rubricnet/rubricnet.py`)"
+  },
+  "hyperparameter_search_distribution": {
+    "description": "All 30 trials from the Optuna search (patience=30, fast proxy). 'Converged' excludes clear training failures from pathological learning rates.",
+    "n_total_trials": 30,
+    "n_converged_trials": 19,
+    "converged_acc9_test_values": [0.3142, 0.3827, 0.3414, 0.3632, 0.3177, 0.3631, 0.3887, 0.3774, 0.3645, 0.3995, 0.2820, 0.4088, 0.3687, 0.3863, 0.3770, 0.3474, 0.3749, 0.3923, 0.3687],
+    "converged_mean": 0.364,
+    "converged_std": 0.032,
+    "best_converged_trial_acc9": 0.4088,
+    "paper_z_score": 1.57,
+    "n_converged_trials_reaching_paper": 0,
+    "probability_single_trial_reaches_paper": 0.059,
+    "probability_at_least_one_hit": {
+      "19": 0.686,
+      "30": 0.839,
+      "50": 0.952,
+      "100": 0.998,
+      "150": 1.0
+    }
+  },
+  "guitar_cross_check": {
+    "description": "For comparison: whether the guitar project's own hyperparameter choices (from ~170-trial Optuna searches) show the same favorable-tail selection pattern as CIPI's paper number.",
+    "v3": {"n_trials": 174, "population_mean_acc": 0.282, "population_std_acc": 0.0233, "chosen_trial_acc": 0.2991, "z_score": 0.75, "rank": "29/171"},
+    "v5": {"n_trials": 166, "population_mean_acc": 0.295, "population_std_acc": 0.0181, "chosen_trial_acc": 0.2925, "z_score": -0.11, "rank": "93/165"},
+    "seed_stability": {
+      "v3_seed_means_acc": [0.304, 0.318, 0.307],
+      "v5_seed_means_acc": [0.325, 0.334, 0.325]
+    },
+    "conclusion": "Unlike CIPI's paper number (z~1.57, top ~6%, 0/19 converged trials matched it), the guitar V3/V5 hyperparameters sit near the average of their own search distributions and are confirmed stable across 3 independent seeds (<1.5 point spread) -- the guitar results are not a comparable favorable-tail artifact."
+  }
+}

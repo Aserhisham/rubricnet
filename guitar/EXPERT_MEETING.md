@@ -24,6 +24,20 @@ Goal: get his mental feature set before ours anchors him. Record every answer ve
 Afterwards: map his list against ours (Part 2). Items he named that we lack are feature
 candidates; items we have that he never mentioned are candidates to question in Part 3.
 
+### Recorded answers (2026-07-17)
+
+**Q1 (first 30 seconds):** Barre chords are important — specifically *how tight the chord is*
+(stretch/reach). His stated order of attention: **note density → tempo → takte (time
+signature/bar structure) → tone type (note duration / rhythmic subdivision) → repetition or
+lack thereof.** After that first pass, he mentally distills the piece into parts, "plays" them
+in his head, and identifies which parts are hard — i.e. he explicitly does a **worst-passage
+scan**, not a whole-piece average.
+
+**Q5 (invisible in notation):** He described *imagining the hand positions* — mentally
+simulating fingering from the notation. Notably this is something he does **from** the score
+(not truly invisible information), but it requires a mental fingering-simulation step our
+per-event descriptors don't perform.
+
 ---
 
 ## Part 2 — Our 32 descriptors
@@ -35,51 +49,52 @@ Verdict column: have him mark each row — **K** keep / **X** irrelevant / **M**
 
 | feature |   meaning | ρ | verdict |
 |---|---|---|---|
+| barre_ratio | share of chords fingered as a barre (3+ notes, same fret, adjacent strings) | +0.35 | K (confirmed — "barre chords are important") |
 | fret_entropy | how spread-out fret usage is across the whole piece (variety of frets visited) | +0.67 | |
-| high_position_ratio | share of notes played at fret 7 or higher | +0.58 | |
-| avg_fret | average fret number over all notes | +0.56 | |
-| p90_fret | 90th-percentile fret (how high the piece *typically* peaks) | +0.53 | |
+| high_position_ratio | share of notes played at fret 7 or higher | +0.58 | X — ruled out (0.91 correlated with kept fret_entropy — likely redundant, not wrong) |
+| avg_fret | average fret number over all notes | +0.56 | X — ruled out (0.94 correlated with kept fret_entropy) |
+| p90_fret | 90th-percentile fret (how high the piece *typically* peaks) | +0.53 | X — ruled out (0.92 correlated with kept fret_entropy) |
 | open_string_ratio | share of notes on open strings | −0.49 | |
-| max_chord_stretch | largest fret span (max−min fretted) inside any single chord | +0.44 | |
+| max_chord_stretch | largest fret span (max−min fretted) inside any single chord | +0.44 | K (confirmed — "how tight the chord is") |
 | max_position_shift | largest single jump of hand position (in frets) between consecutive events | +0.41 | |
-| p90_chord_stretch | typical "big" chord span (90th percentile) | +0.37 | |
-| avg_chord_stretch | average fret span within multi-note chords | +0.33 | |
+| p90_chord_stretch | typical "big" chord span (90th percentile) | +0.37 | K (confirmed — chord tightness) |
+| avg_chord_stretch | average fret span within multi-note chords | +0.33 | K (confirmed — chord tightness) |
 | std_position_shift | how irregular the position movements are | +0.32 | |
 | shift_rate | how often the hand moves more than 2 frets between events | +0.19 | |
 | avg_position_shift | average size of position movement between consecutive events | +0.14 | |
-| fret_change_rate | how often the fret set changes from one event to the next | −0.14 | |
+| fret_change_rate | how often the fret set changes from one event to the next | −0.14 | X in Part-2 pass, but earlier said "should be important" — **CONFLICT, needs clarification** (working assumption: M, formula broken not concept) |
 
 ### Left hand — timing-aware (need note durations)
 
 | feature |   meaning | ρ | verdict |
 |---|---|---|---|
-| max_position_shift_speed_beats | fastest position shift: frets moved ÷ beats available | +0.44 | |
-| avg_stretch_velocity_beats | chord stretch ÷ time available before the next event (stretch under time pressure), averaged | +0.40 | |
-| p90_stretch_velocity_beats | same, but the typical "hard" case (90th percentile) | +0.39 | |
-| max_avg_chord_stretch_window | worst 16-beat window by average chord stretch (hardest sustained-stretch passage) | +0.39 | |
-| p95_position_shift_window | worst 16-beat window by near-maximum position shift | +0.37 | |
-| avg_position_shift_speed_beats | average frets-per-beat position movement | +0.30 | |
+| max_position_shift_speed_beats | fastest position shift: frets moved ÷ beats available | +0.44 | K |
+| avg_stretch_velocity_beats | chord stretch ÷ time available before the next event (stretch under time pressure), averaged | +0.40 | K |
+| p90_stretch_velocity_beats | same, but the typical "hard" case (90th percentile) | +0.39 | K |
+| max_avg_chord_stretch_window | worst 16-beat window by average chord stretch (hardest sustained-stretch passage) | +0.39 | K |
+| p95_position_shift_window | worst 16-beat window by near-maximum position shift | +0.37 | K |
+| avg_position_shift_speed_beats | average frets-per-beat position movement | +0.30 | K |
 
 ### Right hand — strings & texture
 
 | feature |   meaning | ρ | verdict |
 |---|---|---|---|
-| string_entropy | how evenly the 6 strings are used (vs. staying on few strings) | +0.39 | |
-| max_string_jump | largest leap between strings from one event to the next | +0.30 | |
-| polyphonic_arpeggio_intensity_beats | notes-per-beat × average simultaneous notes (busy polyphonic texture) | +0.21 | |
-| arpeggio_density | among single-note→single-note moves, share that change string | −0.13 | |
-| avg_string_jump | average string distance between consecutive events | −0.10 | |
-| chord_ratio | share of events with 2+ simultaneous notes | −0.03 | |
+| string_entropy | how evenly the 6 strings are used (vs. staying on few strings) | +0.39 | K |
+| max_string_jump | largest leap between strings from one event to the next | +0.30 | X — ruled out in Part-2 pass |
+| polyphonic_arpeggio_intensity_beats | notes-per-beat × average simultaneous notes (busy polyphonic texture) | +0.21 | K |
+| arpeggio_density | among single-note→single-note moves, share that change string | −0.13 | X — ruled out; "redundant because I already have speed" (empirically weak overlap w/ speed feats though, rho 0.14/-0.07/-0.24 — see notes) |
+| avg_string_jump | average string distance between consecutive events | −0.10 | X — "meaningless" |
+| chord_ratio | share of events with 2+ simultaneous notes | −0.03 | X — "meaningless", but see chord_change_ratio below |
 
 ### Global
 
 | feature |   meaning | ρ | verdict |
 |---|---|---|---|
-| total_notes / log_total_notes | piece length in notes (raw and log-scaled) | +0.69 | |
-| max_note_density_window | busiest 16-beat window, in notes per beat | +0.42 | |
-| repetition_ratio | share of consecutive events that repeat the exact same shape | +0.22 | |
-| avg_polyphony | average number of simultaneous notes | +0.06 | |
-| tempo_bpm | notated tempo | −0.11 | |
+| total_notes / log_total_notes | piece length in notes (raw and log-scaled) | +0.69 | K |
+| max_note_density_window | busiest 16-beat window, in notes per beat | +0.42 | K |
+| repetition_ratio | share of consecutive events that repeat the exact same shape | +0.22 | K |
+| avg_polyphony | average number of simultaneous notes | +0.06 | Said X earlier ("shouldn't be important"); not re-flagged in Part-2 "global" pass (only tempo_bpm named) — **CONFLICT, needs clarification** (working assumption: X) |
+| tempo_bpm | notated tempo | −0.11 | X — ruled out; earlier also said "can't measure difficulty alone, combine with note duration/value" |
 
 ---
 
@@ -115,6 +130,38 @@ Prompt only if he stalls: slurs/ornaments · tremolo & RH technique types · sco
 LH finger independence (not just stretch) · sustained bass under moving melody · harmonics ·
 rest/recovery structure · key signature / accidentals.
 - [ ] For each: "big driver or minor? And is it visible in the notation?"
+
+### Notes from meeting (2026-07-17)
+
+- **tempo_bpm**: "can't really measure difficulty [alone]. Maybe tempo and connect it with
+  highest note value [duration of the notes]." → he's independently proposing the exact
+  tempo × note-duration interaction hypothesized in prep (an "effective notes-per-second" /
+  onset-rate feature: tempo scaled by the shortest notated subdivision, not raw BPM).
+- **arpeggio_density**: "would be redundant because I already have speed." → confirms X, but
+  for a different reason than collinearity with parents — he considers it subsumed by the
+  position/stretch *speed* features, not conceptually void.
+- **fret_change_rate**: "should be important." → validates the concept against the
+  mismeasurement hypothesis (formula divides event-level changes by *note* count, so it
+  shrinks with polyphony instead of purely tracking re-fingering — see chat explanation).
+  Candidate fix: `fret changes ÷ (events − 1)` instead of `÷ (notes − 1)`.
+- **avg_string_jump**: "meaningless." → X, no reason given.
+- **chord_ratio**: "meaningless, but chord_change_ratio would be [useful]." → he's naming a
+  new feature: rate at which the *chord shape itself* changes between consecutive multi-note
+  events (distinct from `fret_change_rate`, which fires on any event including single notes).
+- **avg_polyphony**: "shouldn't be important." → X.
+
+### New feature candidates surfaced this meeting
+
+1. **tempo × note-duration** (or a direct onset-rate: notes per second, tempo-normalized) —
+   replaces raw `tempo_bpm`.
+2. **chord_change_ratio** — fraction of consecutive *chord* events (2+ notes only) whose fret-set
+   differs from the previous chord event. Narrower sibling of `fret_change_rate`, restricted to
+   genuinely chordal moments.
+3. **"takte" (time signature / bar structure) complexity** — named in his Q1 attention order,
+   nothing in the current 32 descriptors captures time-signature or metrical complexity.
+4. **"tone type" (rhythmic subdivision / note-value complexity)** — also named in Q1, distinct
+   from tempo; likely the same concept as the tempo-pairing idea above but may stand alone
+   (e.g. entropy of notated note values, or smallest subdivision present).
 
 ### Interactions
 - [ ] "Name the 2–3 specific combinations where difficulty **multiplies** rather than adds."

@@ -531,6 +531,215 @@ def calculate_interaction_descriptors_v3(features, onsets=None, has_rhythm=True)
     return {k: (v if np.isfinite(v) else 0.0) for k, v in out.items()}
 
 
+# ── Expert-review descriptor candidates (2026-07-17 meeting, see
+# guitar/EXPERT_MEETING.md "New feature candidates surfaced this meeting") ──
+
+EXPERT_NEW_COLUMNS = [
+    "onset_rate_bps",
+    "max_onset_rate_bps",
+    "chord_change_ratio",
+    "n_meter_changes",
+    "irregular_meter_ratio",
+    "note_duration_entropy",
+    "finest_subdivision_rank",
+]
+
+# Time signatures (beats, beat-type) treated as "simple/common" -- the meters
+# typically introduced early in guitar pedagogy. Anything else (5/4, 7/8,
+# 5/8, 9/8-as-three-groups-of-three vs one group of nine, etc.) is "irregular".
+# This is a coarse binary heuristic, not a music-theoretic classification of
+# simple vs compound time -- 6/8 and 3/8 are compound but pedagogically common,
+# so they're grouped with "simple" here.
+_SIMPLE_METERS = {(2, 4), (3, 4), (4, 4), (6, 8), (2, 2), (3, 8)}
+
+# Notated note-duration granularity, coarsest to finest. Used to find the
+# fastest subdivision notated anywhere in a piece (a "deal-breaker"-style
+# descriptor -- the expert's Q1 attention item was "tone type", i.e. note
+# duration / rhythmic subdivision, distinct from raw tempo).
+_DURATION_TYPE_RANK = {
+    "maxima": -3, "long": -2, "breve": -1, "whole": 0, "half": 1,
+    "quarter": 2, "eighth": 3, "16th": 4, "32nd": 5, "64th": 6,
+    "128th": 7, "256th": 8, "512th": 9, "1024th": 10,
+}
+_DEFAULT_SUBDIVISION_RANK = _DURATION_TYPE_RANK["quarter"]
+
+
+def extract_meter_and_duration_info(filepath):
+    """Parse a MusicXML file for time-signature structure and notated
+    note-duration ("tone type") distribution -- independent of the chord/fret
+    parser, since neither meter nor note-type is tracked by
+    get_timed_chords_from_xml. Only the first <part> is walked for meter (a
+    second part would re-declare the same measure structure and double-count
+    beats), but note types are counted across all parts, matching how
+    total_notes/fret counts are already aggregated elsewhere in this module.
+
+    Returns a dict with total_beats, irregular_beats, n_meter_changes, and
+    note_type_counts (Counter), or None if the file can't be parsed.
+    """
+    try:
+        tree = ET.parse(filepath)
+    except Exception as e:
+        print(f"Error parsing XML {filepath}: {e}")
+        return None
+    root = tree.getroot()
+
+    parts = root.findall('.//part') or [root]
+
+    total_beats = 0.0
+    irregular_beats = 0.0
+    n_meter_changes = 0
+
+    cur_meter = None
+    seen_meter = False
+    for measure in parts[0].findall('.//measure'):
+        for el in measure:
+            if el.tag != 'attributes':
+                continue
+            time_el = el.find('time')
+            if time_el is None:
+                continue
+            b = time_el.find('beats')
+            bt = time_el.find('beat-type')
+            if b is not None and bt is not None and b.text and bt.text:
+                try:
+                    new_meter = (int(b.text), int(bt.text))
+                except (TypeError, ValueError):
+                    continue
+                if seen_meter and new_meter != cur_meter:
+                    n_meter_changes += 1
+                cur_meter = new_meter
+                seen_meter = True
+        if cur_meter is not None:
+            beats, beat_type = cur_meter
+            dur = beats * (4.0 / beat_type)
+            total_beats += dur
+            if (beats, beat_type) not in _SIMPLE_METERS:
+                irregular_beats += dur
+
+    note_type_counts = Counter()
+    for part in parts:
+        for note in part.findall('.//note'):
+            tp = note.find('type')
+            if tp is not None and tp.text:
+                note_type_counts[tp.text] += 1
+
+    return {
+        "total_beats": total_beats,
+        "irregular_beats": irregular_beats,
+        "n_meter_changes": n_meter_changes,
+        "note_type_counts": note_type_counts,
+    }
+
+
+def calculate_onset_rate_descriptors(chords, onsets, tempo_bpm, has_rhythm):
+    """Notes-per-second descriptors: note density (from onsets/chords)
+    combined with tempo (beats/min -> beats/sec). Operationalizes the
+    tempo x note-duration interaction the expert proposed in place of raw
+    tempo_bpm ("can't measure difficulty alone, combine with note duration").
+
+    onset_rate_bps is the whole-piece average; max_onset_rate_bps is the
+    worst 16-beat window (same W=16 window and worst-passage rationale as
+    max_note_density_window/p9x_*_window elsewhere in this module -- the
+    expert's own blind elicitation was an explicit worst-passage scan, not a
+    whole-piece average).
+    """
+    if not has_rhythm or not chords or onsets is None or len(onsets) != len(chords) or not tempo_bpm:
+        return {"onset_rate_bps": 0.0, "max_onset_rate_bps": 0.0}
+
+    total_notes = sum(len(c) for c in chords)
+    total_beats = onsets[-1] - onsets[0]
+    beats_per_sec = tempo_bpm / 60.0
+
+    avg_density_beats = total_notes / total_beats if total_beats > 0 else 0.0
+    onset_rate_bps = avg_density_beats * beats_per_sec
+
+    W = 16.0
+    window_densities = []
+    for t_start in onsets:
+        t_end = t_start + W
+        idxs = [j for j, o in enumerate(onsets) if t_start <= o < t_end]
+        if not idxs:
+            continue
+        notes_in_win = sum(len(chords[j]) for j in idxs)
+        window_densities.append(notes_in_win / W)
+    max_density_beats = max(window_densities) if window_densities else 0.0
+    max_onset_rate_bps = max_density_beats * beats_per_sec
+
+    return {
+        "onset_rate_bps": float(onset_rate_bps),
+        "max_onset_rate_bps": float(max_onset_rate_bps),
+    }
+
+
+def calculate_chord_change_ratio(chords):
+    """Fraction of consecutive *chordal* (2+ note) events whose fret set
+    differs from the previous chordal event -- restricted to genuinely
+    chordal moments, unlike fret_change_rate which fires on any event
+    including single notes. Named by the expert as a replacement for
+    chord_ratio ("meaningless, but chord_change_ratio would be [useful]").
+    Non-chordal events (single notes) are skipped entirely, not treated as
+    "no change".
+    """
+    chordal = [c for c in chords if len(c) >= 2]
+    if len(chordal) < 2:
+        return 0.0
+    fret_sets = [frozenset(n['fret'] for n in c) for c in chordal]
+    changes = sum(1 for i in range(1, len(fret_sets)) if fret_sets[i] != fret_sets[i - 1])
+    return float(changes / (len(chordal) - 1))
+
+
+def calculate_meter_and_duration_descriptors(meter_info):
+    """Turn extract_meter_and_duration_info()'s raw counts into the three
+    "takte"/"tone type" descriptors named in the expert's Q1 attention order
+    (time signature/bar structure, then note duration/rhythmic subdivision)
+    -- neither concept existed in the prior 32-descriptor set.
+    """
+    if meter_info is None:
+        return {
+            "n_meter_changes": 0,
+            "irregular_meter_ratio": 0.0,
+            "note_duration_entropy": 0.0,
+            "finest_subdivision_rank": _DEFAULT_SUBDIVISION_RANK,
+        }
+
+    total_beats = meter_info["total_beats"]
+    irregular_meter_ratio = (
+        meter_info["irregular_beats"] / total_beats if total_beats > 0 else 0.0
+    )
+
+    counts = meter_info["note_type_counts"]
+    total_notes = sum(counts.values())
+    if total_notes > 0:
+        probs = [c / total_notes for c in counts.values()]
+        note_duration_entropy = float(-sum(p * np.log2(p) for p in probs))
+        ranks = [_DURATION_TYPE_RANK[t] for t in counts if t in _DURATION_TYPE_RANK]
+        finest_subdivision_rank = max(ranks) if ranks else _DEFAULT_SUBDIVISION_RANK
+    else:
+        note_duration_entropy = 0.0
+        finest_subdivision_rank = _DEFAULT_SUBDIVISION_RANK
+
+    return {
+        "n_meter_changes": int(meter_info["n_meter_changes"]),
+        "irregular_meter_ratio": float(irregular_meter_ratio),
+        "note_duration_entropy": note_duration_entropy,
+        "finest_subdivision_rank": int(finest_subdivision_rank),
+    }
+
+
+def calculate_expert_new_descriptors(filepath, chords, onsets, tempo_bpm, has_rhythm):
+    """All 7 expert-review descriptor candidates for one piece, given the
+    already-parsed chord/onset/tempo data (from get_timed_chords_from_xml)
+    plus the source filepath (re-parsed separately for meter/note-type,
+    since that data isn't captured by the chord/fret parser).
+    """
+    out = {}
+    out.update(calculate_onset_rate_descriptors(chords, onsets, tempo_bpm, has_rhythm))
+    out["chord_change_ratio"] = calculate_chord_change_ratio(chords) if chords else 0.0
+    meter_info = extract_meter_and_duration_info(filepath)
+    out.update(calculate_meter_and_duration_descriptors(meter_info))
+    return out
+
+
 def calculate_descriptors_from_chords(chords):
     """
     Compute all 12 guitar difficulty descriptors from a list of chord events.

@@ -30,7 +30,10 @@ from sklearn.tree import DecisionTreeClassifier
 
 from guitar.prepare_splits import (
     ALL_FEATURES, ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED,
-    ALL_FEATURES_V3_BASE, ALL_FEATURES_V3_BASE_NEW, NUM_CLASSES, make_piece_id,
+    ALL_FEATURES_V3_BASE, ALL_FEATURES_V3_BASE_NEW, ALL_FEATURES_V5_PRUNED,
+    ALL_FEATURES_V5_PRUNED_COLLINEAR, ALL_FEATURES_V5_PRUNED_COLLINEAR_EXPERT_NEW,
+    ALL_FEATURES_V5_PRUNED_COLLINEAR2,
+    NUM_CLASSES, make_piece_id,
 )
 from rubricnet.rubricnet import RubricnetSklearn
 
@@ -172,11 +175,43 @@ def main():
     parser.add_argument("--v3-base-new", action="store_true", help="Use V3 base + hand-crafted interaction features")
     parser.add_argument("--v5", action="store_true", help="Use V5 dataset (V3 features, 76 pdf/no-rhythm dummy pieces dropped)")
     parser.add_argument("--v6", action="store_true", help="Paper-comparison run: V5 pieces, 9 equal-width classes, 60/20/20 splits (see prepare_splits_v6.py)")
+    parser.add_argument("--v5-pruned", action="store_true", help="V5 dataset minus avg_polyphony/fret_change_rate (expert review, see guitar/EXPERT_MEETING.md)")
+    parser.add_argument("--v5-pruned-collinear-expert-new", action="store_true", help="V5-pruned-collinear (27 feat) + 7 new expert-proposed descriptors -- decide on VAL accuracy, not test")
+    parser.add_argument("--v5-pruned-collinear", action="store_true", help="V5-pruned (30 feat) minus high_position_ratio/avg_fret/p90_fret (collinear w/ fret_entropy, expert review)")
+    parser.add_argument("--v5-pruned-collinear2", action="store_true", help="V5-pruned-collinear (27 feat) minus p90_stretch_velocity_beats/p95_position_shift_window -- decide on VAL accuracy, not test")
     args = parser.parse_args()
 
     num_classes = 9 if args.v6 else NUM_CLASSES
     splits_path = "guitar/guitar_splits.json"
-    if args.v6:
+    if args.v5_pruned_collinear:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR
+        alias = "guitar_baseline_ordinal_v5_pruned_collinear"
+        out_path = "guitar/baseline_results_v5_pruned_collinear.json"
+        print("Running baselines on V5 pruned-collinear (27 feat, first collinear-cluster pass)...")
+    elif args.v5_pruned_collinear2:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR2
+        alias = "guitar_baseline_ordinal_v5_pruned_collinear2"
+        out_path = "guitar/baseline_results_v5_pruned_collinear2.json"
+        print("Running baselines on V5 pruned-collinear2 (25 feat, second collinear-cluster pass)...")
+    elif args.v5_pruned_collinear_expert_new:
+        csv_path = "features/guitar_descriptors_v5_expert_new.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR_EXPERT_NEW
+        alias = "guitar_baseline_ordinal_v5_pruned_collinear_expert_new"
+        out_path = "guitar/baseline_results_v5_pruned_collinear_expert_new.json"
+        print("Running baselines on V5 pruned-collinear + 7 new expert-proposed descriptors...")
+    elif args.v5_pruned:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED
+        alias = "guitar_baseline_ordinal_v5_pruned"
+        out_path = "guitar/baseline_results_v5_pruned.json"
+        print("Running baselines on V5 pruned (avg_polyphony/fret_change_rate dropped, expert review)...")
+    elif args.v6:
         csv_path = "features/guitar_descriptors_v5.csv"
         splits_path = "guitar/guitar_splits_v6.json"
         columns = ALL_FEATURES_V3

@@ -1,0 +1,150 @@
+{
+  "ordinal_regression": {
+    "accuracy": [
+      0.296875,
+      0.375,
+      0.234375,
+      0.3046875,
+      0.375
+    ],
+    "balanced_accuracy": [
+      0.26095708020050123,
+      0.3376083675096833,
+      0.24555821371610848,
+      0.28481466450216447,
+      0.36836743848257003
+    ],
+    "mae": [
+      1.078125,
+      0.9765625,
+      1.15625,
+      1.1328125,
+      0.953125
+    ],
+    "mse": [
+      2.0,
+      1.9453125,
+      2.171875,
+      2.3671875,
+      2.03125
+    ]
+  },
+  "random_forest": {
+    "accuracy": [
+      0.3515625,
+      0.328125,
+      0.25,
+      0.3515625,
+      0.3828125
+    ],
+    "balanced_accuracy": [
+      0.311242523923445,
+      0.28025945545682385,
+      0.2042654220779221,
+      0.3086985930735931,
+      0.3430963061061745
+    ],
+    "mae": [
+      1.078125,
+      1.0703125,
+      1.140625,
+      1.0546875,
+      0.9921875
+    ],
+    "mse": [
+      2.40625,
+      2.3359375,
+      2.265625,
+      2.3828125,
+      2.1796875
+    ],
+    "feature_importances": {
+      "fret_entropy": 0.0779826692856999,
+      "total_notes": 0.06683025106959077,
+      "log_total_notes": 0.06632692576952745,
+      "open_string_ratio": 0.04834346232486244,
+      "string_entropy": 0.04642799035187534,
+      "max_position_shift": 0.04026997952948995,
+      "arpeggio_density": 0.039131045047818086,
+      "std_position_shift": 0.03892255942020372,
+      "p95_position_shift_window": 0.03842654015663259,
+      "avg_position_shift_speed_beats": 0.03701337152228622,
+      "avg_chord_stretch": 0.03653335606089744,
+      "polyphonic_arpeggio_intensity_beats": 0.03612818333807111,
+      "shift_rate": 0.03570294309168698,
+      "max_note_density_window": 0.03471574062778936,
+      "avg_string_jump": 0.03443606479572896,
+      "chord_ratio": 0.03442299416138583,
+      "avg_stretch_velocity_beats": 0.03412344798184805,
+      "max_position_shift_speed_beats": 0.034106963546664835,
+      "repetition_ratio": 0.033788627462635015,
+      "avg_position_shift": 0.03325657350957228,
+      "tempo_bpm": 0.03296788970362152,
+      "max_avg_chord_stretch_window": 0.029343076443858397,
+      "p90_stretch_velocity_beats": 0.023704535712642673,
+      "max_chord_stretch": 0.019694388583462445,
+      "barre_ratio": 0.0192432356647132,
+      "max_string_jump": 0.014893614714645315,
+      "p90_chord_stretch": 0.013263570122790117
+    }
+  },
+  "decision_tree": {
+    "accuracy": [
+      0.265625,
+      0.3046875,
+      0.3125,
+      0.28125,
+      0.2734375
+    ],
+    "balanced_accuracy": [
+      0.22225257746639326,
+      0.28080599225336067,
+      0.2560707165641376,
+      0.25821834415584416,
+      0.2310050694919116
+    ],
+    "mae": [
+      1.15625,
+      1.2421875,
+      1.1015625,
+      1.34375,
+      1.3125
+    ],
+    "mse": [
+      2.265625,
+      2.9296875,
+      2.3046875,
+      3.359375,
+      3.25
+    ],
+    "feature_importances": {
+      "fret_entropy": 0.24788946059959188,
+      "total_notes": 0.12738120315423604,
+      "log_total_notes": 0.07757213071183872,
+      "string_entropy": 0.04859186470355641,
+      "arpeggio_density": 0.042366049917559705,
+      "chord_ratio": 0.035410449103394526,
+      "avg_position_shift_speed_beats": 0.035243917047396024,
+      "open_string_ratio": 0.034402325981423044,
+      "std_position_shift": 0.029550038091767754,
+      "repetition_ratio": 0.02824860743906943,
+      "max_position_shift": 0.02816896114507274,
+      "avg_string_jump": 0.025361352987862074,
+      "barre_ratio": 0.024728557799230062,
+      "max_position_shift_speed_beats": 0.021810316863965635,
+      "max_avg_chord_stretch_window": 0.021507978152751756,
+      "tempo_bpm": 0.020297984324025686,
+      "polyphonic_arpeggio_intensity_beats": 0.019472376966906763,
+      "max_note_density_window": 0.01922162218784254,
+      "avg_stretch_velocity_beats": 0.01865605800032514,
+      "p90_stretch_velocity_beats": 0.018152714417748652,
+      "avg_position_shift": 0.016178294532481374,
+      "max_string_jump": 0.013426646125742667,
+      "shift_rate": 0.013138357840712333,
+      "avg_chord_stretch": 0.012303669069480147,
+      "p95_position_shift_window": 0.01143459634329015,
+      "max_chord_stretch": 0.007369219866809794,
+      "p90_chord_stretch": 0.00211524662591898
+    }
+  }
+}

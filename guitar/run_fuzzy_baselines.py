@@ -32,7 +32,7 @@ from sklearn.metrics import (
 )
 
 from guitar.fuzzy_rules import CompleteSearchClassifier, Fuzzifier, FuzzyPatternTreeClassifier
-from guitar.prepare_splits import ALL_FEATURES_V3, NUM_CLASSES, make_piece_id
+from guitar.prepare_splits import ALL_FEATURES_V3, ALL_FEATURES_V5_PRUNED_COLLINEAR2, NUM_CLASSES, make_piece_id
 
 N_SPLITS = 5
 D_MAX_GRID = [1, 2, 3, 4, 5]
@@ -121,6 +121,7 @@ def main():
     parser.add_argument("--plain-rmse", action="store_true", help="Use unweighted RMSE for FPT instead of class-balanced RMSE")
     parser.add_argument("--no-negation", action="store_true", help="Disable negated leaf statements in FPT")
     parser.add_argument("--v5", action="store_true", help="Use V5 dataset (V3 features, 76 pdf/no-rhythm dummy pieces dropped)")
+    parser.add_argument("--v5-pruned-collinear2", action="store_true", help="Use the adopted 25-feature V5-pruned-collinear2 set (expert-review + collinearity pruning)")
     parser.add_argument("--out", default="guitar/fuzzy_results_v3.json")
     parser.add_argument("--dump", default="guitar/fuzzy_rules_dump_v3.json")
     args = parser.parse_args()
@@ -128,9 +129,19 @@ def main():
     balanced_rmse = not args.plain_rmse
     use_negation = not args.no_negation
 
-    if args.v5:
+    if args.v5_pruned_collinear2:
         csv_path = "features/guitar_descriptors_v5.csv"
         splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR2
+        if args.out == "guitar/fuzzy_results_v3.json":
+            args.out = "guitar/fuzzy_results_v5_pruned_collinear2.json"
+        if args.dump == "guitar/fuzzy_rules_dump_v3.json":
+            args.dump = "guitar/fuzzy_rules_dump_v5_pruned_collinear2.json"
+        print("Running fuzzy baselines on V5-pruned-collinear2 (25 feat, adopted headline set)...")
+    elif args.v5:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V3
         if args.out == "guitar/fuzzy_results_v3.json":
             args.out = "guitar/fuzzy_results_v5.json"
         if args.dump == "guitar/fuzzy_rules_dump_v3.json":
@@ -139,10 +150,11 @@ def main():
     else:
         csv_path = "features/guitar_descriptors_v3.csv"
         splits_path = "guitar/guitar_splits.json"
+        columns = ALL_FEATURES_V3
 
     df = pd.read_csv(csv_path)
     df["piece_id"] = df.apply(make_piece_id, axis=1)
-    features = df.set_index("piece_id")[ALL_FEATURES_V3]
+    features = df.set_index("piece_id")[columns]
     with open(splits_path) as f:
         splits = json.load(f)
 
@@ -171,7 +183,7 @@ def main():
         M_test = fz_trainval.transform(X_test.values)
 
         y_pred_cs, best_m, rules_dump = run_complete_search(
-            M_train, y_train, M_val, y_val, M_trainval, y_trainval, M_test, ALL_FEATURES_V3,
+            M_train, y_train, M_val, y_val, M_trainval, y_trainval, M_test, columns,
         )
         cs_metrics = compute_metrics(y_test, y_pred_cs)
         cs_metrics["selected_m"] = best_m
@@ -181,7 +193,7 @@ def main():
               f"MAE={cs_metrics['mae']:.4f} tau={cs_metrics['kendall_tau']:.4f}")
 
         y_pred_fpt, best_dmax, tree_dump, neg_used = run_fpt(
-            M_train, y_train, M_val, y_val, M_trainval, y_trainval, M_test, ALL_FEATURES_V3,
+            M_train, y_train, M_val, y_val, M_trainval, y_trainval, M_test, columns,
             args.gamma, use_negation, balanced_rmse,
         )
         any_negation_used = any_negation_used or neg_used

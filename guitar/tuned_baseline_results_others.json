@@ -1,0 +1,606 @@
+{
+  "protocol": {
+    "feature_set": "v5-pruned-collinear2",
+    "n_descriptors": 25,
+    "descriptors": [
+      "barre_ratio",
+      "avg_chord_stretch",
+      "max_chord_stretch",
+      "avg_position_shift",
+      "open_string_ratio",
+      "p90_chord_stretch",
+      "shift_rate",
+      "max_position_shift",
+      "std_position_shift",
+      "fret_entropy",
+      "max_avg_chord_stretch_window",
+      "avg_stretch_velocity_beats",
+      "avg_position_shift_speed_beats",
+      "max_position_shift_speed_beats",
+      "arpeggio_density",
+      "avg_string_jump",
+      "max_string_jump",
+      "string_entropy",
+      "chord_ratio",
+      "polyphonic_arpeggio_intensity_beats",
+      "total_notes",
+      "tempo_bpm",
+      "log_total_notes",
+      "repetition_ratio",
+      "max_note_density_window"
+    ],
+    "outer_folds": 5,
+    "inner_folds": 5,
+    "selection_scoring": [
+      "balanced_accuracy"
+    ],
+    "n_iter": 60,
+    "note": "train+val pooled as the selection pool; inner StratifiedKFold selects hyperparameters; best config refit on the pool and evaluated once on the untouched outer test fold."
+  },
+  "random_forest_untuned": {
+    "accuracy": [
+      0.2890625,
+      0.3671875,
+      0.265625,
+      0.359375,
+      0.3828125
+    ],
+    "balanced_accuracy": [
+      0.24912537024379128,
+      0.33316686602870815,
+      0.2215155787195261,
+      0.3211038961038961,
+      0.34257547277284117
+    ],
+    "acc_plus_minus_1": [
+      0.7265625,
+      0.7265625,
+      0.734375,
+      0.78125,
+      0.78125
+    ],
+    "mae": [
+      1.1328125,
+      1.0546875,
+      1.1171875,
+      0.9921875,
+      0.96875
+    ],
+    "mse": [
+      2.3671875,
+      2.3046875,
+      2.2265625,
+      2.0390625,
+      2.0625
+    ],
+    "kendall_tau": [
+      0.610402794437106,
+      0.6150932648289218,
+      0.6116361512665441,
+      0.6438639750561028,
+      0.6703167493085178
+    ]
+  },
+  "decision_tree_untuned": {
+    "accuracy": [
+      0.28125,
+      0.3125,
+      0.3125,
+      0.2890625,
+      0.3125
+    ],
+    "balanced_accuracy": [
+      0.24514354066985644,
+      0.292169628616997,
+      0.2616957165641376,
+      0.2644683441558442,
+      0.2700314707222602
+    ],
+    "acc_plus_minus_1": [
+      0.6875,
+      0.640625,
+      0.734375,
+      0.6640625,
+      0.609375
+    ],
+    "mae": [
+      1.1640625,
+      1.2421875,
+      1.09375,
+      1.2890625,
+      1.3203125
+    ],
+    "mse": [
+      2.3984375,
+      2.9453125,
+      2.3125,
+      3.1171875,
+      3.4140625
+    ],
+    "kendall_tau": [
+      0.574940206902464,
+      0.5103274121044837,
+      0.5983955197716245,
+      0.5148078204717343,
+      0.4970336418405388
+    ]
+  },
+  "decision_tree": {
+    "accuracy": [
+      0.34375,
+      0.296875,
+      0.3046875,
+      0.3046875,
+      0.34375
+    ],
+    "balanced_accuracy": [
+      0.297068167578036,
+      0.31857313738892684,
+      0.24065561631351104,
+      0.2643736471861472,
+      0.28970722260195947
+    ],
+    "acc_plus_minus_1": [
+      0.6171875,
+      0.6484375,
+      0.734375,
+      0.71875,
+      0.703125
+    ],
+    "mae": [
+      1.28125,
+      1.40625,
+      1.1171875,
+      1.171875,
+      1.2109375
+    ],
+    "mse": [
+      3.265625,
+      3.96875,
+      2.4765625,
+      2.71875,
+      3.3046875
+    ],
+    "kendall_tau": [
+      0.5693660132687257,
+      0.49772858337874404,
+      0.6138165245424749,
+      0.5649993865567758,
+      0.5671722617796544
+    ],
+    "chosen_params_per_fold": [
+      {
+        "ccp_alpha": 0.025812138549350258,
+        "class_weight": null,
+        "criterion": "entropy",
+        "max_depth": 8,
+        "max_features": 0.5,
+        "min_samples_leaf": 5,
+        "min_samples_split": 2
+      },
+      {
+        "ccp_alpha": 0.018168768169689233,
+        "class_weight": "balanced",
+        "criterion": "entropy",
+        "max_depth": 20,
+        "max_features": 0.8,
+        "min_samples_leaf": 16,
+        "min_samples_split": 4
+      },
+      {
+        "ccp_alpha": 0.002369307011984477,
+        "class_weight": null,
+        "criterion": "entropy",
+        "max_depth": 3,
+        "max_features": 0.8,
+        "min_samples_leaf": 12,
+        "min_samples_split": 10
+      },
+      {
+        "ccp_alpha": 0.005632371844527885,
+        "class_weight": null,
+        "criterion": "entropy",
+        "max_depth": 14,
+        "max_features": 0.8,
+        "min_samples_leaf": 16,
+        "min_samples_split": 24
+      },
+      {
+        "ccp_alpha": 0.015470581862146603,
+        "class_weight": null,
+        "criterion": "entropy",
+        "max_depth": 4,
+        "max_features": 0.8,
+        "min_samples_leaf": 24,
+        "min_samples_split": 11
+      }
+    ],
+    "search_space": {
+      "max_depth": {
+        "type": "categorical",
+        "values": [
+          null,
+          3,
+          4,
+          5,
+          6,
+          8,
+          10,
+          14,
+          20
+        ]
+      },
+      "min_samples_leaf": {
+        "type": "randint",
+        "args": [
+          1.0,
+          25.0
+        ]
+      },
+      "min_samples_split": {
+        "type": "randint",
+        "args": [
+          2.0,
+          30.0
+        ]
+      },
+      "max_features": {
+        "type": "categorical",
+        "values": [
+          "sqrt",
+          "log2",
+          0.5,
+          0.8,
+          null
+        ]
+      },
+      "criterion": {
+        "type": "categorical",
+        "values": [
+          "gini",
+          "entropy"
+        ]
+      },
+      "ccp_alpha": {
+        "type": "uniform",
+        "args": [
+          0.0,
+          0.03
+        ]
+      },
+      "class_weight": {
+        "type": "categorical",
+        "values": [
+          null,
+          "balanced"
+        ]
+      }
+    },
+    "n_iter": 60,
+    "selection_scoring": "balanced_accuracy",
+    "feature_importances": {
+      "fret_entropy": 0.3936314022083044,
+      "log_total_notes": 0.22084341632543084,
+      "total_notes": 0.11165548963462815,
+      "string_entropy": 0.054178836741497295,
+      "max_position_shift": 0.04197297065781177,
+      "avg_position_shift_speed_beats": 0.034861257728832126,
+      "arpeggio_density": 0.024507643156849963,
+      "polyphonic_arpeggio_intensity_beats": 0.016575759651726616,
+      "std_position_shift": 0.015320663700201131,
+      "open_string_ratio": 0.01331869229882048,
+      "tempo_bpm": 0.012626867967969396,
+      "avg_stretch_velocity_beats": 0.012079220168736363,
+      "chord_ratio": 0.011947152018439372,
+      "p90_chord_stretch": 0.009328556797412435,
+      "barre_ratio": 0.006254496648023236,
+      "max_note_density_window": 0.005927492178332739,
+      "max_avg_chord_stretch_window": 0.005022185982715038,
+      "avg_position_shift": 0.0043551313486096775,
+      "avg_chord_stretch": 0.003734651532660066,
+      "max_position_shift_speed_beats": 0.0018581132529989902,
+      "max_chord_stretch": 0.0,
+      "shift_rate": 0.0,
+      "avg_string_jump": 0.0,
+      "max_string_jump": 0.0,
+      "repetition_ratio": 0.0
+    }
+  },
+  "extra_trees": {
+    "accuracy": [
+      0.296875,
+      0.359375,
+      0.296875,
+      0.3046875,
+      0.3828125
+    ],
+    "balanced_accuracy": [
+      0.27356708532695373,
+      0.37055479608111186,
+      0.25812898724082933,
+      0.2788622835497836,
+      0.36042877079061286
+    ],
+    "acc_plus_minus_1": [
+      0.71875,
+      0.734375,
+      0.75,
+      0.75,
+      0.7265625
+    ],
+    "mae": [
+      1.1796875,
+      1.0703125,
+      1.0859375,
+      1.078125,
+      1.03125
+    ],
+    "mse": [
+      2.6640625,
+      2.3984375,
+      2.2421875,
+      2.265625,
+      2.359375
+    ],
+    "kendall_tau": [
+      0.5907383658379923,
+      0.610369539858554,
+      0.6309216462973637,
+      0.6147751809441764,
+      0.6557115337132158
+    ],
+    "chosen_params_per_fold": [
+      {
+        "class_weight": "balanced",
+        "criterion": "entropy",
+        "max_depth": 16,
+        "max_features": 0.5,
+        "min_samples_leaf": 4,
+        "n_estimators": 385
+      },
+      {
+        "class_weight": "balanced",
+        "criterion": "gini",
+        "max_depth": 24,
+        "max_features": 0.8,
+        "min_samples_leaf": 6,
+        "n_estimators": 114
+      },
+      {
+        "class_weight": "balanced",
+        "criterion": "gini",
+        "max_depth": 6,
+        "max_features": 0.8,
+        "min_samples_leaf": 3,
+        "n_estimators": 110
+      },
+      {
+        "class_weight": "balanced",
+        "criterion": "gini",
+        "max_depth": null,
+        "max_features": 0.8,
+        "min_samples_leaf": 8,
+        "n_estimators": 408
+      },
+      {
+        "class_weight": "balanced",
+        "criterion": "gini",
+        "max_depth": null,
+        "max_features": 0.3,
+        "min_samples_leaf": 11,
+        "n_estimators": 303
+      }
+    ],
+    "search_space": {
+      "n_estimators": {
+        "type": "randint",
+        "args": [
+          100.0,
+          600.0
+        ]
+      },
+      "max_depth": {
+        "type": "categorical",
+        "values": [
+          null,
+          6,
+          10,
+          16,
+          24
+        ]
+      },
+      "min_samples_leaf": {
+        "type": "randint",
+        "args": [
+          1.0,
+          12.0
+        ]
+      },
+      "max_features": {
+        "type": "categorical",
+        "values": [
+          "sqrt",
+          "log2",
+          0.3,
+          0.5,
+          0.8
+        ]
+      },
+      "criterion": {
+        "type": "categorical",
+        "values": [
+          "gini",
+          "entropy"
+        ]
+      },
+      "class_weight": {
+        "type": "categorical",
+        "values": [
+          null,
+          "balanced"
+        ]
+      }
+    },
+    "n_iter": 60,
+    "selection_scoring": "balanced_accuracy",
+    "feature_importances": {
+      "fret_entropy": 0.17541745773731426,
+      "log_total_notes": 0.14665704797424345,
+      "total_notes": 0.12218527434659246,
+      "max_position_shift": 0.05707249056797955,
+      "open_string_ratio": 0.052003607800368654,
+      "string_entropy": 0.03763967020055292,
+      "max_string_jump": 0.03230247315525294,
+      "max_note_density_window": 0.028190685697181538,
+      "arpeggio_density": 0.027458865240996073,
+      "max_position_shift_speed_beats": 0.026286011550577377,
+      "tempo_bpm": 0.02557274712216734,
+      "avg_position_shift_speed_beats": 0.0245494611826959,
+      "std_position_shift": 0.023208632879299782,
+      "shift_rate": 0.02258631839470775,
+      "p90_chord_stretch": 0.02107162890212015,
+      "max_chord_stretch": 0.021009720970460208,
+      "avg_string_jump": 0.020378298837363744,
+      "repetition_ratio": 0.020260782356198208,
+      "avg_stretch_velocity_beats": 0.019806171426048673,
+      "chord_ratio": 0.019343143974480607,
+      "polyphonic_arpeggio_intensity_beats": 0.019053751507128333,
+      "avg_chord_stretch": 0.01648788045288916,
+      "avg_position_shift": 0.01595854966506728,
+      "max_avg_chord_stretch_window": 0.015036193178624705,
+      "barre_ratio": 0.010463134879688972
+    }
+  },
+  "hist_gradient_boosting": {
+    "accuracy": [
+      0.2890625,
+      0.3984375,
+      0.2578125,
+      0.2890625,
+      0.3515625
+    ],
+    "balanced_accuracy": [
+      0.24097445317840055,
+      0.3685217304625199,
+      0.2511460469355206,
+      0.2589962121212121,
+      0.3031314792663477
+    ],
+    "acc_plus_minus_1": [
+      0.7265625,
+      0.7109375,
+      0.703125,
+      0.7109375,
+      0.7265625
+    ],
+    "mae": [
+      1.1328125,
+      1.0703125,
+      1.265625,
+      1.1484375,
+      1.1171875
+    ],
+    "mse": [
+      2.3671875,
+      2.5234375,
+      3.0625,
+      2.4140625,
+      2.6484375
+    ],
+    "kendall_tau": [
+      0.5969385913253066,
+      0.5982005113206706,
+      0.5498858512050203,
+      0.5856192408269849,
+      0.6041188598642239
+    ],
+    "chosen_params_per_fold": [
+      {
+        "l2_regularization": 4.293322340412744e-05,
+        "learning_rate": 0.04021674931798801,
+        "max_features": 0.40031222619718954,
+        "max_iter": 338,
+        "max_leaf_nodes": 42,
+        "min_samples_leaf": 8
+      },
+      {
+        "l2_regularization": 0.6742027949944159,
+        "learning_rate": 0.009007937115972666,
+        "max_features": 0.9726928750651991,
+        "max_iter": 153,
+        "max_leaf_nodes": 11,
+        "min_samples_leaf": 23
+      },
+      {
+        "l2_regularization": 1.6741239747187044e-06,
+        "learning_rate": 0.01582235865301093,
+        "max_features": 0.9285976191312475,
+        "max_iter": 248,
+        "max_leaf_nodes": 18,
+        "min_samples_leaf": 38
+      },
+      {
+        "l2_regularization": 3.44653149503108e-05,
+        "learning_rate": 0.19352877854864156,
+        "max_features": 0.41368547694551894,
+        "max_iter": 152,
+        "max_leaf_nodes": 6,
+        "min_samples_leaf": 20
+      },
+      {
+        "l2_regularization": 6.796190504054698e-06,
+        "learning_rate": 0.0018425175798374846,
+        "max_features": 0.6577606981615144,
+        "max_iter": 350,
+        "max_leaf_nodes": 22,
+        "min_samples_leaf": 38
+      }
+    ],
+    "search_space": {
+      "learning_rate": {
+        "type": "loguniform",
+        "args": [
+          0.001,
+          0.3
+        ]
+      },
+      "max_iter": {
+        "type": "randint",
+        "args": [
+          80.0,
+          600.0
+        ]
+      },
+      "max_leaf_nodes": {
+        "type": "randint",
+        "args": [
+          4.0,
+          64.0
+        ]
+      },
+      "min_samples_leaf": {
+        "type": "randint",
+        "args": [
+          3.0,
+          40.0
+        ]
+      },
+      "l2_regularization": {
+        "type": "loguniform",
+        "args": [
+          1e-06,
+          1.0
+        ]
+      },
+      "max_features": {
+        "type": "uniform",
+        "args": [
+          0.4,
+          0.6
+        ]
+      }
+    },
+    "n_iter": 60,
+    "selection_scoring": "balanced_accuracy"
+  }
+}

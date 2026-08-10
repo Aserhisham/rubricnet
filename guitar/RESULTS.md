@@ -32,26 +32,25 @@
 
 ## Interpretability Analysis
 
-### V2 Features
+### V5-pruned-collinear2 Features
 
-We analyzed the interpretability of RubricNet V2 using fold 0 of seed 0.
+We analyzed the interpretability of RubricNet V5-pruned-collinear2 using fold 0 of seed 0.
 
-#### Top Influential Descriptors in RubricNet V2
+#### Top Influential Descriptors in RubricNet V5-pruned-collinear2
 Based on the RubricNet descriptor score ranges (difference between maximum and minimum activated values on the test set), the top 5 most influential descriptors are:
-1. log_total_notes (range=1.9893)
-2. avg_string_jump (range=1.9719)
-3. total_notes (range=1.9417)
-4. fret_entropy (range=1.8982)
-5. chord_ratio (range=1.7416)
+1. string_entropy (range=1.9763)
+2. log_total_notes (range=1.9710)
+3. total_notes (range=1.9149)
+4. fret_entropy (range=1.8415)
+5. open_string_ratio (range=1.8156)
 
 #### Key Insights
 - **Monotonicity**: The per-descriptor subnetwork outputs exhibit clear monotonic trends relative to the true difficulty. As difficulty increases, the respective descriptor subnetworks produce progressively higher scalar values, preserving the architectural design's guarantee of transparency and positive alignment.
 - **Influence Alignment**: Comparing RubricNet's descriptor range with Random Forest feature importances and raw |Spearman ρ| correlations shows high consistency. Descriptors like `total_notes` (global scale) and key left-hand features like `fret_entropy` and `avg_position_shift` are identified as high-influence features across all three paradigms, validating that RubricNet captures true musicological difficulty drivers rather than training noise.
 
 The generated figures can be viewed at:
-- Monotonicity Plot: `guitar/figures/monotonicity.png`
-- Feature Importance Comparison Plot: `guitar/figures/importance_comparison.png`
-
+- Monotonicity Plot: `guitar/figures/monotonicity_v5_pruned_collinear2.png`
+- Feature Importance Comparison Plot: `guitar/figures/importance_comparison_v5_pruned_collinear2.png`
 ### V3 Features
 
 We analyzed the interpretability of RubricNet V3 using fold 0 of seed 0.

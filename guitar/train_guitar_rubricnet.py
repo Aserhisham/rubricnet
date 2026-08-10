@@ -26,7 +26,12 @@ if __package__ in (None, ""):
 from guitar.baselines import get_fold_xy, load_data
 from guitar.prepare_splits import (
     ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V3_PRUNED,
-    ALL_FEATURES_V3_BASE, ALL_FEATURES_V3_BASE_NEW, NUM_CLASSES, make_piece_id,
+    ALL_FEATURES_V3_BASE, ALL_FEATURES_V3_BASE_NEW, ALL_FEATURES_V5_PRUNED,
+    ALL_FEATURES_V5_PRUNED_COLLINEAR, ALL_FEATURES_V5_PRUNED_FULL,
+    ALL_FEATURES_V5_PRUNED_COLLINEAR_EXPERT_NEW,
+    ALL_FEATURES_V5_PRUNED_COLLINEAR_EXPERT_NEW_TRIMMED, ALL_FEATURES_V5_PRUNED_COLLINEAR2,
+    ALL_FEATURES_V5_PRUNED_COLLINEAR2_JS,
+    NUM_CLASSES, make_piece_id,
 )
 from rubricnet.rubricnet import RubricnetSklearn
 
@@ -100,18 +105,90 @@ def map_9_to_3(classes):
     return np.array(mapped)
 
 
+def relative_absolute_error_per_class(y_true, y_pred):
+    """Per-class RAE, size-weighted into a single total.
+
+    For each true class c: RAE_c = sum|pred-true| (in c) / sum|true - global_mean| (in c),
+    where global_mean is the mean of y_true over the whole test set (not the per-class
+    mean, which would be 0/0 since every sample in class c has true == c). Classes are
+    then combined weighted by their size (n_c / N), so larger classes dominate the total
+    the same way a plain (non-macro) error would, while still exposing the per-class
+    breakdown for diagnosing which grades the model struggles with.
+    """
+    y_true = np.asarray(y_true, dtype=float)
+    y_pred = np.asarray(y_pred, dtype=float)
+    n = len(y_true)
+    global_mean = y_true.mean()
+
+    per_class = {}
+    total = 0.0
+    for c in sorted(set(y_true.tolist())):
+        mask = y_true == c
+        numerator = np.abs(y_pred[mask] - y_true[mask]).sum()
+        denominator = np.abs(y_true[mask] - global_mean).sum()
+        # denominator is 0 only if class c's value coincides exactly with the
+        # global mean; such a class contributes no baseline error to explain.
+        rae_c = float(numerator / denominator) if denominator != 0 else 0.0
+        weight = mask.sum() / n
+        per_class[c] = rae_c
+        total += weight * rae_c
+
+    return total, per_class
+
+
+def accuracy_per_class(y_true, y_pred):
+    """Per-class accuracy: for each true difficulty level, the fraction of its
+    pieces the model got exactly right. Exists alongside per-class RAE so a
+    level's error can be read both ways -- how often it's right, and when
+    wrong, how far off -- since with an unequal level distribution a single
+    overall accuracy is dominated by the common levels.
+    """
+    y_true = np.asarray(y_true, dtype=float)
+    y_pred = np.asarray(y_pred, dtype=float)
+    per_class = {}
+    for c in sorted(set(y_true.tolist())):
+        mask = y_true == c
+        per_class[c] = float((y_pred[mask] == y_true[mask]).mean())
+    return per_class
+
+
+def correct_count_and_distance_per_class(y_true, y_pred):
+    """Per-class raw correct-piece count (not a fraction) plus mean |pred-true|
+    distance over all of that level's pieces (correct guesses count as 0
+    distance) -- a third, more literal reading of "how many did it get right,
+    and how far off is it" alongside the fraction-based accuracy_per_class and
+    the baseline-normalized relative_absolute_error_per_class.
+    """
+    y_true = np.asarray(y_true, dtype=float)
+    y_pred = np.asarray(y_pred, dtype=float)
+    per_class = {}
+    for c in sorted(set(y_true.tolist())):
+        mask = y_true == c
+        n_total = int(mask.sum())
+        n_correct = int((y_pred[mask] == y_true[mask]).sum())
+        mean_distance = float(np.abs(y_pred[mask] - y_true[mask]).mean())
+        per_class[c] = {"n_correct": n_correct, "n_total": n_total, "mean_distance": mean_distance}
+    return per_class
+
+
 def compute_metrics(y_true, y_pred):
     res = kendalltau(y_true, y_pred)
     tau = res.correlation if hasattr(res, 'correlation') else res[0]
     if np.isnan(tau):
         tau = 0.0
-        
+
+    rae_total, rae_per_class = relative_absolute_error_per_class(y_true, y_pred)
+    acc_per_class = accuracy_per_class(y_true, y_pred)
+
     return {
         "accuracy": float(accuracy_score(y_true, y_pred)),
         "balanced_accuracy": float(balanced_accuracy_score(y_true, y_pred)),
         "acc_plus_minus_1": accuracy_plus_minus_1(y_true, y_pred),
         "mae": float(mean_absolute_error(y_true, y_pred)),
         "mse": float(mean_squared_error(y_true, y_pred)),
+        "rae": rae_total,
+        "rae_per_class": rae_per_class,
+        "acc_per_class": acc_per_class,
         "kendall_tau": float(tau),
     }
 
@@ -311,6 +388,13 @@ def main():
     parser.add_argument("--v3-base-new", action="store_true", help="Use V3 base + hand-crafted interaction features")
     parser.add_argument("--v5", action="store_true", help="Use V5 dataset (V3 features, 76 pdf/no-rhythm dummy pieces dropped)")
     parser.add_argument("--v6", action="store_true", help="Paper-comparison run: V5 pieces, 9 equal-width classes, 60/20/20 splits (see prepare_splits_v6.py)")
+    parser.add_argument("--v5-pruned", action="store_true", help="V5 dataset minus avg_polyphony/fret_change_rate (expert review, see guitar/EXPERT_MEETING.md)")
+    parser.add_argument("--v5-pruned-collinear", action="store_true", help="V5-pruned minus high_position_ratio/avg_fret/p90_fret (collinear w/ fret_entropy, expert review) -- decide on VAL accuracy, not test")
+    parser.add_argument("--v5-pruned-full", action="store_true", help="V5-pruned-collinear minus max_string_jump/arpeggio_density/avg_string_jump/chord_ratio/tempo_bpm (full expert-ruled-out set) -- decide on VAL accuracy, not test")
+    parser.add_argument("--v5-pruned-collinear-expert-new", action="store_true", help="V5-pruned-collinear (27 feat) + 7 new expert-proposed descriptors (onset rate, chord_change_ratio, meter, note-duration entropy) -- decide on VAL accuracy, not test")
+    parser.add_argument("--v5-pruned-collinear-expert-new-trimmed", action="store_true", help="V5-pruned-collinear (27 feat) + 5 new descriptors (drops n_meter_changes/irregular_meter_ratio, weakest by both rho and RF importance) -- decide on VAL accuracy, not test")
+    parser.add_argument("--v5-pruned-collinear2", action="store_true", help="V5-pruned-collinear (27 feat) minus p90_stretch_velocity_beats/p95_position_shift_window (r>0.9 with avg_stretch_velocity_beats/max_position_shift) -- decide on VAL accuracy, not test")
+    parser.add_argument("--v5-pruned-collinear2-js", action="store_true", help="V5-pruned-collinear2 (25 feat) + 4 generic jSymbolic descriptors (js_PitchVariety, js_Duration, js_Range, js_MostCommonPitchPrevalence) -- decide on VAL accuracy, not test")
     parser.add_argument("--raw-levels", action="store_true", help="Train on raw 1-20 difficulty levels")
     parser.add_argument("--label-smoothing-temp", type=float, default=None,
                         help="Ordinal label smoothing temperature (0 = hard step, e.g. 0.3 = mild smoothing). Only applies to --v3/--v4 runs.")
@@ -318,7 +402,7 @@ def main():
                         help="Enable the auxiliary coarse 3-class head with this loss weight (e.g. 0.3). Only applies to --v3/--v4 runs.")
     args = parser.parse_args()
 
-    is_experimental = bool(args.v3_pruned or args.v3_base or args.v3_base_new or args.v5 or args.v6 or args.label_smoothing_temp or args.coarse_loss_weight)
+    is_experimental = bool(args.v3_pruned or args.v3_base or args.v3_base_new or args.v5 or args.v6 or args.v5_pruned or args.v5_pruned_collinear or args.v5_pruned_full or args.v5_pruned_collinear_expert_new or args.v5_pruned_collinear_expert_new_trimmed or args.v5_pruned_collinear2 or args.v5_pruned_collinear2_js or args.label_smoothing_temp or args.coarse_loss_weight)
     coarse_aux_enabled = bool(args.coarse_loss_weight)
     # v6 uses the 9-class paper-comparison labeling; everything else keeps the
     # frozen 8-class binning. Note num_classes=9 activates the num_classes>8
@@ -328,7 +412,63 @@ def main():
     coarse_map = map_9_to_3 if args.v6 else map_8_to_3
 
     splits_path = "guitar/guitar_splits.json"
-    if args.v6:
+    if args.v5_pruned_collinear2_js:
+        csv_path = "features/guitar_descriptors_v5_jsymbolic.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR2_JS
+        alias_experiment = "guitar_rubricnet_final_v5_pruned_collinear2_js"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        out_path = "guitar/rubricnet_results_v5_pruned_collinear2_js.json"
+        print("Training RubricNet on V5 pruned-collinear2 (25 feat) + 4 generic jSymbolic descriptors...")
+    elif args.v5_pruned_collinear2:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR2
+        alias_experiment = "guitar_rubricnet_final_v5_pruned_collinear2"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        out_path = "guitar/rubricnet_results_v5_pruned_collinear2.json"
+        print("Training RubricNet on V5 pruned-collinear2 (25 feat, second collinear-cluster pass)...")
+    elif args.v5_pruned_collinear_expert_new_trimmed:
+        csv_path = "features/guitar_descriptors_v5_expert_new.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR_EXPERT_NEW_TRIMMED
+        alias_experiment = "guitar_rubricnet_final_v5_pruned_collinear_expert_new_trimmed"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        out_path = "guitar/rubricnet_results_v5_pruned_collinear_expert_new_trimmed.json"
+        print("Training RubricNet on V5 pruned-collinear + 5 new descriptors (meter-complexity pair dropped)...")
+    elif args.v5_pruned_collinear_expert_new:
+        csv_path = "features/guitar_descriptors_v5_expert_new.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR_EXPERT_NEW
+        alias_experiment = "guitar_rubricnet_final_v5_pruned_collinear_expert_new"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        out_path = "guitar/rubricnet_results_v5_pruned_collinear_expert_new.json"
+        print("Training RubricNet on V5 pruned-collinear + 7 new expert-proposed descriptors...")
+    elif args.v5_pruned_full:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_FULL
+        alias_experiment = "guitar_rubricnet_final_v5_pruned_full"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        out_path = "guitar/rubricnet_results_v5_pruned_full.json"
+        print("Training RubricNet on V5 pruned-full (all remaining expert-ruled-out descriptors dropped)...")
+    elif args.v5_pruned_collinear:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR
+        alias_experiment = "guitar_rubricnet_final_v5_pruned_collinear"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        out_path = "guitar/rubricnet_results_v5_pruned_collinear.json"
+        print("Training RubricNet on V5 pruned-collinear (high_position_ratio/avg_fret/p90_fret dropped)...")
+    elif args.v5_pruned:
+        csv_path = "features/guitar_descriptors_v5.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED
+        alias_experiment = "guitar_rubricnet_final_v5_pruned"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        out_path = "guitar/rubricnet_results_v5_pruned.json"
+        print("Training RubricNet on V5 pruned (avg_polyphony/fret_change_rate dropped, expert review)...")
+    elif args.v6:
         csv_path = "features/guitar_descriptors_v5.csv"
         splits_path = "guitar/guitar_splits_v6.json"
         columns = ALL_FEATURES_V3
@@ -433,12 +573,21 @@ def main():
         "acc_plus_minus_1": [],
         "mae": [],
         "mse": [],
+        "rae": [],
         "kendall_tau": [],
         "coarse_3class": {
             "accuracy": [],
             "balanced_accuracy": []
         }
     }
+    # Validation-set metrics, computed from the same best-on-val checkpoint as
+    # the test metrics above. Exists so feature-set/design decisions can be
+    # made on val (never touching test) instead of reusing the test folds
+    # across many candidate variants -- see the methodology note in
+    # guitar/EXPERT_FEATURE_REVIEW.md. Test is still reported for the record,
+    # but should only be treated as a final number once, for the configuration
+    # already chosen on val.
+    val_metrics = {"accuracy": [], "balanced_accuracy": [], "mae": [], "kendall_tau": []}
 
     # Track if any fold collapses below 0.20 accuracy
     collapsed_folds = []
@@ -457,10 +606,16 @@ def main():
         seed_acc1 = []
         seed_mae = []
         seed_mse = []
+        seed_rae = []
         seed_tau = []
         
         seed_c_acc = []
         seed_c_bacc = []
+
+        seed_val_acc = []
+        seed_val_bacc = []
+        seed_val_mae = []
+        seed_val_tau = []
 
         for split_idx in range(5):
             X_train, y_train = get_fold_xy(features, splits, split_idx, "train")
@@ -518,6 +673,18 @@ def main():
             # runs that never underflow (e.g. v3), so prior results are unchanged.
             y_pred = np.clip(y_pred, 0, num_classes - 1)
 
+            # Validation-set predictions from the same best-on-val checkpoint,
+            # for design decisions that must not touch the test folds.
+            y_val_pred = clf.predict(scaler.transform(X_val)).cpu().numpy()
+            if args.raw_levels:
+                y_val_pred = map_20_to_8_numpy(y_val_pred)
+            y_val_pred = np.clip(y_val_pred, 0, num_classes - 1)
+            fold_val_m = compute_metrics(y_val, y_val_pred)
+            seed_val_acc.append(fold_val_m["accuracy"])
+            seed_val_bacc.append(fold_val_m["balanced_accuracy"])
+            seed_val_mae.append(fold_val_m["mae"])
+            seed_val_tau.append(fold_val_m["kendall_tau"])
+
             # Compute 8-class metrics
             fold_m = compute_metrics(y_test, y_pred)
             
@@ -526,6 +693,7 @@ def main():
             seed_acc1.append(fold_m["acc_plus_minus_1"])
             seed_mae.append(fold_m["mae"])
             seed_mse.append(fold_m["mse"])
+            seed_rae.append(fold_m["rae"])
             seed_tau.append(fold_m["kendall_tau"])
 
             if fold_m["accuracy"] < 0.20:
@@ -539,7 +707,7 @@ def main():
             seed_c_acc.append(c_acc)
             seed_c_bacc.append(c_bacc)
 
-            print(f"  Split {split_idx}: acc={fold_m['accuracy']:.4f} bacc={fold_m['balanced_accuracy']:.4f} MAE={fold_m['mae']:.4f}")
+            print(f"  Split {split_idx}: acc={fold_m['accuracy']:.4f} bacc={fold_m['balanced_accuracy']:.4f} MAE={fold_m['mae']:.4f} RAE={fold_m['rae']:.4f} | val: acc={fold_val_m['accuracy']:.4f} bacc={fold_val_m['balanced_accuracy']:.4f}")
 
         # Store seed lists
         run_metrics["accuracy"].append(seed_acc)
@@ -547,14 +715,20 @@ def main():
         run_metrics["acc_plus_minus_1"].append(seed_acc1)
         run_metrics["mae"].append(seed_mae)
         run_metrics["mse"].append(seed_mse)
+        run_metrics["rae"].append(seed_rae)
         run_metrics["kendall_tau"].append(seed_tau)
-        
+
         run_metrics["coarse_3class"]["accuracy"].append(seed_c_acc)
         run_metrics["coarse_3class"]["balanced_accuracy"].append(seed_c_bacc)
 
+        val_metrics["accuracy"].append(seed_val_acc)
+        val_metrics["balanced_accuracy"].append(seed_val_bacc)
+        val_metrics["mae"].append(seed_val_mae)
+        val_metrics["kendall_tau"].append(seed_val_tau)
+
     # Compute aggregate stats
     metrics_summary = {}
-    for key in ["accuracy", "balanced_accuracy", "acc_plus_minus_1", "mae", "mse", "kendall_tau"]:
+    for key in ["accuracy", "balanced_accuracy", "acc_plus_minus_1", "mae", "mse", "rae", "kendall_tau"]:
         flat_vals = np.array(run_metrics[key]).flatten()
         metrics_summary[key] = {
             "per_fold_per_seed": run_metrics[key],
@@ -568,13 +742,27 @@ def main():
         "balanced_accuracy": run_metrics["coarse_3class"]["balanced_accuracy"]
     }
 
+    val_metrics_summary = {}
+    for key in ["accuracy", "balanced_accuracy", "mae", "kendall_tau"]:
+        flat_vals = np.array(val_metrics[key]).flatten()
+        val_metrics_summary[key] = {
+            "per_fold_per_seed": val_metrics[key],
+            "mean": float(mean(flat_vals)),
+            "std": float(stdev(flat_vals))
+        }
+
     with open(out_path, "w") as f:
         json.dump({
             "hyperparams": hyperparams,
             "seeds": seeds,
-            "metrics": metrics_summary
+            "metrics": metrics_summary,
+            "val_metrics": val_metrics_summary
         }, f, indent=2)
     print(f"\nWrote final detailed results to {out_path}")
+
+    print("\n--- Validation Summary (for feature-set/design decisions -- do not use test for this) ---")
+    for key, info in val_metrics_summary.items():
+        print(f"  {key:18s} {info['mean']:.4f} +/- {info['std']:.4f}")
 
     # Generate results table in RESULTS.md (skipped for experimental feature
     # sets/hyperparams: write_results_markdown() overwrites the manually

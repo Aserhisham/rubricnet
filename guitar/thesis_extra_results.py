@@ -34,7 +34,9 @@ from sklearn.metrics import accuracy_score, balanced_accuracy_score, mean_absolu
 from sklearn.tree import DecisionTreeClassifier
 
 from guitar.prepare_splits import (
-    ALL_FEATURES_V2, ALL_FEATURES_V3, FEATURE_GROUPS_V3, make_piece_id,
+    ALL_FEATURES_V2, ALL_FEATURES_V3, ALL_FEATURES_V5_PRUNED_COLLINEAR2,
+    ALL_FEATURES_V5_PRUNED_COLLINEAR,
+    FEATURE_GROUPS_V3, FEATURE_GROUPS_V5_PRUNED_COLLINEAR2, make_piece_id,
 )
 
 N_SPLITS = 5
@@ -77,6 +79,8 @@ def run_folds(features, splits, model_factory):
 def main():
     with open("guitar/guitar_splits.json") as f:
         splits = json.load(f)
+    with open("guitar/guitar_splits_v5.json") as f:
+        splits_v5 = json.load(f)
 
     def rf():
         return RandomForestClassifier(random_state=42, n_estimators=200)
@@ -93,7 +97,7 @@ def main():
         "global_only": FEATURE_GROUPS_V3["global"],
         "all_v3": ALL_FEATURES_V3,
     }
-    results = {"dimension_ablation": {}, "baseline_kendall_tau": {}}
+    results = {"dimension_ablation": {}, "baseline_kendall_tau": {}, "dimension_ablation_v5_pruned_collinear2": {}}
     for name, columns in feature_sets.items():
         m = run_folds(df3.set_index("piece_id")[columns], splits, rf)
         results["dimension_ablation"][name] = {"n_features": len(columns), **m}
@@ -101,16 +105,36 @@ def main():
               f"bacc={m['balanced_accuracy']['mean']:.4f}±{m['balanced_accuracy']['std']:.4f} "
               f"MAE={m['mae']['mean']:.4f} MSE={m['mse']['mean']:.4f}")
 
-    print("\n=== Tree-baseline Kendall tau (V2/V3) — thesis Table 4.1 tau column ===")
-    for gen, csv_path, columns in [
-        ("V2", "features/guitar_descriptors_v2.csv", ALL_FEATURES_V2),
-        ("V3", "features/guitar_descriptors_v3.csv", ALL_FEATURES_V3),
+    print("\n=== Per-dimension ablation (RF, V5-pruned-collinear2, 25 feat) — adopted headline set ===")
+    df5 = pd.read_csv("features/guitar_descriptors_v5.csv")
+    df5["piece_id"] = df5.apply(make_piece_id, axis=1)
+    feature_sets_v5 = {
+        "lh_only": FEATURE_GROUPS_V5_PRUNED_COLLINEAR2["lh"],
+        "rh_only": FEATURE_GROUPS_V5_PRUNED_COLLINEAR2["rh"],
+        "global_only": FEATURE_GROUPS_V5_PRUNED_COLLINEAR2["global"],
+        "all_v5_pruned_collinear2": ALL_FEATURES_V5_PRUNED_COLLINEAR2,
+    }
+    for name, columns in feature_sets_v5.items():
+        m = run_folds(df5.set_index("piece_id")[columns], splits_v5, rf)
+        results["dimension_ablation_v5_pruned_collinear2"][name] = {"n_features": len(columns), **m}
+        print(f"  {name:12s} ({len(columns):2d}): acc={m['accuracy']['mean']:.4f}±{m['accuracy']['std']:.4f} "
+              f"bacc={m['balanced_accuracy']['mean']:.4f}±{m['balanced_accuracy']['std']:.4f} "
+              f"MAE={m['mae']['mean']:.4f} MSE={m['mse']['mean']:.4f}")
+
+    print("\n=== Tree-baseline Kendall tau (V2/V3/V5*) — thesis Table 5.1 tau column ===")
+    for gen, csv_path, columns, use_splits in [
+        ("V2", "features/guitar_descriptors_v2.csv", ALL_FEATURES_V2, splits),
+        ("V3", "features/guitar_descriptors_v3.csv", ALL_FEATURES_V3, splits),
+        # V5 (32 feat) reuses the V3 column list on the 640-piece V5 csv/splits.
+        ("V5", "features/guitar_descriptors_v5.csv", ALL_FEATURES_V3, splits_v5),
+        ("V5_pruned_collinear", "features/guitar_descriptors_v5.csv", ALL_FEATURES_V5_PRUNED_COLLINEAR, splits_v5),
+        ("V5_pruned_collinear2", "features/guitar_descriptors_v5.csv", ALL_FEATURES_V5_PRUNED_COLLINEAR2, splits_v5),
     ]:
         df = pd.read_csv(csv_path)
         df["piece_id"] = df.apply(make_piece_id, axis=1)
         features = df.set_index("piece_id")[columns]
         for model_name, factory in [("random_forest", rf), ("decision_tree", dt)]:
-            m = run_folds(features, splits, factory)
+            m = run_folds(features, use_splits, factory)
             results["baseline_kendall_tau"][f"{gen}_{model_name}"] = m
             print(f"  {gen} {model_name:14s}: tau={m['kendall_tau']['mean']:.4f}±{m['kendall_tau']['std']:.4f} "
                   f"(acc check {m['accuracy']['mean']:.4f})")

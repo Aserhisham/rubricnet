@@ -1,0 +1,681 @@
+{
+  "dropped_provenance_features": [
+    "js_AcousticGuitarFraction",
+    "js_ElectricGuitarFraction",
+    "js_ElectricInstrumentFraction",
+    "js_NumberOfPitchedInstruments",
+    "js_StringEnsembleFraction",
+    "js_ViolinFraction",
+    "js_WoodwindsFraction"
+  ],
+  "n_pieces": 629,
+  "A_jsymbolic_only": {
+    "accuracy": [
+      0.2677165354330709,
+      0.3170731707317073,
+      0.3203125,
+      0.25396825396825395,
+      0.344
+    ],
+    "balanced_accuracy": [
+      0.22874295112781956,
+      0.29324718045112785,
+      0.32367822966507176,
+      0.24048711704961706,
+      0.3145486111111111
+    ],
+    "acc_plus_minus_1": [
+      0.7559055118110236,
+      0.6747967479674797,
+      0.6953125,
+      0.7063492063492064,
+      0.696
+    ],
+    "mae": [
+      1.125984251968504,
+      1.3089430894308942,
+      1.1875,
+      1.2380952380952381,
+      1.216
+    ],
+    "macro_mae": [
+      1.2283881578947369,
+      1.4799154135338346,
+      1.1755266717931192,
+      1.3486076423576423,
+      1.3758978174603174
+    ],
+    "mse": [
+      2.37007874015748,
+      3.5528455284552845,
+      2.828125,
+      2.7936507936507935,
+      3.184
+    ],
+    "macro_mse": [
+      2.6982753759398497,
+      4.539426691729323,
+      2.854820645363408,
+      3.403962703962704,
+      4.114558531746032
+    ],
+    "kappa": [
+      0.1502266350097129,
+      0.2037607891491986,
+      0.2140588608934999,
+      0.13641997812613926,
+      0.23312883435582832
+    ],
+    "lwk": [
+      0.512286166984451,
+      0.4784154660626334,
+      0.5178668781285622,
+      0.470359991377452,
+      0.4929276754737123
+    ],
+    "qwk": [
+      0.7122305949307056,
+      0.6369671959530194,
+      0.6966784933425851,
+      0.6683665076492844,
+      0.644215916242348
+    ],
+    "kendall_tau_b": [
+      0.6084646628947133,
+      0.5770825037138558,
+      0.5900163875194017,
+      0.5556093025597484,
+      0.5662966910478702
+    ],
+    "kendall_tau_c": [
+      0.5960514778172413,
+      0.5517501864914119,
+      0.5750558035714286,
+      0.5437857682755642,
+      0.5475474285714286
+    ],
+    "spearman_rho": [
+      0.7345570249812677,
+      0.7005809334962958,
+      0.7103918715724624,
+      0.6878418074619121,
+      0.6908965807113256
+    ],
+    "chosen_params_per_fold": [
+      {
+        "class_weight": "balanced",
+        "criterion": "entropy",
+        "max_depth": 8,
+        "max_features": 0.8,
+        "min_samples_leaf": 1,
+        "min_samples_split": 13,
+        "n_estimators": 413
+      },
+      {
+        "class_weight": "balanced",
+        "criterion": "entropy",
+        "max_depth": 12,
+        "max_features": "sqrt",
+        "min_samples_leaf": 9,
+        "min_samples_split": 19,
+        "n_estimators": 268
+      },
+      {
+        "class_weight": "balanced",
+        "criterion": "gini",
+        "max_depth": 24,
+        "max_features": "sqrt",
+        "min_samples_leaf": 9,
+        "min_samples_split": 7,
+        "n_estimators": 429
+      },
+      {
+        "class_weight": "balanced_subsample",
+        "criterion": "entropy",
+        "max_depth": 6,
+        "max_features": 0.5,
+        "min_samples_leaf": 6,
+        "min_samples_split": 13,
+        "n_estimators": 247
+      },
+      {
+        "class_weight": "balanced",
+        "criterion": "gini",
+        "max_depth": 16,
+        "max_features": "sqrt",
+        "min_samples_leaf": 3,
+        "min_samples_split": 13,
+        "n_estimators": 511
+      }
+    ],
+    "n_features": 272,
+    "top_features_last_fold": [
+      [
+        "js_Duration",
+        0.03852209024866701
+      ],
+      [
+        "js_PitchVariety",
+        0.03300103101996953
+      ],
+      [
+        "js_MostCommonPitchPrevalence",
+        0.016920724617736225
+      ],
+      [
+        "js_BasicPitchHistogram_71",
+        0.016456263609155974
+      ],
+      [
+        "js_Range",
+        0.013393150795143239
+      ],
+      [
+        "js_BasicPitchHistogram_49",
+        0.0120399670988968
+      ],
+      [
+        "js_FifthsPitchHistogram_10",
+        0.011561850096988771
+      ],
+      [
+        "js_BasicPitchHistogram_69",
+        0.011539635109802533
+      ],
+      [
+        "js_BasicPitchHistogram_76",
+        0.011424545571071877
+      ],
+      [
+        "js_RelativeStrengthOfTopPitches",
+        0.011367401451228856
+      ],
+      [
+        "js_MaximumNoteDuration",
+        0.010788119704942235
+      ],
+      [
+        "js_BasicPitchHistogram_70",
+        0.009934500859567933
+      ],
+      [
+        "js_BasicPitchHistogram_75",
+        0.009580498831598528
+      ],
+      [
+        "js_MostCommonPitchClassPrevalence",
+        0.00933394893354929
+      ],
+      [
+        "js_BasicPitchHistogram_42",
+        0.009323860077371819
+      ],
+      [
+        "js_PitchClassDistribution_10",
+        0.009273060693638922
+      ],
+      [
+        "js_MelodicIntervalHistogram_5",
+        0.009170718177926699
+      ],
+      [
+        "js_DurationOfMelodicArcs",
+        0.00906584023435839
+      ],
+      [
+        "js_FifthsPitchHistogram_9",
+        0.009065430743516834
+      ],
+      [
+        "js_PitchClassDistribution_7",
+        0.008970254603031417
+      ]
+    ]
+  },
+  "B_guitar_only": {
+    "accuracy": [
+      0.28346456692913385,
+      0.3170731707317073,
+      0.265625,
+      0.30158730158730157,
+      0.328
+    ],
+    "balanced_accuracy": [
+      0.2547994987468672,
+      0.3051926691729323,
+      0.2292286113009797,
+      0.2808254245754246,
+      0.307281746031746
+    ],
+    "acc_plus_minus_1": [
+      0.6929133858267716,
+      0.7479674796747967,
+      0.7578125,
+      0.7142857142857143,
+      0.704
+    ],
+    "mae": [
+      1.204724409448819,
+      1.089430894308943,
+      1.125,
+      1.1746031746031746,
+      1.144
+    ],
+    "macro_mae": [
+      1.356904761904762,
+      1.2539309210526315,
+      1.1826540071770335,
+      1.2515385656010656,
+      1.3125545634920635
+    ],
+    "mse": [
+      2.6535433070866143,
+      2.3902439024390243,
+      2.390625,
+      2.6984126984126986,
+      2.696
+    ],
+    "macro_mse": [
+      3.2675219298245617,
+      3.402981672932331,
+      2.544585255753019,
+      3.0622965576090575,
+      3.6403125
+    ],
+    "kappa": [
+      0.1677828184633109,
+      0.20486378328459287,
+      0.1470900971149075,
+      0.19148315589908127,
+      0.2209526635999406
+    ],
+    "lwk": [
+      0.4892090113298809,
+      0.5225099947853293,
+      0.534944744411364,
+      0.5005624296962881,
+      0.523015343562375
+    ],
+    "qwk": [
+      0.6938095135893089,
+      0.707123882337696,
+      0.7355264757120286,
+      0.6824737989000726,
+      0.6990749008822374
+    ],
+    "kendall_tau_b": [
+      0.584559890645893,
+      0.5945937071037514,
+      0.6220305317652256,
+      0.5803332688661361,
+      0.606813066660959
+    ],
+    "kendall_tau_c": [
+      0.5740857196000106,
+      0.5795492101262476,
+      0.6090959821428571,
+      0.5697008962315084,
+      0.5926034285714286
+    ],
+    "spearman_rho": [
+      0.7220874508319757,
+      0.715051834230798,
+      0.7458928922053016,
+      0.710979860432364,
+      0.7320513917244762
+    ],
+    "chosen_params_per_fold": [
+      {
+        "class_weight": "balanced_subsample",
+        "criterion": "gini",
+        "max_depth": 6,
+        "max_features": 0.3,
+        "min_samples_leaf": 8,
+        "min_samples_split": 5,
+        "n_estimators": 459
+      },
+      {
+        "class_weight": "balanced",
+        "criterion": "entropy",
+        "max_depth": 12,
+        "max_features": "sqrt",
+        "min_samples_leaf": 9,
+        "min_samples_split": 19,
+        "n_estimators": 268
+      },
+      {
+        "class_weight": "balanced",
+        "criterion": "gini",
+        "max_depth": 6,
+        "max_features": 0.5,
+        "min_samples_leaf": 5,
+        "min_samples_split": 8,
+        "n_estimators": 204
+      },
+      {
+        "class_weight": "balanced",
+        "criterion": "gini",
+        "max_depth": 24,
+        "max_features": 0.8,
+        "min_samples_leaf": 6,
+        "min_samples_split": 13,
+        "n_estimators": 592
+      },
+      {
+        "class_weight": "balanced_subsample",
+        "criterion": "entropy",
+        "max_depth": 4,
+        "max_features": 0.5,
+        "min_samples_leaf": 10,
+        "min_samples_split": 12,
+        "n_estimators": 546
+      }
+    ],
+    "n_features": 25,
+    "top_features_last_fold": [
+      [
+        "fret_entropy",
+        0.21250449338835797
+      ],
+      [
+        "log_total_notes",
+        0.19328547396508516
+      ],
+      [
+        "total_notes",
+        0.18364771897773519
+      ],
+      [
+        "string_entropy",
+        0.04325863691516008
+      ],
+      [
+        "open_string_ratio",
+        0.04278083791514583
+      ],
+      [
+        "max_position_shift",
+        0.039718371838152355
+      ],
+      [
+        "avg_stretch_velocity_beats",
+        0.02796347393276092
+      ],
+      [
+        "arpeggio_density",
+        0.023697221301546244
+      ],
+      [
+        "avg_position_shift_speed_beats",
+        0.02319020694301807
+      ],
+      [
+        "std_position_shift",
+        0.022279155683440972
+      ],
+      [
+        "polyphonic_arpeggio_intensity_beats",
+        0.021012278451701415
+      ],
+      [
+        "max_note_density_window",
+        0.02075728367414067
+      ],
+      [
+        "avg_string_jump",
+        0.015113222515949667
+      ],
+      [
+        "avg_chord_stretch",
+        0.015059123914157719
+      ],
+      [
+        "barre_ratio",
+        0.015029043926726552
+      ],
+      [
+        "shift_rate",
+        0.013620628538690964
+      ],
+      [
+        "tempo_bpm",
+        0.012697087818941341
+      ],
+      [
+        "max_avg_chord_stretch_window",
+        0.01217565892858096
+      ],
+      [
+        "repetition_ratio",
+        0.011738273640120207
+      ],
+      [
+        "max_position_shift_speed_beats",
+        0.011442156900051275
+      ]
+    ]
+  },
+  "C_both": {
+    "accuracy": [
+      0.25984251968503935,
+      0.3821138211382114,
+      0.3046875,
+      0.3333333333333333,
+      0.376
+    ],
+    "balanced_accuracy": [
+      0.2245332080200501,
+      0.35414943609022553,
+      0.27249700956937795,
+      0.29684274059274063,
+      0.35244543650793647
+    ],
+    "acc_plus_minus_1": [
+      0.7165354330708661,
+      0.7642276422764228,
+      0.78125,
+      0.7619047619047619,
+      0.736
+    ],
+    "mae": [
+      1.188976377952756,
+      1.032520325203252,
+      1.0390625,
+      1.0555555555555556,
+      1.048
+    ],
+    "macro_mae": [
+      1.3059328007518798,
+      1.2302255639097743,
+      1.1027284119389382,
+      1.2216991341991341,
+      1.2198313492063493
+    ],
+    "mse": [
+      2.590551181102362,
+      2.4634146341463414,
+      2.0859375,
+      2.2301587301587302,
+      2.44
+    ],
+    "macro_mse": [
+      3.0028500939849625,
+      3.4969219924812034,
+      2.293163875598086,
+      2.9065247252747253,
+      3.4050992063492065
+    ],
+    "kappa": [
+      0.1402232625135037,
+      0.27658257235722017,
+      0.18854619274877127,
+      0.21629026286560527,
+      0.2725509214354995
+    ],
+    "lwk": [
+      0.49190578385395956,
+      0.5503065895155022,
+      0.5607616492079055,
+      0.5191667623091931,
+      0.5626685895895094
+    ],
+    "qwk": [
+      0.6959268180858883,
+      0.7023646948896716,
+      0.7598313422347154,
+      0.703243650993211,
+      0.7276882968465412
+    ],
+    "kendall_tau_b": [
+      0.5982819995559653,
+      0.6152548152114582,
+      0.6428305261760501,
+      0.6184316252608989,
+      0.6507180723173498
+    ],
+    "kendall_tau_c": [
+      0.5872651745303491,
+      0.5976790081489665,
+      0.6263950892857143,
+      0.5912968361947953,
+      0.6334171428571429
+    ],
+    "spearman_rho": [
+      0.728785783951649,
+      0.7372241757888598,
+      0.7645208341706536,
+      0.7413334515691236,
+      0.776689872196706
+    ],
+    "chosen_params_per_fold": [
+      {
+        "class_weight": "balanced_subsample",
+        "criterion": "gini",
+        "max_depth": 12,
+        "max_features": 0.5,
+        "min_samples_leaf": 7,
+        "min_samples_split": 3,
+        "n_estimators": 269
+      },
+      {
+        "class_weight": "balanced_subsample",
+        "criterion": "entropy",
+        "max_depth": 8,
+        "max_features": "sqrt",
+        "min_samples_leaf": 2,
+        "min_samples_split": 16,
+        "n_estimators": 200
+      },
+      {
+        "class_weight": "balanced_subsample",
+        "criterion": "gini",
+        "max_depth": null,
+        "max_features": 0.3,
+        "min_samples_leaf": 2,
+        "min_samples_split": 12,
+        "n_estimators": 479
+      },
+      {
+        "class_weight": null,
+        "criterion": "entropy",
+        "max_depth": 16,
+        "max_features": 0.3,
+        "min_samples_leaf": 2,
+        "min_samples_split": 4,
+        "n_estimators": 368
+      },
+      {
+        "class_weight": "balanced_subsample",
+        "criterion": "gini",
+        "max_depth": 6,
+        "max_features": "sqrt",
+        "min_samples_leaf": 6,
+        "min_samples_split": 11,
+        "n_estimators": 416
+      }
+    ],
+    "n_features": 297,
+    "top_features_last_fold": [
+      [
+        "total_notes",
+        0.04120070758347981
+      ],
+      [
+        "log_total_notes",
+        0.03845470029691274
+      ],
+      [
+        "fret_entropy",
+        0.03282195773387894
+      ],
+      [
+        "js_PitchVariety",
+        0.028108218884515736
+      ],
+      [
+        "js_Duration",
+        0.025269459878159154
+      ],
+      [
+        "js_MostCommonPitchPrevalence",
+        0.017881022474279126
+      ],
+      [
+        "max_position_shift",
+        0.0169893359863028
+      ],
+      [
+        "js_BasicPitchHistogram_71",
+        0.014858395447944263
+      ],
+      [
+        "open_string_ratio",
+        0.013825677527885633
+      ],
+      [
+        "js_Range",
+        0.012846633036202638
+      ],
+      [
+        "max_note_density_window",
+        0.011482343499888775
+      ],
+      [
+        "js_RelativeStrengthOfTopPitches",
+        0.010774942374543685
+      ],
+      [
+        "js_FifthsPitchHistogram_10",
+        0.010332090976805262
+      ],
+      [
+        "js_BasicPitchHistogram_69",
+        0.009844928639493237
+      ],
+      [
+        "js_BasicPitchHistogram_49",
+        0.009532533012183184
+      ],
+      [
+        "string_entropy",
+        0.009498293586233412
+      ],
+      [
+        "std_position_shift",
+        0.009312703749674196
+      ],
+      [
+        "avg_stretch_velocity_beats",
+        0.008695413199607236
+      ],
+      [
+        "js_MelodicIntervalHistogram_5",
+        0.00863867974848912
+      ],
+      [
+        "js_BasicPitchHistogram_75",
+        0.008624960506460418
+      ]
+    ]
+  }
+}
