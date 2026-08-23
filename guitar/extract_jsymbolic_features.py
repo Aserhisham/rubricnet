@@ -141,6 +141,12 @@ def get_extractor_classes(exclude=frozenset(), include_native=False):
     return out
 
 
+def _native_class_names():
+    from music21 import features
+
+    return frozenset(cls.__name__ for cls in features.native.featureExtractors)
+
+
 class _Timeout(Exception):
     pass
 
@@ -165,17 +171,21 @@ def extract_one(task):
         signal.signal(signal.SIGALRM, _alarm)
         signal.alarm(per_piece_timeout)
         score = converter.parse(path)
+        native_names = _native_class_names() if include_native else frozenset()
         for cls in get_extractor_classes(exclude, include_native):
             name = cls.__name__.replace("Feature", "")
+            # Native extractors are music21's own, not jSymbolic's; keep the families
+            # distinguishable in the output so results can be attributed correctly.
+            prefix = "m21_" if cls.__name__ in native_names else "js_"
             try:
                 vector = cls(score).extract().vector
             except Exception:
                 continue
             if len(vector) == 1:
-                values[f"js_{name}"] = float(vector[0])
+                values[f"{prefix}{name}"] = float(vector[0])
             else:
                 for i, v in enumerate(vector):
-                    values[f"js_{name}_{i}"] = float(v)
+                    values[f"{prefix}{name}_{i}"] = float(v)
         signal.alarm(0)
     except _Timeout:
         signal.alarm(0)
@@ -289,8 +299,8 @@ def main():
     constant = nunique[nunique <= 1].index.tolist()
     out = out.drop(columns=constant)
 
-    out.to_csv(args.out)
-    print(f"\nExtracted {len(out)} pieces x {out.shape[1]} features -> {args.out}")
+    out.to_csv(out_path)
+    print(f"\nExtracted {len(out)} pieces x {out.shape[1]} features -> {out_path}")
     print(f"Dropped {len(constant)} constant columns")
     if failed:
         print(f"Failed on {len(failed)} pieces: {failed[:10]}")

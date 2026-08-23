@@ -1,0 +1,274 @@
+{
+  "summary": {
+    "population": "source in ['dada_gp', 'gaps']",
+    "n_candidates": 61,
+    "n_midi_matched": 14,
+    "n_pieces": 10,
+    "skipped": {
+      "no_midi_match": 47,
+      "no_rhythm": 0,
+      "parse_fail": 0,
+      "low_coverage": 4,
+      "len_mismatch": 0
+    },
+    "coverage_threshold": 0.9,
+    "exact_match_mean": 0.9072136078761863,
+    "exact_match_median": 0.9296582020786457,
+    "within_2x_mean": 0.9714511514879247,
+    "median_abs_log2_median": 0.0,
+    "total_len_ratio_median": 1.0340257392573429,
+    "matched_frac_mean": 0.961134000305876,
+    "pieces_exact_over_50pct": 10,
+    "pieces_exact_over_80pct": 9
+  },
+  "pairings": [
+    {
+      "piece": "Alman||Robert Johnson",
+      "source": "dada_gp",
+      "midi": "Almain by Robert Johnson.mid",
+      "title_similarity": 0.909,
+      "shared_identifiers": 0,
+      "coverage": 0.457,
+      "passed_gate": false
+    },
+    {
+      "piece": "Grand Vals||Francisco Tarrega",
+      "source": "dada_gp",
+      "midi": "Gran vals by Francisco Tarrega.mid",
+      "title_similarity": 0.947,
+      "shared_identifiers": 0,
+      "coverage": 0.965,
+      "passed_gate": true
+    },
+    {
+      "piece": "Lesson, Op. 60 no. 5||Fernando Sor",
+      "source": "dada_gp",
+      "midi": "Opus 60 No 5 by Fernando Sor.mid",
+      "title_similarity": 0.69,
+      "shared_identifiers": 2,
+      "coverage": 0.995,
+      "passed_gate": true
+    },
+    {
+      "piece": "Libra Sonatine: A. India||Roland Dyens",
+      "source": "dada_gp",
+      "midi": "Libra Sonatina India by Roland Dyens.mid",
+      "title_similarity": 0.952,
+      "shared_identifiers": 0,
+      "coverage": 0.29,
+      "passed_gate": false
+    },
+    {
+      "piece": "Mrs. Winter's Jump||John Dowland",
+      "source": "dada_gp",
+      "midi": "Mistress Winter_s Jump by John Dowland.mid",
+      "title_similarity": 0.872,
+      "shared_identifiers": 0,
+      "coverage": 0.924,
+      "passed_gate": true
+    },
+    {
+      "piece": "Partita, BWV 1002: v. Sarabande||J.S. Bach",
+      "source": "dada_gp",
+      "midi": "BWV 1002 Sarabande by Johann Sebastian Bach.mid",
+      "title_similarity": 0.783,
+      "shared_identifiers": 1,
+      "coverage": 0.942,
+      "passed_gate": true
+    },
+    {
+      "piece": "Pavana I||Luis Milan",
+      "source": "dada_gp",
+      "midi": "Pavan I by Luys Milan.mid",
+      "title_similarity": 0.933,
+      "shared_identifiers": 1,
+      "coverage": 0.954,
+      "passed_gate": true
+    },
+    {
+      "piece": "Suite, BWV 997: iii. Sarabande||J.S. Bach",
+      "source": "dada_gp",
+      "midi": "BWV997 Sarabande by Johann Sebastian Bach.mid",
+      "title_similarity": 0.744,
+      "shared_identifiers": 1,
+      "coverage": 0.954,
+      "passed_gate": true
+    },
+    {
+      "piece": "Tango En Skai||Roland Dyens",
+      "source": "dada_gp",
+      "midi": "Tango en Skai by Roland Dyens.mid",
+      "title_similarity": 1.0,
+      "shared_identifiers": 0,
+      "coverage": 0.782,
+      "passed_gate": false
+    },
+    {
+      "piece": "Tarleton's Resurrection||John Dowland",
+      "source": "dada_gp",
+      "midi": "Tarleton_s Riserrectione by John Dowland.mid",
+      "title_similarity": 0.894,
+      "shared_identifiers": 0,
+      "coverage": 0.986,
+      "passed_gate": true
+    },
+    {
+      "piece": "Fantasia||John Dowland",
+      "source": "dada_gp",
+      "midi": "Fantasia by John Dowland.mid",
+      "title_similarity": 1.0,
+      "shared_identifiers": 0,
+      "coverage": 0.984,
+      "passed_gate": true
+    },
+    {
+      "piece": "Partita III: BWV 1006: iii. Gavotte en Rondeau||J.S. Bach",
+      "source": "dada_gp",
+      "midi": "BWV 1006a iii Gavotte En Rondeau by Johann Sebastian Bach.mid",
+      "title_similarity": 0.827,
+      "shared_identifiers": 2,
+      "coverage": 0.966,
+      "passed_gate": true
+    },
+    {
+      "piece": "Danza Mora||Francisco Tarrega",
+      "source": "dada_gp",
+      "midi": "Danza Mora by Francisco Tarrega.mid",
+      "title_similarity": 1.0,
+      "shared_identifiers": 0,
+      "coverage": 0.945,
+      "passed_gate": true
+    },
+    {
+      "piece": "Tarantos||Leo Brouwer",
+      "source": "dada_gp",
+      "midi": "Tarantos by Leo Brouwer.mid",
+      "title_similarity": 1.0,
+      "shared_identifiers": 0,
+      "coverage": 0.683,
+      "passed_gate": false
+    }
+  ],
+  "per_piece": [
+    {
+      "piece": "Grand Vals||Francisco Tarrega",
+      "source": "dada_gp",
+      "midi": "Gran vals by Francisco Tarrega.mid",
+      "n": 285,
+      "coverage": 0.965034965034965,
+      "matched_frac": 0.9649122807017544,
+      "exact": 0.8666666666666667,
+      "within_2x": 0.9719298245614035,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.020746887966805
+    },
+    {
+      "piece": "Lesson, Op. 60 no. 5||Fernando Sor",
+      "source": "dada_gp",
+      "midi": "Opus 60 No 5 by Fernando Sor.mid",
+      "n": 207,
+      "coverage": 0.9951923076923077,
+      "matched_frac": 0.9951690821256038,
+      "exact": 0.9951690821256038,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0042194092827004
+    },
+    {
+      "piece": "Mrs. Winter's Jump||John Dowland",
+      "source": "dada_gp",
+      "midi": "Mistress Winter_s Jump by John Dowland.mid",
+      "n": 65,
+      "coverage": 0.9242424242424242,
+      "matched_frac": 0.9230769230769231,
+      "exact": 0.7076923076923077,
+      "within_2x": 0.8923076923076924,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.1376811594202898
+    },
+    {
+      "piece": "Partita, BWV 1002: v. Sarabande||J.S. Bach",
+      "source": "dada_gp",
+      "midi": "BWV 1002 Sarabande by Johann Sebastian Bach.mid",
+      "n": 153,
+      "coverage": 0.9415584415584416,
+      "matched_frac": 0.9411764705882353,
+      "exact": 0.9084967320261438,
+      "within_2x": 0.9869281045751634,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.043010752688172
+    },
+    {
+      "piece": "Pavana I||Luis Milan",
+      "source": "dada_gp",
+      "midi": "Pavan I by Luys Milan.mid",
+      "n": 152,
+      "coverage": 0.954248366013072,
+      "matched_frac": 0.9539473684210527,
+      "exact": 0.9605263157894737,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0267857142857142
+    },
+    {
+      "piece": "Suite, BWV 997: iii. Sarabande||J.S. Bach",
+      "source": "dada_gp",
+      "midi": "BWV997 Sarabande by Johann Sebastian Bach.mid",
+      "n": 322,
+      "coverage": 0.9535603715170279,
+      "matched_frac": 0.953416149068323,
+      "exact": 0.8788819875776398,
+      "within_2x": 0.9503105590062112,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.047979797979798
+    },
+    {
+      "piece": "Tarleton's Resurrection||John Dowland",
+      "source": "dada_gp",
+      "midi": "Tarleton_s Riserrectione by John Dowland.mid",
+      "n": 69,
+      "coverage": 0.9857142857142858,
+      "matched_frac": 0.9855072463768116,
+      "exact": 0.9855072463768116,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0061728395061729
+    },
+    {
+      "piece": "Fantasia||John Dowland",
+      "source": "dada_gp",
+      "midi": "Fantasia by John Dowland.mid",
+      "n": 864,
+      "coverage": 0.9838150289017341,
+      "matched_frac": 0.9837962962962963,
+      "exact": 0.9722222222222222,
+      "within_2x": 0.9861111111111112,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0303630363036305
+    },
+    {
+      "piece": "Partita III: BWV 1006: iii. Gavotte en Rondeau||J.S. Bach",
+      "source": "dada_gp",
+      "midi": "BWV 1006a iii Gavotte En Rondeau by Johann Sebastian Bach.mid",
+      "n": 671,
+      "coverage": 0.9657738095238095,
+      "matched_frac": 0.9657228017883756,
+      "exact": 0.9508196721311475,
+      "within_2x": 0.9761549925484352,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0376884422110553
+    },
+    {
+      "piece": "Danza Mora||Francisco Tarrega",
+      "source": "dada_gp",
+      "midi": "Danza Mora by Francisco Tarrega.mid",
+      "n": 325,
+      "coverage": 0.9447852760736196,
+      "matched_frac": 0.9446153846153846,
+      "exact": 0.8461538461538461,
+      "within_2x": 0.9507692307692308,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.1091269841269842
+    }
+  ]
+}

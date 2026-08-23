@@ -1,0 +1,165 @@
+{
+  "n_descriptors": 25,
+  "vif": {
+    "avg_position_shift": 22.82647427466862,
+    "std_position_shift": 19.34353283129863,
+    "log_total_notes": 5.517493408898174,
+    "avg_position_shift_speed_beats": 4.967966176946811,
+    "max_position_shift": 4.883492459896293,
+    "max_note_density_window": 4.789356105998394,
+    "avg_chord_stretch": 4.688893550634876,
+    "total_notes": 4.524960211890015,
+    "fret_entropy": 4.206604766915029,
+    "shift_rate": 4.169872575636703,
+    "avg_string_jump": 3.8589666526273194,
+    "repetition_ratio": 3.717845864647089,
+    "polyphonic_arpeggio_intensity_beats": 3.672067313214093,
+    "avg_stretch_velocity_beats": 3.628330988935137,
+    "max_position_shift_speed_beats": 3.36853114832537,
+    "arpeggio_density": 3.2341754305236594,
+    "open_string_ratio": 2.982255643653171,
+    "chord_ratio": 2.9709802633394213,
+    "p90_chord_stretch": 2.5507815744391698,
+    "max_avg_chord_stretch_window": 2.4913089816545826,
+    "max_chord_stretch": 2.263519285241602,
+    "max_string_jump": 1.835988913833674,
+    "string_entropy": 1.4889410475858964,
+    "barre_ratio": 1.4301989287920542,
+    "tempo_bpm": 1.1959181837283392
+  },
+  "condition_number": 258.01157095567845,
+  "top_pearson": [
+    {
+      "r": 0.8585083894024103,
+      "a": "total_notes",
+      "b": "log_total_notes"
+    },
+    {
+      "r": 0.8571359010249162,
+      "a": "avg_position_shift",
+      "b": "std_position_shift"
+    },
+    {
+      "r": 0.7895050786583475,
+      "a": "arpeggio_density",
+      "b": "avg_string_jump"
+    },
+    {
+      "r": 0.7565758874994565,
+      "a": "max_position_shift",
+      "b": "std_position_shift"
+    },
+    {
+      "r": 0.7345018000131325,
+      "a": "avg_chord_stretch",
+      "b": "p90_chord_stretch"
+    },
+    {
+      "r": 0.7241506966619777,
+      "a": "open_string_ratio",
+      "b": "fret_entropy"
+    },
+    {
+      "r": 0.7128865147489453,
+      "a": "avg_position_shift",
+      "b": "shift_rate"
+    },
+    {
+      "r": 0.6978176531045935,
+      "a": "polyphonic_arpeggio_intensity_beats",
+      "b": "max_note_density_window"
+    },
+    {
+      "r": 0.6654322457595069,
+      "a": "max_chord_stretch",
+      "b": "max_avg_chord_stretch_window"
+    },
+    {
+      "r": 0.6574367536074371,
+      "a": "avg_chord_stretch",
+      "b": "avg_stretch_velocity_beats"
+    },
+    {
+      "r": 0.6126031676858736,
+      "a": "std_position_shift",
+      "b": "avg_position_shift_speed_beats"
+    },
+    {
+      "r": 0.5928320720247812,
+      "a": "avg_position_shift",
+      "b": "avg_position_shift_speed_beats"
+    }
+  ],
+  "top_spearman": [
+    {
+      "rho": 1.0,
+      "a": "total_notes",
+      "b": "log_total_notes"
+    },
+    {
+      "rho": 0.905993273206056,
+      "a": "max_position_shift",
+      "b": "std_position_shift"
+    },
+    {
+      "rho": 0.8425484274686063,
+      "a": "avg_position_shift",
+      "b": "shift_rate"
+    },
+    {
+      "rho": 0.8019611363020539,
+      "a": "arpeggio_density",
+      "b": "avg_string_jump"
+    },
+    {
+      "rho": 0.7922790622422067,
+      "a": "polyphonic_arpeggio_intensity_beats",
+      "b": "max_note_density_window"
+    },
+    {
+      "rho": 0.7904404279199904,
+      "a": "avg_chord_stretch",
+      "b": "p90_chord_stretch"
+    },
+    {
+      "rho": 0.7524952665283423,
+      "a": "avg_position_shift_speed_beats",
+      "b": "max_position_shift_speed_beats"
+    },
+    {
+      "rho": 0.7336410650170397,
+      "a": "open_string_ratio",
+      "b": "fret_entropy"
+    },
+    {
+      "rho": 0.7200976860972516,
+      "a": "avg_position_shift",
+      "b": "std_position_shift"
+    },
+    {
+      "rho": 0.7146175538802991,
+      "a": "max_chord_stretch",
+      "b": "max_avg_chord_stretch_window"
+    },
+    {
+      "rho": 0.7140389759286321,
+      "a": "max_position_shift",
+      "b": "max_position_shift_speed_beats"
+    },
+    {
+      "rho": 0.7110389898794757,
+      "a": "avg_chord_stretch",
+      "b": "avg_stretch_velocity_beats"
+    }
+  ],
+  "above_vif_cutoff": [
+    "avg_position_shift",
+    "std_position_shift"
+  ],
+  "rank_identical_pairs": [
+    {
+      "a": "total_notes",
+      "b": "log_total_notes"
+    }
+  ]
+}

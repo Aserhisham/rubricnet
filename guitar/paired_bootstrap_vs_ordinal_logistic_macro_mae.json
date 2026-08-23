@@ -1,0 +1,92 @@
+{
+  "opponent": "ordinal_logistic[macro_mae]",
+  "seed": 0,
+  "n_pieces": 640,
+  "resamples": 4000,
+  "results": [
+    {
+      "metric": "macro_mse",
+      "rubricnet": 2.558690086200039,
+      "opponent": 2.749047848843684,
+      "p": 0.896,
+      "survives_holm": false
+    },
+    {
+      "metric": "mse",
+      "rubricnet": 2.075,
+      "opponent": 2.1859375,
+      "p": 0.841,
+      "survives_holm": false
+    },
+    {
+      "metric": "macro_mae",
+      "rubricnet": 1.1285124936143207,
+      "opponent": 1.1628684553417863,
+      "p": 0.81075,
+      "survives_holm": false
+    },
+    {
+      "metric": "quadratic_weighted_kappa",
+      "rubricnet": 0.7393454317060619,
+      "opponent": 0.7288267005875583,
+      "p": 0.78225,
+      "survives_holm": false
+    },
+    {
+      "metric": "spearman_rho",
+      "rubricnet": 0.7583381370120916,
+      "opponent": 0.74931642085874,
+      "p": 0.76575,
+      "survives_holm": false
+    },
+    {
+      "metric": "kendall_tau_b",
+      "rubricnet": 0.6322425736013073,
+      "opponent": 0.6271219683514773,
+      "p": 0.65175,
+      "survives_holm": false
+    },
+    {
+      "metric": "linear_weighted_kappa",
+      "rubricnet": 0.5537428743678918,
+      "opponent": 0.5479487400017201,
+      "p": 0.643,
+      "survives_holm": false
+    },
+    {
+      "metric": "mae",
+      "rubricnet": 1.015625,
+      "opponent": 1.0265625,
+      "p": 0.604,
+      "survives_holm": false
+    },
+    {
+      "metric": "balanced_accuracy",
+      "rubricnet": 0.3198074250975308,
+      "opponent": 0.3182817366594546,
+      "p": 0.53075,
+      "survives_holm": false
+    },
+    {
+      "metric": "cohen_kappa",
+      "rubricnet": 0.2402990529235286,
+      "opponent": 0.24095453633941621,
+      "p": 0.48425,
+      "survives_holm": false
+    },
+    {
+      "metric": "acc_plus_minus_1",
+      "rubricnet": 0.7578125,
+      "opponent": 0.759375,
+      "p": 0.42825,
+      "survives_holm": false
+    },
+    {
+      "metric": "accuracy",
+      "rubricnet": 0.3453125,
+      "opponent": 0.353125,
+      "p": 0.34725,
+      "survives_holm": false
+    }
+  ]
+}

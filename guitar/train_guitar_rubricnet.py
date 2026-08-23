@@ -30,7 +30,8 @@ from guitar.prepare_splits import (
     ALL_FEATURES_V5_PRUNED_COLLINEAR, ALL_FEATURES_V5_PRUNED_FULL,
     ALL_FEATURES_V5_PRUNED_COLLINEAR_EXPERT_NEW,
     ALL_FEATURES_V5_PRUNED_COLLINEAR_EXPERT_NEW_TRIMMED, ALL_FEATURES_V5_PRUNED_COLLINEAR2,
-    ALL_FEATURES_V5_PRUNED_COLLINEAR2_JS,
+    ALL_FEATURES_V5_PRUNED_COLLINEAR2_JS, ALL_FEATURES_V5_PRUNED_COLLINEAR2_HARMONY,
+    ALL_FEATURES_V5_PRUNED_COLLINEAR2_JSFULL, ALL_FEATURES_V5_PRUNED_COLLINEAR2_NATFULL,
     NUM_CLASSES, make_piece_id,
 )
 from rubricnet.rubricnet import RubricnetSklearn
@@ -285,9 +286,9 @@ def write_results_markdown():
                     cols.append(f"{vals:.4f}")
         rows.append(cols)
 
-    # 1. Ordinal regression V1
+    # 1. RubricNet V1 at default hyperparameters (mislabelled "ordinal regression" until 2026-08-22; see guitar/baselines.py)
     if "ordinal_regression" in v1_baselines:
-        add_row("Ordinal regression V1", v1_baselines["ordinal_regression"])
+        add_row("RubricNet V1 (default hparams)", v1_baselines["ordinal_regression"])
     # 2. Decision Tree V1
     if "decision_tree" in v1_baselines:
         add_row("Decision Tree V1", v1_baselines["decision_tree"])
@@ -298,9 +299,9 @@ def write_results_markdown():
     if v1_rubricnet and "metrics" in v1_rubricnet:
         add_row("RubricNet V1", v1_rubricnet["metrics"])
         
-    # 5. Ordinal regression V2
+    # 5. RubricNet V2 at default hyperparameters
     if "ordinal_regression" in v2_baselines:
-        add_row("Ordinal regression V2", v2_baselines["ordinal_regression"])
+        add_row("RubricNet V2 (default hparams)", v2_baselines["ordinal_regression"])
     # 6. Decision Tree V2
     if "decision_tree" in v2_baselines:
         add_row("Decision Tree V2", v2_baselines["decision_tree"])
@@ -311,9 +312,9 @@ def write_results_markdown():
     if v2_rubricnet and "metrics" in v2_rubricnet:
         add_row("RubricNet V2 (Ours)", v2_rubricnet["metrics"], is_list=True)
 
-    # 9. Ordinal regression V3
+    # 9. RubricNet V3 at default hyperparameters
     if "ordinal_regression" in v3_baselines:
-        add_row("Ordinal regression V3", v3_baselines["ordinal_regression"])
+        add_row("RubricNet V3 (default hparams)", v3_baselines["ordinal_regression"])
     # 10. Decision Tree V3
     if "decision_tree" in v3_baselines:
         add_row("Decision Tree V3", v3_baselines["decision_tree"])
@@ -394,15 +395,31 @@ def main():
     parser.add_argument("--v5-pruned-collinear-expert-new", action="store_true", help="V5-pruned-collinear (27 feat) + 7 new expert-proposed descriptors (onset rate, chord_change_ratio, meter, note-duration entropy) -- decide on VAL accuracy, not test")
     parser.add_argument("--v5-pruned-collinear-expert-new-trimmed", action="store_true", help="V5-pruned-collinear (27 feat) + 5 new descriptors (drops n_meter_changes/irregular_meter_ratio, weakest by both rho and RF importance) -- decide on VAL accuracy, not test")
     parser.add_argument("--v5-pruned-collinear2", action="store_true", help="V5-pruned-collinear (27 feat) minus p90_stretch_velocity_beats/p95_position_shift_window (r>0.9 with avg_stretch_velocity_beats/max_position_shift) -- decide on VAL accuracy, not test")
+    parser.add_argument("--splits-path", default=None, help="override the splits file for the selected variant (e.g. composer-grouped robustness check)")
+    parser.add_argument("--columns-json", default=None,
+                        help=("path to a JSON list of descriptor names, overriding the column set of "
+                              "the selected variant. Lets ablations (leave-one-dimension-out, "
+                              "collinearity prunes) run without a new CLI branch per experiment; "
+                              "csv, splits and hyperparameters come from the selected variant."))
+    parser.add_argument("--alias-suffix", default="", help="suffix appended to the checkpoint alias and results filename, to keep an override run separate")
+    parser.add_argument("--v5-pruned-collinear2-natfull", action="store_true", help="V5-pruned-collinear2 (25) + ALL 17 music21-native features (42 inputs) -- tests the full harmony block rather than 4 hand-selected")
+    parser.add_argument("--v5-pruned-collinear2-jsfull", action="store_true", help="V5-pruned-collinear2 (25) + ALL 272 jSymbolic features (297 inputs) -- measures the accuracy cost of handing an additive model a full generic feature block")
+    parser.add_argument("--v5-pruned-collinear2-harmony", action="store_true", help="V5-pruned-collinear2 (25 feat) + 4 music21-native harmony/duration descriptors (max r 0.55 with kept set, vs 0.80 for the jSymbolic four) -- decide on VAL accuracy, not test")
     parser.add_argument("--v5-pruned-collinear2-js", action="store_true", help="V5-pruned-collinear2 (25 feat) + 4 generic jSymbolic descriptors (js_PitchVariety, js_Duration, js_Range, js_MostCommonPitchPrevalence) -- decide on VAL accuracy, not test")
     parser.add_argument("--raw-levels", action="store_true", help="Train on raw 1-20 difficulty levels")
     parser.add_argument("--label-smoothing-temp", type=float, default=None,
                         help="Ordinal label smoothing temperature (0 = hard step, e.g. 0.3 = mild smoothing). Only applies to --v3/--v4 runs.")
+    parser.add_argument("--shape-function", choices=["tanh", "identity"], default="tanh",
+                        help=("per-descriptor shape function before the sum. 'identity' makes each "
+                              "subnetwork a plain affine map, so the aggregated score is linear in the "
+                              "descriptors while loss, ordinal head and decoding rule are unchanged -- "
+                              "isolates the saturating nonlinearity from every other difference against "
+                              "a proportional-odds fit."))
     parser.add_argument("--coarse-loss-weight", type=float, default=None,
                         help="Enable the auxiliary coarse 3-class head with this loss weight (e.g. 0.3). Only applies to --v3/--v4 runs.")
     args = parser.parse_args()
 
-    is_experimental = bool(args.v3_pruned or args.v3_base or args.v3_base_new or args.v5 or args.v6 or args.v5_pruned or args.v5_pruned_collinear or args.v5_pruned_full or args.v5_pruned_collinear_expert_new or args.v5_pruned_collinear_expert_new_trimmed or args.v5_pruned_collinear2 or args.v5_pruned_collinear2_js or args.label_smoothing_temp or args.coarse_loss_weight)
+    is_experimental = bool(args.v3_pruned or args.v3_base or args.v3_base_new or args.v5 or args.v6 or args.v5_pruned or args.v5_pruned_collinear or args.v5_pruned_full or args.v5_pruned_collinear_expert_new or args.v5_pruned_collinear_expert_new_trimmed or args.v5_pruned_collinear2 or args.v5_pruned_collinear2_js or args.v5_pruned_collinear2_harmony or args.v5_pruned_collinear2_jsfull or args.v5_pruned_collinear2_natfull or args.label_smoothing_temp or args.coarse_loss_weight)
     coarse_aux_enabled = bool(args.coarse_loss_weight)
     # v6 uses the 9-class paper-comparison labeling; everything else keeps the
     # frozen 8-class binning. Note num_classes=9 activates the num_classes>8
@@ -412,7 +429,31 @@ def main():
     coarse_map = map_9_to_3 if args.v6 else map_8_to_3
 
     splits_path = "guitar/guitar_splits.json"
-    if args.v5_pruned_collinear2_js:
+    if args.v5_pruned_collinear2_natfull:
+        csv_path = "features/guitar_descriptors_v5_natfull.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR2_NATFULL
+        alias_experiment = "guitar_rubricnet_final_v5_pruned_collinear2_natfull"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        out_path = "guitar/rubricnet_results_v5_pruned_collinear2_natfull.json"
+        print(f"Training RubricNet on 25 guitar descriptors + all 17 music21-native features ({len(columns)} inputs)...")
+    elif args.v5_pruned_collinear2_jsfull:
+        csv_path = "features/guitar_descriptors_v5_jsfull.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR2_JSFULL
+        alias_experiment = "guitar_rubricnet_final_v5_pruned_collinear2_jsfull"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        out_path = "guitar/rubricnet_results_v5_pruned_collinear2_jsfull.json"
+        print(f"Training RubricNet on 25 guitar descriptors + all 272 jSymbolic features ({len(columns)} inputs)...")
+    elif args.v5_pruned_collinear2_harmony:
+        csv_path = "features/guitar_descriptors_v5_harmony.csv"
+        splits_path = "guitar/guitar_splits_v5.json"
+        columns = ALL_FEATURES_V5_PRUNED_COLLINEAR2_HARMONY
+        alias_experiment = "guitar_rubricnet_final_v5_pruned_collinear2_harmony"
+        best_hyperparams_path = "guitar/best_hyperparams_guitar_all_v5.json"
+        out_path = "guitar/rubricnet_results_v5_pruned_collinear2_harmony.json"
+        print("Training RubricNet on V5 pruned-collinear2 (25 feat) + 4 native harmony/duration descriptors...")
+    elif args.v5_pruned_collinear2_js:
         csv_path = "features/guitar_descriptors_v5_jsymbolic.csv"
         splits_path = "guitar/guitar_splits_v5.json"
         columns = ALL_FEATURES_V5_PRUNED_COLLINEAR2_JS
@@ -547,12 +588,29 @@ def main():
         out_path = out_path.replace(".json", f"_coarseaux_{weight_tag}.json")
         print(f"Using auxiliary coarse 3-class head with loss weight={args.coarse_loss_weight}")
 
+    if args.shape_function != "tanh":
+        alias_experiment = f"{alias_experiment}_{args.shape_function}"
+        out_path = out_path.replace(".json", f"_{args.shape_function}.json")
+        print(f"Shape function override: {args.shape_function} (affine subnetworks, no saturation)")
+
+    if args.columns_json:
+        with open(args.columns_json) as f:
+            columns = json.load(f)
+        print(f"Column override from {args.columns_json}: {len(columns)} descriptors")
+    if args.splits_path:
+        splits_path = args.splits_path
+    if args.alias_suffix:
+        alias_experiment = f"{alias_experiment}_{args.alias_suffix}"
+        out_path = out_path.replace(".json", f"_{args.alias_suffix}.json")
+    print(f"splits={splits_path}\nalias={alias_experiment}\nout={out_path}")
+
     features, splits = load_data(
         csv_path=csv_path,
         splits_path=splits_path,
         columns=columns
     )
     hyperparams = load_hyperparams(best_hyperparams_path)
+    hyperparams["shape_function"] = args.shape_function
     if args.label_smoothing_temp:
         hyperparams["label_smoothing_temp"] = args.label_smoothing_temp
     if args.coarse_loss_weight:
@@ -591,6 +649,11 @@ def main():
 
     # Track if any fold collapses below 0.20 accuracy
     collapsed_folds = []
+
+    # Per-(seed, fold) test predictions. Dumped so every model in the thesis can be
+    # scored by one metric implementation (guitar/unified_table.py) rather than each
+    # script computing its own subset of the metric suite in its own way.
+    prediction_dump = []
 
     for seed in seeds:
         print(f"\nTraining with Seed {seed}:")
@@ -685,6 +748,14 @@ def main():
             seed_val_mae.append(fold_val_m["mae"])
             seed_val_tau.append(fold_val_m["kendall_tau"])
 
+            prediction_dump.append({
+                "seed": int(seed),
+                "fold": int(split_idx),
+                "piece_ids": [str(i) for i in X_test.index],
+                "y_true": [int(v) for v in np.asarray(y_test)],
+                "y_pred": [int(v) for v in np.asarray(y_pred)],
+            })
+
             # Compute 8-class metrics
             fold_m = compute_metrics(y_test, y_pred)
             
@@ -756,7 +827,8 @@ def main():
             "hyperparams": hyperparams,
             "seeds": seeds,
             "metrics": metrics_summary,
-            "val_metrics": val_metrics_summary
+            "val_metrics": val_metrics_summary,
+            "predictions": prediction_dump
         }, f, indent=2)
     print(f"\nWrote final detailed results to {out_path}")
 

@@ -39,6 +39,24 @@ from rubricnet.rubricnet import RubricnetSklearn
 
 N_SPLITS = 5
 
+# NOTE ON NAMING. The dict below, and run_rubricnet_default_hparams() that consumes
+# it, were written believing RubricnetSklearn wrapped a plain ordinal *linear* model --
+# the class it instantiates is called LogisticRegressionOrdinal. It does not. That class
+# name is inherited verbatim from the upstream RubricNet release (see
+# rubricnet_original/rubricnet.py:116, present unchanged in this repo's initial commit):
+# upstream repurposed the class to host the Rubricnet module and left the original
+# `torch.nn.Linear` commented out on the line above it, without renaming.
+#
+# Consequence: this baseline is RubricNet itself, run at the default hyperparameters
+# below rather than the Optuna-selected ones. `hidden_size=32` never took effect --
+# Rubricnet.__init__ does not accept a hidden size, so the value is stored and ignored.
+# Apart from that one key these are exactly train_guitar_rubricnet.DEFAULT_HYPERPARAMS.
+#
+# The function is NOT rewired to a real linear model: every "Ordinal Regression" number
+# already reported came from it, and changing its behaviour would make those numbers
+# unreproducible. It is renamed instead, so the code stops asserting something false,
+# and it keeps its "ordinal_regression" result key so existing JSON stays readable.
+# The genuine linear ordinal floor lives in guitar/tuned_baselines.py::OrdinalLogistic.
 ORDINAL_ARGS = dict(
     lr=0.005,
     batch_size=16,
@@ -74,26 +92,35 @@ def get_fold_xy(features, splits, split_idx, subset):
     return X, y
 
 
+# Full metric suite. The earlier four-metric version is why accuracy +- 1 and
+# Kendall's tau are blank for most baseline rows in the thesis's generation table:
+# they were never computed, not unavailable in principle.
+SCORE_KEYS = ("accuracy", "balanced_accuracy", "acc_plus_minus_1", "mae", "mse", "kendall_tau")
+
+
 def score(y_true, y_pred):
-    return dict(
-        accuracy=accuracy_score(y_true, y_pred),
-        balanced_accuracy=balanced_accuracy_score(y_true, y_pred),
-        mae=mean_absolute_error(y_true, y_pred),
-        mse=mean_squared_error(y_true, y_pred),
-    )
+    from guitar.train_guitar_rubricnet import compute_metrics
+    m = compute_metrics(y_true, y_pred)
+    return {k: float(m[k]) for k in SCORE_KEYS}
 
 
 def summarize(name, fold_scores):
     print(f"\n{name}")
     metrics = {}
-    for key in ("accuracy", "balanced_accuracy", "mae", "mse"):
+    for key in SCORE_KEYS:
         values = [s[key] for s in fold_scores]
         metrics[key] = values
         print(f"  {key:18s} {mean(values):.4f} +/- {stdev(values):.4f}")
     return metrics
 
 
-def run_ordinal_regression(features, splits, columns, alias_experiment, num_classes=NUM_CLASSES):
+def run_rubricnet_default_hparams(features, splits, columns, alias_experiment, num_classes=NUM_CLASSES):
+    """RubricNet at default hyperparameters -- see the naming note above ORDINAL_ARGS.
+
+    Read as an ablation of the hyperparameter search rather than as an independent
+    baseline: it is the same architecture as the headline model, differing only in
+    that its hyperparameters were never tuned.
+    """
     fold_scores = []
     for split_idx in range(N_SPLITS):
         X_train, y_train = get_fold_xy(features, splits, split_idx, "train")
@@ -125,7 +152,7 @@ def run_ordinal_regression(features, splits, columns, alias_experiment, num_clas
         fold_scores.append(score(y_test, y_pred))
         print(f"  split {split_idx}: acc={fold_scores[-1]['accuracy']:.4f} MAE={fold_scores[-1]['mae']:.4f}")
 
-    metrics = summarize("Ordinal regression (LogisticRegressionOrdinal)", fold_scores)
+    metrics = summarize("RubricNet (default hyperparameters)", fold_scores)
     return metrics
 
 
@@ -265,7 +292,9 @@ def main():
     features, splits = load_data(csv_path=csv_path, splits_path=splits_path, columns=columns)
 
     results = {
-        "ordinal_regression": run_ordinal_regression(features, splits, columns, alias, num_classes=num_classes),
+        # key kept for backwards compatibility with existing result JSON; see the
+        # naming note above ORDINAL_ARGS for what this row actually is.
+        "ordinal_regression": run_rubricnet_default_hparams(features, splits, columns, alias, num_classes=num_classes),
         "random_forest": run_tree_baseline(features, splits, columns, RandomForestClassifier, "Random Forest", n_estimators=200),
         "decision_tree": run_tree_baseline(features, splits, columns, DecisionTreeClassifier, "Decision Tree", max_depth=6),
     }

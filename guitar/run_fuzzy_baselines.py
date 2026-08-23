@@ -187,6 +187,11 @@ def main():
         )
         cs_metrics = compute_metrics(y_test, y_pred_cs)
         cs_metrics["selected_m"] = best_m
+        # Raw predictions are dumped so that every model in the thesis can be scored
+        # by one metric implementation (guitar/unified_table.py) instead of each
+        # script computing its own subset of the suite.
+        cs_metrics["y_true"] = [int(v) for v in np.asarray(y_test)]
+        cs_metrics["y_pred"] = [int(v) for v in np.asarray(y_pred_cs)]
         cs_per_fold.append(cs_metrics)
         cs_rules_by_fold[str(split_idx)] = rules_dump
         print(f"  CompleteSearch: m={best_m} acc={cs_metrics['accuracy']:.4f} bacc={cs_metrics['balanced_accuracy']:.4f} "
@@ -199,6 +204,8 @@ def main():
         any_negation_used = any_negation_used or neg_used
         fpt_metrics = compute_metrics(y_test, y_pred_fpt)
         fpt_metrics["selected_dmax"] = best_dmax
+        fpt_metrics["y_true"] = [int(v) for v in np.asarray(y_test)]
+        fpt_metrics["y_pred"] = [int(v) for v in np.asarray(y_pred_fpt)]
         fpt_per_fold.append(fpt_metrics)
         fpt_trees_by_fold[str(split_idx)] = tree_dump
         print(f"  FuzzyPatternTree: d_max={best_dmax} acc={fpt_metrics['accuracy']:.4f} bacc={fpt_metrics['balanced_accuracy']:.4f} "

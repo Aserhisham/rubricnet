@@ -1,0 +1,91 @@
+{
+  "summary": {
+    "pairs": 6,
+    "mean_coverage": 0.7854,
+    "median_coverage": 0.9135,
+    "mean_pitch_exact_of_matched": 0.8474,
+    "min_pitch_exact_of_matched": 0.6667,
+    "mean_string_fret_exact": 0.9289,
+    "total_matched_chords": 2122
+  },
+  "pairs": [
+    {
+      "pdf_chords": 512,
+      "native_chords": 1068,
+      "length_ratio": 2.086,
+      "coverage": 0.748,
+      "matched_chords": 383,
+      "pitch_set_exact_of_matched": 0.9634,
+      "string_fret_exact_of_pitch_matched": 0.981,
+      "composer": "Fernando Sor",
+      "pdf_title": "Allegretto moderato, Op. 6 no. 11",
+      "native_title": "Etude, Op. 6 no. 11",
+      "native_source": "gaps"
+    },
+    {
+      "pdf_chords": 1176,
+      "native_chords": 1161,
+      "length_ratio": 1.013,
+      "coverage": 0.8954,
+      "matched_chords": 1053,
+      "pitch_set_exact_of_matched": 0.9164,
+      "string_fret_exact_of_pitch_matched": 0.6477,
+      "composer": "J.S. Bach",
+      "pdf_title": "Fuge in A Minor, BWV 1000",
+      "native_title": "Fugue, BWV 1000",
+      "native_source": "dada_gp"
+    },
+    {
+      "pdf_chords": 208,
+      "native_chords": 208,
+      "length_ratio": 1.0,
+      "coverage": 0.9952,
+      "matched_chords": 207,
+      "pitch_set_exact_of_matched": 0.9227,
+      "string_fret_exact_of_pitch_matched": 0.9948,
+      "composer": "Fernando Sor",
+      "pdf_title": "Einleitende Etuden (Introductory Studies); Op. 60 no. 5",
+      "native_title": "Lesson, Op. 60 no. 5",
+      "native_source": "dada_gp"
+    },
+    {
+      "pdf_chords": 185,
+      "native_chords": 272,
+      "length_ratio": 1.47,
+      "coverage": 0.9135,
+      "matched_chords": 169,
+      "pitch_set_exact_of_matched": 0.6864,
+      "string_fret_exact_of_pitch_matched": 1.0,
+      "composer": "Mauro Giuliani",
+      "pdf_title": "Lesson, Op. 139 no. 3",
+      "native_title": "Study, Op. 139 no. 3",
+      "native_source": "gaps"
+    },
+    {
+      "pdf_chords": 281,
+      "native_chords": 436,
+      "length_ratio": 1.552,
+      "coverage": 0.9964,
+      "matched_chords": 280,
+      "pitch_set_exact_of_matched": 0.9286,
+      "string_fret_exact_of_pitch_matched": 1.0,
+      "composer": "Fernando Sor",
+      "pdf_title": "Allegretto, Op. 35 no. 22",
+      "native_title": "Studio in Si Minore, Op. 35 no. 22",
+      "native_source": "gaps"
+    },
+    {
+      "pdf_chords": 183,
+      "native_chords": 120,
+      "length_ratio": 1.525,
+      "coverage": 0.1639,
+      "matched_chords": 30,
+      "pitch_set_exact_of_matched": 0.6667,
+      "string_fret_exact_of_pitch_matched": 0.95,
+      "composer": "Matteo Carcassi",
+      "pdf_title": "Etude, Op. 60 no. 8",
+      "native_title": "Study, Op. 60 no. 8",
+      "native_source": "dada_gp"
+    }
+  ]
+}

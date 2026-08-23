@@ -1,0 +1,223 @@
+{
+  "summary": {
+    "confirmed_pairs": 6,
+    "pairs_with_grade_disagreement": 2,
+    "max_grade_disagreement": 2,
+    "leaked_test_instances_total": 12,
+    "leaked_test_instances_per_fold": 2.4,
+    "test_fold_size": 128,
+    "leaked_share_of_test_fold": 0.0187
+  },
+  "pairs": [
+    {
+      "composer": "Fernando Sor",
+      "native_title": "Etude, Op. 6 no. 11",
+      "native_source": "gaps",
+      "native_grade": 7,
+      "native_notes": 1068,
+      "pdf_title": "Allegretto moderato, Op. 6 no. 11",
+      "pdf_grade": 7,
+      "pdf_notes": 1072,
+      "grade_disagreement": 0,
+      "note_count_ratio": 1.004,
+      "folds_with_one_member_in_test": 2,
+      "fold_roles": [
+        [
+          "train",
+          "test"
+        ],
+        [
+          "train",
+          "train"
+        ],
+        [
+          "train",
+          "train"
+        ],
+        [
+          "train",
+          "train"
+        ],
+        [
+          "test",
+          "train"
+        ]
+      ]
+    },
+    {
+      "composer": "J.S. Bach",
+      "native_title": "Fugue, BWV 1000",
+      "native_source": "dada_gp",
+      "native_grade": 15,
+      "native_notes": 1721,
+      "pdf_title": "Fuge in A Minor, BWV 1000",
+      "pdf_grade": 17,
+      "pdf_notes": 1737,
+      "grade_disagreement": 2,
+      "note_count_ratio": 1.009,
+      "folds_with_one_member_in_test": 2,
+      "fold_roles": [
+        [
+          "val",
+          "test"
+        ],
+        [
+          "train",
+          "train"
+        ],
+        [
+          "test",
+          "train"
+        ],
+        [
+          "train",
+          "train"
+        ],
+        [
+          "train",
+          "train"
+        ]
+      ]
+    },
+    {
+      "composer": "Fernando Sor",
+      "native_title": "Lesson, Op. 60 no. 5",
+      "native_source": "dada_gp",
+      "native_grade": 2,
+      "native_notes": 227,
+      "pdf_title": "Einleitende Etuden (Introductory Studies); Op. 60 no. 5",
+      "pdf_grade": 2,
+      "pdf_notes": 212,
+      "grade_disagreement": 0,
+      "note_count_ratio": 1.071,
+      "folds_with_one_member_in_test": 2,
+      "fold_roles": [
+        [
+          "train",
+          "train"
+        ],
+        [
+          "train",
+          "train"
+        ],
+        [
+          "train",
+          "train"
+        ],
+        [
+          "test",
+          "train"
+        ],
+        [
+          "train",
+          "test"
+        ]
+      ]
+    },
+    {
+      "composer": "Mauro Giuliani",
+      "native_title": "Study, Op. 139 no. 3",
+      "native_source": "gaps",
+      "native_grade": 5,
+      "native_notes": 362,
+      "pdf_title": "Lesson, Op. 139 no. 3",
+      "pdf_grade": 6,
+      "pdf_notes": 318,
+      "grade_disagreement": 1,
+      "note_count_ratio": 1.138,
+      "folds_with_one_member_in_test": 2,
+      "fold_roles": [
+        [
+          "test",
+          "train"
+        ],
+        [
+          "train",
+          "train"
+        ],
+        [
+          "train",
+          "test"
+        ],
+        [
+          "train",
+          "train"
+        ],
+        [
+          "train",
+          "val"
+        ]
+      ]
+    },
+    {
+      "composer": "Fernando Sor",
+      "native_title": "Studio in Si Minore, Op. 35 no. 22",
+      "native_source": "gaps",
+      "native_grade": 4,
+      "native_notes": 437,
+      "pdf_title": "Allegretto, Op. 35 no. 22",
+      "pdf_grade": 4,
+      "pdf_notes": 302,
+      "grade_disagreement": 0,
+      "note_count_ratio": 1.447,
+      "folds_with_one_member_in_test": 2,
+      "fold_roles": [
+        [
+          "train",
+          "train"
+        ],
+        [
+          "test",
+          "train"
+        ],
+        [
+          "train",
+          "train"
+        ],
+        [
+          "val",
+          "test"
+        ],
+        [
+          "train",
+          "train"
+        ]
+      ]
+    },
+    {
+      "composer": "Matteo Carcassi",
+      "native_title": "Study, Op. 60 no. 8",
+      "native_source": "dada_gp",
+      "native_grade": 6,
+      "native_notes": 145,
+      "pdf_title": "Etude, Op. 60 no. 8",
+      "pdf_grade": 6,
+      "pdf_notes": 183,
+      "grade_disagreement": 0,
+      "note_count_ratio": 1.262,
+      "folds_with_one_member_in_test": 2,
+      "fold_roles": [
+        [
+          "train",
+          "train"
+        ],
+        [
+          "train",
+          "train"
+        ],
+        [
+          "test",
+          "train"
+        ],
+        [
+          "train",
+          "test"
+        ],
+        [
+          "train",
+          "train"
+        ]
+      ]
+    }
+  ]
+}

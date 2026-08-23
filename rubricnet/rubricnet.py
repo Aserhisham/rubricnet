@@ -39,8 +39,18 @@ class TraditionalLinear(nn.Module):
 
 
 class Rubricnet(nn.Module):
-    def __init__(self, descriptor_input_sizes, num_classes, dropout, num_coarse_classes=None):
+    def __init__(self, descriptor_input_sizes, num_classes, dropout, num_coarse_classes=None,
+                 shape_function="tanh"):
         super(Rubricnet, self).__init__()
+        # Shape function applied per descriptor before the sum. "tanh" is the
+        # architecture as published; "identity" turns each subnetwork into a plain
+        # affine map, so S(x) = sum_i (w_i x_i + b_i) is linear in the descriptors
+        # while the loss, the ordinal head and the decoding rule stay exactly as
+        # they are. That isolates the saturating nonlinearity from every other
+        # difference between RubricNet and a proportional-odds fit.
+        if shape_function not in ("tanh", "identity"):
+            raise ValueError(f"unknown shape_function {shape_function!r}")
+        self.shape_function = shape_function
         # Initialize linear layers for each descriptor. Assuming each input descriptor is a single value.
         self.descriptor_layers = nn.ModuleList([nn.Linear(1, 1) for _ in range(descriptor_input_sizes)])
         # Final layer to map aggregated score to ordinal classes. Adjusts to take a single aggregated score.
@@ -63,7 +73,7 @@ class Rubricnet(nn.Module):
             descriptors = F.dropout(descriptors, p=self.dropout)
         # Process each descriptor through its layer, apply tanh, and scale output
         # scores = [torch.sigmoid(layer(descriptors[:, idx].unsqueeze(-1))) for idx, layer in enumerate(self.descriptor_layers)]
-        scores = [torch.tanh(layer(descriptors[:, idx].unsqueeze(-1))) for idx, layer in
+        scores = [self._shape(layer(descriptors[:, idx].unsqueeze(-1))) for idx, layer in
                   enumerate(self.descriptor_layers)]
         # Sum the scores to get a single aggregated score tensor
         aggregated_score = torch.sum(torch.stack(scores), dim=0)  # Ensure correct summation over batch
@@ -81,7 +91,7 @@ class Rubricnet(nn.Module):
         if self.training:
             descriptors = F.dropout(descriptors, p=self.dropout)
         # Process each descriptor through its layer, apply tanh, and scale output
-        scores = [torch.tanh(layer(descriptors[:, idx].unsqueeze(-1))) for idx, layer in
+        scores = [self._shape(layer(descriptors[:, idx].unsqueeze(-1))) for idx, layer in
                   enumerate(self.descriptor_layers)]
         # Sum the scores to get a single aggregated score tensor
         aggregated_score = torch.sum(torch.stack(scores), dim=0)
@@ -91,9 +101,12 @@ class Rubricnet(nn.Module):
         if self.training:
             descriptors = F.dropout(descriptors, p=self.dropout)
         # Process each descriptor through its layer, apply tanh, and scale output
-        scores = [torch.tanh(layer(descriptors[:, idx].unsqueeze(-1))).detach().cpu().squeeze() for idx, layer in
+        scores = [self._shape(layer(descriptors[:, idx].unsqueeze(-1))).detach().cpu().squeeze() for idx, layer in
                   enumerate(self.descriptor_layers)]
         return scores
+
+    def _shape(self, z):
+        return z if self.shape_function == "identity" else torch.tanh(z)
 
 
 def _prediction2label(pred):
@@ -152,7 +165,8 @@ class OrdinalLoss(nn.Module):
 
 class LogisticRegressionOrdinal(pl.LightningModule):
     def __init__(self, input_dim, num_classes, lr, hidden_size, num_layers, dropout, decay_lr, weight_decay,
-                 label_smoothing_temp=0.0, num_coarse_classes=None, coarse_loss_weight=0.3):
+                 label_smoothing_temp=0.0, num_coarse_classes=None, coarse_loss_weight=0.3,
+                 shape_function="tanh"):
         super(LogisticRegressionOrdinal, self).__init__()
         self.input_dim = input_dim
         self.num_classes = num_classes
@@ -165,8 +179,10 @@ class LogisticRegressionOrdinal(pl.LightningModule):
         self.label_smoothing_temp = label_smoothing_temp
         self.num_coarse_classes = num_coarse_classes
         self.coarse_loss_weight = coarse_loss_weight
+        self.shape_function = shape_function
         # self.linear = torch.nn.Linear(input_dim, num_classes)
-        self.linear1 = Rubricnet(input_dim, num_classes, dropout, num_coarse_classes=num_coarse_classes)
+        self.linear1 = Rubricnet(input_dim, num_classes, dropout, num_coarse_classes=num_coarse_classes,
+                                 shape_function=shape_function)
         self.loss_fn = OrdinalLoss(label_smoothing_temp=label_smoothing_temp)
         self.coarse_loss_fn = OrdinalLoss(label_smoothing_temp=label_smoothing_temp) if num_coarse_classes else None
         #self.loss_fn = torch.nn.NLLLoss()
@@ -262,12 +278,14 @@ class RubricnetSklearn:
         self.label_smoothing_temp = getattr(args, 'label_smoothing_temp', 0.0)
         self.num_coarse_classes = getattr(args, 'num_coarse_classes', None)
         self.coarse_loss_weight = getattr(args, 'coarse_loss_weight', 0.3)
+        self.shape_function = getattr(args, 'shape_function', 'tanh')
         model = LogisticRegressionOrdinal(input_dim, num_classes, lr=args.lr, hidden_size=args.hidden_size,
                                           num_layers=args.num_layers, dropout=args.dropout, decay_lr=args.decay_lr,
                                           weight_decay=args.weight_decay,
                                           label_smoothing_temp=self.label_smoothing_temp,
                                           num_coarse_classes=self.num_coarse_classes,
-                                          coarse_loss_weight=self.coarse_loss_weight)
+                                          coarse_loss_weight=self.coarse_loss_weight,
+                                          shape_function=self.shape_function)
         self.model = model
         early_stopping = EarlyStopping(
             monitor='acc/val/dataloader_idx_1',
@@ -307,7 +325,8 @@ class RubricnetSklearn:
             hidden_size=self.hidden_size, num_layers=self.num_layers, dropout=self.dropout,
             decay_lr=self.decay_lr, weight_decay=self.weight_decay,
             label_smoothing_temp=self.label_smoothing_temp,
-            num_coarse_classes=self.num_coarse_classes, coarse_loss_weight=self.coarse_loss_weight
+            num_coarse_classes=self.num_coarse_classes, coarse_loss_weight=self.coarse_loss_weight,
+            shape_function=self.shape_function
         ).to(self.model.device)
 
     def calculate_weights(self, y_train, num_classes=9):

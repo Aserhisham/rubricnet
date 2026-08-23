@@ -289,6 +289,104 @@ FEATURE_GROUPS_V5_PRUNED_COLLINEAR2_JS = {
 }
 ALL_FEATURES_V5_PRUNED_COLLINEAR2_JS = ALL_FEATURES_V5_PRUNED_COLLINEAR2 + JSYMBOLIC_COLUMNS
 
+# Harmony / notated-duration descriptors from music21's *native* extractor set (not
+# jSymbolic -- see guitar/extract_jsymbolic_features.py NATIVE_EXCLUDE and
+# guitar/JSYMBOLIC_STUDY.md). These cover the one dimension absent from both the 25 guitar
+# descriptors and the 272 jSymbolic features: vertical harmonic content. The guitar set
+# measures chords only physically (chord_ratio counts 2+ notes, chord_stretch is fret span)
+# and never harmonically.
+#
+# Selected on two axes rather than correlation alone, because the jSymbolic experiment
+# showed that individually strong descriptors which duplicate existing information do not
+# help an additive model. The two strongest native features by rho
+# (UniquePitchClassSetSimultaneities +0.580, UniqueSetClassSimultaneities +0.510) are
+# deliberately EXCLUDED: at r = 0.72 / 0.65 with log_total_notes they are length proxies,
+# the same trap js_PitchVariety fell into. MostCommonSetClassSimultaneityPrevalence is
+# excluded outright at r = 0.908 with chord_ratio, failing the r > 0.9 bar used throughout
+# the V5 pruning. IncorrectlySpelledTriadPrevalence is excluded for coverage (n = 505/629).
+#
+#   m21_UniqueNoteQuarterLengths                      rho +0.459, max r 0.551 (repetition_ratio)
+#   m21_MostCommonPitchClassSetSimultaneityPrevalence rho -0.358, max r 0.419 (open_string_ratio)
+#   m21_DominantSeventhSimultaneityPrevalence         rho +0.285, max r 0.262 (chord_ratio)
+#   m21_DiminishedSeventhSimultaneityPrevalence       rho +0.211, max r 0.303 (p90_chord_stretch)
+#
+# Max collinearity 0.551, against 0.76-0.80 for the four jSymbolic descriptors that failed.
+# That contrast is the point of the experiment: if these also fail to help, collinearity was
+# not the mechanism and the additive model is simply saturated at 25 descriptors.
+HARMONY_COLUMNS = [
+    "m21_UniqueNoteQuarterLengths",
+    "m21_MostCommonPitchClassSetSimultaneityPrevalence",
+    "m21_DominantSeventhSimultaneityPrevalence",
+    "m21_DiminishedSeventhSimultaneityPrevalence",
+]
+FEATURE_GROUPS_V5_PRUNED_COLLINEAR2_HARMONY = {
+    **FEATURE_GROUPS_V5_PRUNED_COLLINEAR2,
+    "harmony": HARMONY_COLUMNS,
+}
+ALL_FEATURES_V5_PRUNED_COLLINEAR2_HARMONY = ALL_FEATURES_V5_PRUNED_COLLINEAR2 + HARMONY_COLUMNS
+
+# The full generic feature block (all 272 jSymbolic columns surviving the provenance
+# screen) layered onto the 25 guitar descriptors -- 297 inputs in total.
+#
+# This exists to answer a question the thesis otherwise only asserts: what actually happens
+# when a strictly additive model is handed a large generic feature set? There is no
+# architectural barrier (RubricNet is one weight and bias per descriptor, so 297 inputs is
+# 594 parameters), and formal decomposability is untouched -- every prediction remains
+# exactly the sum of its per-descriptor contributions. What degrades is the rubric reading
+# the thesis is built on: a 297-row score sheet is not something a teacher can verify
+# against a score, and rows like js_BasicPitchHistogram_71 name no physical action even
+# individually. Measuring the accuracy cost separates that pedagogical objection from an
+# accuracy objection, instead of leaving them conflated.
+#
+# The column list is read from disk rather than hardcoded, since it is 272 names generated
+# by guitar/extract_jsymbolic_features.py. Requires
+# features/guitar_descriptors_v5_jsfull.csv. 11 pieces are NaN (music21 parse failures) and
+# are handled by the existing train-fold median imputation.
+#
+# Caveat when reporting: the hyperparameters in best_hyperparams_guitar_all_v5.json were
+# tuned for a 32-descriptor set. Reusing them at 297 inputs is a genuine confound -- the
+# same one already noted in the thesis for the 26-descriptor pruning experiment.
+def _load_jsfull_columns(path="guitar/jsfull_columns.json"):
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return []
+
+
+JSYMBOLIC_FULL_COLUMNS = _load_jsfull_columns()
+ALL_FEATURES_V5_PRUNED_COLLINEAR2_JSFULL = (
+    ALL_FEATURES_V5_PRUNED_COLLINEAR2 + JSYMBOLIC_FULL_COLUMNS
+)
+
+# The complete music21-native block (all 17 columns with variance and adequate coverage),
+# as opposed to the four hand-selected in HARMONY_COLUMNS above.
+#
+# Two reasons this is a distinct experiment rather than a repeat. First, 17 extra inputs
+# sits in the untested middle between the two regimes already measured: 4 additions were
+# inert (saturation) and 272 caused real degradation (dilution). Second, and more
+# importantly, HARMONY_COLUMNS reflects a judgement call -- the two strongest native
+# features by rho (UniquePitchClassSetSimultaneities +0.580, UniqueSetClassSimultaneities
+# +0.510) were deliberately excluded as length proxies, and MostCommonSetClass-
+# SimultaneityPrevalence was excluded at r = 0.908 with chord_ratio. Feeding the whole
+# block lets the model arbitrate instead of the selection heuristic, which guards against
+# the possibility that the null result was an artefact of picking the wrong four.
+#
+# Requires features/guitar_descriptors_v5_natfull.csv (built alongside
+# guitar/natfull_columns.json). 12 pieces are NaN and are median-imputed per training fold.
+def _load_natfull_columns(path="guitar/natfull_columns.json"):
+    try:
+        with open(path) as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return []
+
+
+NATIVE_FULL_COLUMNS = _load_natfull_columns()
+ALL_FEATURES_V5_PRUNED_COLLINEAR2_NATFULL = (
+    ALL_FEATURES_V5_PRUNED_COLLINEAR2 + NATIVE_FULL_COLUMNS
+)
+
 NUM_CLASSES = 8
 
 # Bin edges from equal-frequency binning over the 724-piece dataset (inclusive level ranges).

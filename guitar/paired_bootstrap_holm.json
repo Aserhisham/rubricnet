@@ -1,0 +1,74 @@
+{
+  "accuracy": {
+    "rubricnet": 0.3453125,
+    "rf_macro_tuned": 0.3296875,
+    "p": 0.742,
+    "holm_survives": false
+  },
+  "balanced_accuracy": {
+    "rubricnet": 0.3198074250975308,
+    "rf_macro_tuned": 0.3099930561263631,
+    "p": 0.6725,
+    "holm_survives": false
+  },
+  "acc_plus_minus_1": {
+    "rubricnet": 0.7578125,
+    "rf_macro_tuned": 0.74375,
+    "p": 0.77175,
+    "holm_survives": false
+  },
+  "mae": {
+    "rubricnet": 1.015625,
+    "rf_macro_tuned": 1.0796875,
+    "p": 0.9565,
+    "holm_survives": false
+  },
+  "macro_mae": {
+    "rubricnet": 1.1285124936143207,
+    "rf_macro_tuned": 1.2035375626525713,
+    "p": 0.96375,
+    "holm_survives": false
+  },
+  "mse": {
+    "rubricnet": 2.075,
+    "rf_macro_tuned": 2.3546875,
+    "p": 0.98975,
+    "holm_survives": false
+  },
+  "macro_mse": {
+    "rubricnet": 2.558690086200039,
+    "rf_macro_tuned": 2.9505888151295077,
+    "p": 0.9875,
+    "holm_survives": false
+  },
+  "kappa": {
+    "rubricnet": 0.2402990529235286,
+    "rf_macro_tuned": 0.21874599854880705,
+    "p": 0.7975,
+    "holm_survives": false
+  },
+  "lwk": {
+    "rubricnet": 0.5537428743678918,
+    "rf_macro_tuned": 0.5374010188391093,
+    "p": 0.85725,
+    "holm_survives": false
+  },
+  "qwk": {
+    "rubricnet": 0.7393454317060619,
+    "rf_macro_tuned": 0.7221434777698649,
+    "p": 0.883,
+    "holm_survives": false
+  },
+  "kendall_tau_b": {
+    "rubricnet": 0.6322425736013073,
+    "rf_macro_tuned": 0.6144011225315282,
+    "p": 0.90425,
+    "holm_survives": false
+  },
+  "spearman_rho": {
+    "rubricnet": 0.7583381370120916,
+    "rf_macro_tuned": 0.741311909710681,
+    "p": 0.90275,
+    "holm_survives": false
+  }
+}

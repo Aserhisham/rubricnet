@@ -1,0 +1,852 @@
+{
+  "summary": {
+    "n_pieces": 83,
+    "skipped": {
+      "no_midi": 53,
+      "no_rhythm": 0,
+      "parse_fail": 0,
+      "low_coverage": 23,
+      "len_mismatch": 0
+    },
+    "coverage_threshold": 0.9,
+    "exact_match_mean": 0.9747531130900092,
+    "exact_match_median": 0.994475138121547,
+    "within_2x_mean": 0.9881057549657698,
+    "median_abs_log2_median": 0.0,
+    "total_len_ratio_median": 1.0047169811320755,
+    "pieces_exact_over_50pct": 83,
+    "pieces_exact_over_80pct": 83
+  },
+  "per_piece": [
+    {
+      "piece": "Agitato, Op. 38 no. 7||Napoleon Coste",
+      "n": 284,
+      "coverage": 0.9789473684210527,
+      "matched_frac": 0.9788732394366197,
+      "exact": 0.9788732394366197,
+      "within_2x": 0.9929577464788732,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.054054054054054
+    },
+    {
+      "piece": "Allegretto, Op. 241 no. 14||Ferdinando Carulli",
+      "n": 190,
+      "coverage": 0.9319371727748691,
+      "matched_frac": 0.9315789473684211,
+      "exact": 0.9578947368421052,
+      "within_2x": 0.9894736842105263,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.05
+    },
+    {
+      "piece": "Allegretto, Op. 35 no. 22||Fernando Sor",
+      "n": 280,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Allegretto, Op. 38 no. 13||Napoleon Coste",
+      "n": 297,
+      "coverage": 0.9261744966442953,
+      "matched_frac": 0.9259259259259259,
+      "exact": 0.8922558922558923,
+      "within_2x": 0.9393939393939394,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0806100217864925
+    },
+    {
+      "piece": "Allegro Moderato, Op. 38 no. 23||Napoleon Coste",
+      "n": 1036,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Andante, Op. 241 no. 17||Ferdinando Carulli",
+      "n": 89,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Andante, Op. 35 no. 13||Fernando Sor",
+      "n": 192,
+      "coverage": 0.9896373056994818,
+      "matched_frac": 0.9895833333333334,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Andantino in C; Op. 35 no. 2||Fernando Sor",
+      "n": 73,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Caprice, Op. 100 no. 13||Mauro Giuliani",
+      "n": 461,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Estudio de Concierto||Agustin Barrios Mandore",
+      "n": 794,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Etude||Napoleon Coste",
+      "n": 64,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Etude, Op. 38 no. 1||Napoleon Coste",
+      "n": 278,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Etude, Op. 38 no. 23||Napoleon Coste",
+      "n": 675,
+      "coverage": 0.9970414201183432,
+      "matched_frac": 0.997037037037037,
+      "exact": 0.997037037037037,
+      "within_2x": 0.9985185185185185,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0112834978843441
+    },
+    {
+      "piece": "Etude, Op. 38 no. 7???||Napoleon Coste",
+      "n": 265,
+      "coverage": 0.981203007518797,
+      "matched_frac": 0.9811320754716981,
+      "exact": 0.9886792452830189,
+      "within_2x": 0.9962264150943396,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0069444444444444
+    },
+    {
+      "piece": "Etude, Op. 60 no. 19||Matteo Carcassi",
+      "n": 416,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Etude, Op. 60 no. 25||Matteo Carcassi",
+      "n": 797,
+      "coverage": 0.9724310776942355,
+      "matched_frac": 0.972396486825596,
+      "exact": 0.9899623588456713,
+      "within_2x": 0.9962358845671268,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0178372352285396
+    },
+    {
+      "piece": "Etude, Op. 60 no. 8||Matteo Carcassi",
+      "n": 182,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Etude, Op. 60 no. 9||Matteo Carcassi",
+      "n": 407,
+      "coverage": 0.9656862745098039,
+      "matched_frac": 0.9656019656019657,
+      "exact": 0.9066339066339066,
+      "within_2x": 0.9631449631449631,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0803571428571428
+    },
+    {
+      "piece": "Las Dos Hermanitas||Francisco Tarrega",
+      "n": 293,
+      "coverage": 0.9285714285714286,
+      "matched_frac": 0.9283276450511946,
+      "exact": 0.8156996587030717,
+      "within_2x": 0.931740614334471,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0767932489451477
+    },
+    {
+      "piece": "Lesson, Op. 139 no. 3||Mauro Giuliani",
+      "n": 184,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Moderato, Op. 35 no. 17||Fernando Sor",
+      "n": 253,
+      "coverage": 0.984251968503937,
+      "matched_frac": 0.9841897233201581,
+      "exact": 0.9881422924901185,
+      "within_2x": 0.9920948616600791,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.013671875
+    },
+    {
+      "piece": "Passacaille||Robert de Visee",
+      "n": 183,
+      "coverage": 0.9456521739130435,
+      "matched_frac": 0.9453551912568307,
+      "exact": 0.9398907103825137,
+      "within_2x": 0.9890710382513661,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.042654028436019
+    },
+    {
+      "piece": "Prelude||Francisco Tarrega",
+      "n": 105,
+      "coverage": 0.9905660377358491,
+      "matched_frac": 0.9904761904761905,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Prelude 2||Francisco Tarrega",
+      "n": 166,
+      "coverage": 0.9940119760479041,
+      "matched_frac": 0.9939759036144579,
+      "exact": 0.9879518072289156,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0125786163522013
+    },
+    {
+      "piece": "Rondo, Op. 241 no. 34||Ferdinando Carulli",
+      "n": 424,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Study, Op. 139 no. 1||Mauro Giuliani",
+      "n": 181,
+      "coverage": 0.978021978021978,
+      "matched_frac": 0.9779005524861878,
+      "exact": 0.994475138121547,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0046296296296295
+    },
+    {
+      "piece": "Study, Op. 139 no. 5||Mauro Giuliani",
+      "n": 185,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Study, Op. 139 no. 6||Mauro Giuliani",
+      "n": 303,
+      "coverage": 0.9013157894736842,
+      "matched_frac": 0.900990099009901,
+      "exact": 0.834983498349835,
+      "within_2x": 0.9108910891089109,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.2755102040816326
+    },
+    {
+      "piece": "Study, Op. 35 no. 10||Fernando Sor",
+      "n": 275,
+      "coverage": 0.9456521739130435,
+      "matched_frac": 0.9454545454545454,
+      "exact": 0.9054545454545454,
+      "within_2x": 0.9272727272727272,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.134020618556701
+    },
+    {
+      "piece": "Study, Op. 35 no. 14||Fernando Sor",
+      "n": 158,
+      "coverage": 0.9371069182389937,
+      "matched_frac": 0.9367088607594937,
+      "exact": 0.879746835443038,
+      "within_2x": 0.9050632911392406,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0913520097442144
+    },
+    {
+      "piece": "Study, Op. 60 no. 1||Matteo Carcassi",
+      "n": 300,
+      "coverage": 0.9767441860465116,
+      "matched_frac": 0.9766666666666667,
+      "exact": 0.99,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Study, Op. 60 no. 11||Matteo Carcassi",
+      "n": 224,
+      "coverage": 0.9955555555555555,
+      "matched_frac": 0.9955357142857143,
+      "exact": 0.9955357142857143,
+      "within_2x": 0.9955357142857143,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0133928571428572
+    },
+    {
+      "piece": "Study, Op. 60 no. 14||Matteo Carcassi",
+      "n": 296,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Study, Op. 60 no. 15||Matteo Carcassi",
+      "n": 505,
+      "coverage": 0.9960474308300395,
+      "matched_frac": 0.996039603960396,
+      "exact": 0.994059405940594,
+      "within_2x": 0.996039603960396,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0132575757575757
+    },
+    {
+      "piece": "Study, Op. 60 no. 18||Matteo Carcassi",
+      "n": 195,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 0.9897435897435898,
+      "within_2x": 0.9948717948717949,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0047169811320755
+    },
+    {
+      "piece": "Study, Op. 60 no. 2||Matteo Carcassi",
+      "n": 342,
+      "coverage": 0.9766763848396501,
+      "matched_frac": 0.9766081871345029,
+      "exact": 0.9853801169590644,
+      "within_2x": 0.9941520467836257,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0136986301369864
+    },
+    {
+      "piece": "Study, Op. 60 no. 20||Matteo Carcassi",
+      "n": 375,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Study, Op. 60 no. 22||Matteo Carcassi",
+      "n": 401,
+      "coverage": 0.9875621890547264,
+      "matched_frac": 0.9875311720698254,
+      "exact": 0.9975062344139651,
+      "within_2x": 0.9975062344139651,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 0.9952380952380953
+    },
+    {
+      "piece": "Study, Op. 60 no. 23||Matteo Carcassi",
+      "n": 345,
+      "coverage": 0.9971098265895953,
+      "matched_frac": 0.9971014492753624,
+      "exact": 0.9942028985507246,
+      "within_2x": 0.9971014492753624,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.005730659025788
+    },
+    {
+      "piece": "Study, Op. 60 no. 25||Matteo Carcassi",
+      "n": 815,
+      "coverage": 0.9963235294117647,
+      "matched_frac": 0.996319018404908,
+      "exact": 0.9938650306748467,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0115740740740742
+    },
+    {
+      "piece": "Study, Op. 60 no. 4||Matteo Carcassi",
+      "n": 249,
+      "coverage": 0.996,
+      "matched_frac": 0.9959839357429718,
+      "exact": 0.9839357429718876,
+      "within_2x": 0.9919678714859438,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0234375
+    },
+    {
+      "piece": "Study, Op. 60 no. 5||Matteo Carcassi",
+      "n": 235,
+      "coverage": 0.9957627118644068,
+      "matched_frac": 0.9957446808510638,
+      "exact": 0.9957446808510638,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 0.9924242424242424
+    },
+    {
+      "piece": "Study, Op. 60 no. 9||Matteo Carcassi",
+      "n": 260,
+      "coverage": 0.9731800766283525,
+      "matched_frac": 0.9730769230769231,
+      "exact": 0.9346153846153846,
+      "within_2x": 0.9692307692307692,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0826446280991735
+    },
+    {
+      "piece": "Tempo di Minuetto; Op. 2 no. 1||Fernando Sor",
+      "n": 44,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "The Entertainer (Theme)||Scott Joplin",
+      "n": 336,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Waltz, Op. 241 no. 1||Ferdinando Carulli",
+      "n": 122,
+      "coverage": 0.975609756097561,
+      "matched_frac": 0.9754098360655737,
+      "exact": 0.9426229508196722,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.043103448275862
+    },
+    {
+      "piece": "Waltz, Op. 241 no. 24||Ferdinando Carulli",
+      "n": 106,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Waltz, Op. 39 no. 15||Johannes Brahms",
+      "n": 101,
+      "coverage": 0.9705882352941176,
+      "matched_frac": 0.9702970297029703,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Waltz, Op. 39 no. 2||Johannes Brahms",
+      "n": 87,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 0.9770114942528736,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 0.9807692307692307
+    },
+    {
+      "piece": "Allegro, Op. 100 no. 11||Mauro Giuliani",
+      "n": 467,
+      "coverage": 0.9038461538461539,
+      "matched_frac": 0.9036402569593148,
+      "exact": 0.9914346895074947,
+      "within_2x": 0.9957173447537473,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.013157894736842
+    },
+    {
+      "piece": "Allegro, Op. 60 no. 20||Matteo Carcassi",
+      "n": 361,
+      "coverage": 0.9668508287292817,
+      "matched_frac": 0.9667590027700831,
+      "exact": 0.9889196675900277,
+      "within_2x": 0.997229916897507,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0213333333333334
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 1. Cadenze||Mauro Giuliani",
+      "n": 126,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 10. Capricie||Mauro Giuliani",
+      "n": 373,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 11. Capricie||Mauro Giuliani",
+      "n": 242,
+      "coverage": 0.9917695473251029,
+      "matched_frac": 0.9917355371900827,
+      "exact": 0.987603305785124,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0234375
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 12. Capricie||Mauro Giuliani",
+      "n": 508,
+      "coverage": 0.9351669941060904,
+      "matched_frac": 0.9350393700787402,
+      "exact": 0.9704724409448819,
+      "within_2x": 0.9901574803149606,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0538194444444444
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 14. Capricie||Mauro Giuliani",
+      "n": 550,
+      "coverage": 0.9981851179673321,
+      "matched_frac": 0.9981818181818182,
+      "exact": 0.9981818181818182,
+      "within_2x": 0.9981818181818182,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0063291139240507
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 16. Rondo||Mauro Giuliani",
+      "n": 613,
+      "coverage": 0.988599348534202,
+      "matched_frac": 0.9885807504078303,
+      "exact": 0.9853181076672104,
+      "within_2x": 0.9951060358890701,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.028125
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 19. Preludi||Mauro Giuliani",
+      "n": 185,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 2. Cadenze||Mauro Giuliani",
+      "n": 228,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 21. Preludi||Mauro Giuliani",
+      "n": 104,
+      "coverage": 0.9047619047619048,
+      "matched_frac": 0.9038461538461539,
+      "exact": 0.8942307692307693,
+      "within_2x": 0.9038461538461539,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.2081031307550645
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 22. Preludi||Mauro Giuliani",
+      "n": 264,
+      "coverage": 0.9132075471698113,
+      "matched_frac": 0.9128787878787878,
+      "exact": 0.9621212121212122,
+      "within_2x": 0.9810606060606061,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0743034055727554
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 23. Preludi||Mauro Giuliani",
+      "n": 331,
+      "coverage": 0.9849397590361446,
+      "matched_frac": 0.9848942598187311,
+      "exact": 0.9939577039274925,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.011173184357542
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 24. Preludi||Mauro Giuliani",
+      "n": 453,
+      "coverage": 0.9691629955947136,
+      "matched_frac": 0.9690949227373068,
+      "exact": 0.9558498896247241,
+      "within_2x": 0.9845474613686535,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0601001669449082
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 3. Cadenze||Mauro Giuliani",
+      "n": 199,
+      "coverage": 0.995,
+      "matched_frac": 0.9949748743718593,
+      "exact": 0.9949748743718593,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0188679245283019
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 4. Cadenze||Mauro Giuliani",
+      "n": 272,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 5. Cadenze||Mauro Giuliani",
+      "n": 324,
+      "coverage": 0.9938461538461538,
+      "matched_frac": 0.9938271604938271,
+      "exact": 0.9938271604938271,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 0.9939759036144579
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 6. Cadenze||Mauro Giuliani",
+      "n": 240,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 7. Cadenze||Mauro Giuliani",
+      "n": 384,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 8. Cadenze||Mauro Giuliani",
+      "n": 192,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Cadenzas, Caprices, Rondos & Preludes, Op. 100: 9. Cadenze||Mauro Giuliani",
+      "n": 264,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Estudios Sencillos: V||Leo Brouwer",
+      "n": 138,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Estudios Sencillos: VI||Leo Brouwer",
+      "n": 180,
+      "coverage": 0.9668508287292817,
+      "matched_frac": 0.9666666666666667,
+      "exact": 0.9833333333333333,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.03125
+    },
+    {
+      "piece": "Estudios Sencillos: VII||Leo Brouwer",
+      "n": 184,
+      "coverage": 0.9297297297297298,
+      "matched_frac": 0.9293478260869565,
+      "exact": 0.8913043478260869,
+      "within_2x": 0.9130434782608695,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0984848484848484
+    },
+    {
+      "piece": "Estudios Sencillos: X||Leo Brouwer",
+      "n": 198,
+      "coverage": 0.9547738693467337,
+      "matched_frac": 0.9545454545454546,
+      "exact": 0.9444444444444444,
+      "within_2x": 0.9747474747474747,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0871212121212122
+    },
+    {
+      "piece": "Estudios Sencillos: XI||Leo Brouwer",
+      "n": 260,
+      "coverage": 0.9233716475095786,
+      "matched_frac": 0.9230769230769231,
+      "exact": 0.8076923076923077,
+      "within_2x": 0.9153846153846154,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.135483870967742
+    },
+    {
+      "piece": "Estudios Sencillos: XII||Leo Brouwer",
+      "n": 83,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Estudios Sencillos: XIII||Leo Brouwer",
+      "n": 387,
+      "coverage": 0.9690721649484536,
+      "matched_frac": 0.9689922480620154,
+      "exact": 0.937984496124031,
+      "within_2x": 0.9896640826873385,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0583941605839415
+    },
+    {
+      "piece": "Estudios Sencillos: XIV||Leo Brouwer",
+      "n": 282,
+      "coverage": 0.9752650176678446,
+      "matched_frac": 0.975177304964539,
+      "exact": 0.9113475177304965,
+      "within_2x": 0.9574468085106383,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0727272727272728
+    },
+    {
+      "piece": "Estudios Sencillos: XIX||Leo Brouwer",
+      "n": 201,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Estudios Sencillos: XX||Leo Brouwer",
+      "n": 609,
+      "coverage": 0.980327868852459,
+      "matched_frac": 0.9802955665024631,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    },
+    {
+      "piece": "Andantino, op. 241 no. 19||Ferdinando Carulli",
+      "n": 281,
+      "coverage": 0.9680851063829787,
+      "matched_frac": 0.9679715302491103,
+      "exact": 0.9786476868327402,
+      "within_2x": 0.9928825622775801,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0394736842105263
+    },
+    {
+      "piece": "Caprice, Op. 20 no. 2||Luigi Legnani",
+      "n": 313,
+      "coverage": 0.9331210191082803,
+      "matched_frac": 0.9329073482428115,
+      "exact": 0.9009584664536742,
+      "within_2x": 0.9552715654952076,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.178921568627451
+    },
+    {
+      "piece": "Lagrima||Francisco Tarrega",
+      "n": 67,
+      "coverage": 1.0,
+      "matched_frac": 1.0,
+      "exact": 1.0,
+      "within_2x": 1.0,
+      "median_abs_log2": 0.0,
+      "total_len_ratio": 1.0
+    }
+  ]
+}
